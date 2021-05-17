@@ -1,0 +1,87 @@
+
+*{
+  box-sizing: border-box;
+}
+
+  body {
+    background:  #add8e6;
+  }
+
+  .container{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width:  100%;
+    margin:0 0;
+    background:  #add8e6;
+  }
+
+  #loginForm {
+    border: 3px solid #ff91a4;
+    padding:  30px 30px; 
+    background:  #fadadd; 
+    display:  flex; 
+    flex-direction:  column;
+    align-items:  flex-start; 
+    width:  400px; 
+    border-radius:10px;
+    margin:50px 75px 50px 200px;
+  }
+
+  input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 0 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+ .loginButton {
+    background-color: #4166f5;
+    color: white;
+    padding: 14px 20px;
+    margin: 10px auto 10px;
+    border: none;
+    cursor: pointer;
+    width: 60%;
+    text-align:center;
+  }
+
+ .loginButton:hover {
+    opacity: 0.8;
+  }
+
+  .container .logoImage{
+    max-width:550px;
+    margin-top:100px;
+  }
+  .formContainer h1{
+    margin:10px auto;
+    width:100px;
+  }
+
+  .form-labels{
+    margin:0;
+  }
+
+  input[type=text]:focus, input[type=password]:focus {
+    background-color: #e7feff;
+  }
+
+
+  @media screen and (max-width: 650px) {
+    #loginForm{
+      width:100%;
+      margin:0 50px 0 50px;
+    }
+    .logoContainer{
+      display:none;
+    }
+  }
+
+  .form-errors{
+    margin:10px auto;
+    font-weight: bold;
+  }
