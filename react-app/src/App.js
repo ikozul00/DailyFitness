@@ -31,23 +31,19 @@ import RegistrationPage from './components/registrationPage';
 class App extends React.Component{
     constructor(props){
         super(props);
-        this.handleLoginButtonClick = this.handleLoginButtonClick.bind(this);
-        this.handleRegistrationButtonClick=this.handleRegistrationButtonClick.bind(this);
+        this.handlePageChange = this.handlePageChange.bind(this);
         this.state={
             page: "login",
         }
     };
-    handleLoginButtonClick(name){
-        this.setState({page:name});
-    }
-    handleRegistrationButtonClick(name){
+    handlePageChange(name){
         this.setState({page:name});
     }
     render(){
         const pageName=this.state.page;
         if(pageName==="login"){
             return(
-                <LoginPage onloginButtonClick={this.handleLoginButtonClick}/>
+                <LoginPage onPageChange={this.handlePageChange} />
              )
         }
        else if(pageName==="home"){
@@ -57,7 +53,7 @@ class App extends React.Component{
         }
         else if(pageName==="register"){
             return(
-                <RegistrationPage onRegistrationButtonClick={this.handleRegistrationButtonClick}/>
+                <RegistrationPage onPageChange={this.handlePageChange}/>
             )
         }
     }

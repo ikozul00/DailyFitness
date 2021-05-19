@@ -36,6 +36,22 @@
 
   .description{
     text-align:center;
+    font-weight: bold;
   }
 
+  #registrationForm .buttonHolder{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width:100%;
+  }
+
+  .submit_button.smallLoginButton{
+    background-color:rgb(50,205,50);
+  }
+
+  span.small{
+    font-size: smaller;
+    color:blue;
+  }
 

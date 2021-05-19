@@ -18,6 +18,7 @@ class LoginPage extends React.Component{
         this.handleChangeUsername = this.handleChangeUsername.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.validateLogin=this.validateLogin.bind(this);
+        this.handleRegistrationLinkClick=this.handleRegistrationLinkClick.bind(this);
     }
 
     //controling password field
@@ -57,7 +58,7 @@ class LoginPage extends React.Component{
             axios.post('/api/login', {name:this.state.username,password:this.state.password})
             .then(response => {
                 if(response.data.correct){
-                    this.props.onloginButtonClick("home");
+                    this.props.onPageChange("home");
                 }
                 else{
                     this.setState({formErrors:"Incorrect username or password!"});
@@ -66,37 +67,45 @@ class LoginPage extends React.Component{
             (error) => {
                 console.log(error);});
         }
+    }
+
+    //opening registration form
+    handleRegistrationLinkClick(event){
+        console.log("pozvana");
+        event.preventDefault();
+        this.props.onPageChange("register");
 
     }
+
     render(){
-        return(
-            <div class="container">
-                <div className="logoContainer">
-                <img src={logoImage} alt="logo" className="logoImage"></img>
-                </div>
-            <div class="formContainer">
-                <form id="loginForm">
-                <h1>Login</h1>
-                 <label for="username" class="form-labels">Username: </label>
-                 <br/>
-                    <input type="text" value={this.state.username} id="usename" name="username" placeholder="Enter Username" onChange={this.handleChangeUsername}/>
-                <br/>
-                <label class="form-labels" for="password">Password:</label>
-                <br/>
-                    <input type="password" value={this.state.password} id="password" name="password" placeholder="Enter Password" onChange={this.handleChangePassword}/>
-                <br/>
-                <input type="sumit" value="Login" class="loginButton" onClick={this.handleLogin}/>
-                <div>
-                    <div class="bottom-container">
-                        <p class="form-errors">{this.state.formErrors}</p>
-                    <span class="register"> New here? <a href="#">Create an account</a></span>
-                </div>
-                </div>
-                </form>
-                </div>
-            </div>
-        );
-    }
+                return(
+                    <div class="container">
+                        <div className="logoContainer">
+                        <img src={logoImage} alt="logo" className="logoImage"></img>
+                        </div>
+                    <div class="formContainer">
+                        <form id="loginForm" onSubmit={this.handleLogin}>
+                        <h1>Login</h1>
+                        <label for="username" class="form-labels">Username: </label>
+                        <br/>
+                            <input type="text" value={this.state.username} id="usename" name="username" placeholder="Enter Username" onChange={this.handleChangeUsername}/>
+                        <br/>
+                        <label class="form-labels" for="password">Password:</label>
+                        <br/>
+                            <input type="password" value={this.state.password} id="password" name="password" placeholder="Enter Password" onChange={this.handleChangePassword}/>
+                        <br/>
+                        <input type="submit" value="Login" class="loginButton"/>
+                        <div>
+                            <div class="bottom-container">
+                                <p class="form-errors">{this.state.formErrors}</p>
+                            <span class="register"> New here? <a href="javascript:void(0);" onClick={this.handleRegistrationLinkClick}>Create an account</a></span>
+                        </div>
+                        </div>
+                        </form>
+                        </div>
+                    </div>
+                );
+            }
 }
 
 export default LoginPage;

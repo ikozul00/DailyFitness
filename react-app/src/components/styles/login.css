@@ -49,6 +49,17 @@
     text-align:center;
   }
 
+  .smallLoginButton {
+    background-color: #4166f5;
+    color: white;
+    padding: 14px 20px;
+    margin: 10px auto 10px;
+    border: none;
+    cursor: pointer;
+    width: 40%;
+    text-align:center;
+  }
+
  .loginButton:hover {
     opacity: 0.8;
   }

@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import logoImage from './images/small-logo.png';
 import './styles/pageTop.css';
 
