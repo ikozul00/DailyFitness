@@ -10,7 +10,6 @@ exports.insertUser=function(req,res){
                 throw error;
             }
             else{
-                console.log("Row inserted");
                 res.json({"correct":true});
             }
         })

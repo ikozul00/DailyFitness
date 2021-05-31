@@ -1,0 +1,208 @@
+.popup-box{
+    position: fixed;
+    background: #000000a0;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    overflow: auto;
+}
+
+.popup-content{
+    background-color: #fffaf0;
+    max-width:950px;
+    margin:70px auto 70px;
+    border: 5px solid #002147;
+    border-radius: 5%;
+    padding:15px;
+
+}
+
+.popup-main-title{
+    text-align: center;
+    color:#002147;
+}
+
+.popup-categorie{
+    border-bottom:2px solid lightblue;
+    padding:0 10px 10px;
+}
+
+.popup-title{
+    color:#002147;
+    font-weight: 700;
+    font-size: 1.1em;
+}
+
+.popup-description{
+    font-size:0.8em;
+    color:#002147;
+    margin-left: 10px;
+}
+
+.listItem{
+    border:3px solid #0072b5;
+    width: 100px;
+    border-radius: 15px;
+    padding:5px;
+    margin:0 10px;
+    text-align:center;
+    color:#002147;
+}
+
+.listItem.done{
+    background-color: #66ff33;
+}
+
+.listItem.not-done{
+    background-color:  #ffe699;
+}
+
+.popup-items-container{
+    display:  flex; 
+    flex-direction:  row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.item-title{
+    font-size:1em;
+}
+
+.item-calories{
+    font-size:0.8em;
+}
+
+.check-button{
+    background-color: #1aff1a;
+    border-radius:50%;
+    width:40px;
+    border:0.5px solid #208000;
+    color:#0d3300;
+    font-size:1.2em;
+}
+
+.check-button:hover{
+    transform: scale(1.2);
+}
+
+.check-button.checked{
+    background-color: #ffff99;
+}
+
+.plus-container{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+}
+
+.plus-button{
+    border: 2px solid #002147;
+    color:#002147;
+    background-color: #fffaf0;
+    border-radius:50%;
+    font-size:1.5em;
+    padding:5px;
+    width:50px;
+    height:50px;
+}
+
+.plus-button:hover{
+    transform: scale(1.2);
+}
+
+.x-button{
+    position:relative;
+    left:45px;
+    bottom:10px;
+    border:none;
+    color:#660000;
+    background-color: lightblue;
+    border-radius: 50%;
+    font-size:1.05em;
+}
+
+.x-button:hover{
+    transform: scale(1.2);
+}
+
+.calorie-report{
+    border:2.5px solid #80ccff;
+    margin:10px;
+    padding:0 10px 10px;
+    border-radius:5%;
+    width:400px;
+    color:#002147;
+}
+
+.calorie-report hr{
+    border: 0.5px solid #80ccff;
+}
+
+.calorie-information{
+    display:flex;
+    flex-direction:  row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    color:#002147;
+}
+
+.additional-report{
+    border:none;
+    margin:10px auto;
+    padding:0 10px 10px;
+    border-radius:5%;
+    color:#002147;
+}
+
+.popup-button{
+    border:none;
+    width:13%;
+    height:45px;
+    color:white;
+}
+
+.popup-button:hover{
+    transform: scale(1.1);
+}
+
+.popup-button.popup-close{
+    position:relative;
+    bottom:10px;
+    left:655px; 
+    background-color: red;   
+}
+
+.popup-button.popup-save{
+    position:relative;
+    bottom:10px;
+    left:605px;
+    background-color: green;
+}
+
+.popup-input{
+    border-radius:5%;
+    background-color: #fffaf0;
+    border:2px solid #80ccff;
+}
+
+.popup-input.additional-input{
+    width:25%;
+    margin:10px 0;
+}
+
+
+.popup-input.calorie-input{
+    width:50%;    
+}
+
+.popup-input.popup-textarea{
+    width:100%;
+    height:60px;
+    margin-top: 5px;
+}
+
+
+

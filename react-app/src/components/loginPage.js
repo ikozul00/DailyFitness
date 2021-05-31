@@ -10,10 +10,9 @@ class LoginPage extends React.Component{
         this.state={
             username:"",
             password:"",
-            formErrors: "",
+            formErrors: ""
         }
 
-        var formValid=false;
         this.handleChangePassword = this.handleChangePassword.bind(this);
         this.handleChangeUsername = this.handleChangeUsername.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
@@ -58,6 +57,7 @@ class LoginPage extends React.Component{
             axios.post('/api/login', {name:this.state.username,password:this.state.password})
             .then(response => {
                 if(response.data.correct){
+                    sessionStorage.setItem('username', this.state.username);
                     this.props.onPageChange("home");
                 }
                 else{
@@ -71,7 +71,6 @@ class LoginPage extends React.Component{
 
     //opening registration form
     handleRegistrationLinkClick(event){
-        console.log("pozvana");
         event.preventDefault();
         this.props.onPageChange("register");
 
