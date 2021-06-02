@@ -204,5 +204,41 @@
     margin-top: 5px;
 }
 
+.popup-icons{
+    color:#ff8000;
+    font-size: 1.2em;
+    background-color: #fffaf0;
+    border:none;
+    padding:0 2px;
+}
 
+.save-changes{
+    background-color: white;
+    width:500px;
+    border: 3px solid #002147;
+    padding:15px;
+}
+
+.popup-box.save-changes-box{
+    display:flex;
+   justify-content: center;
+    align-items: center;
+}
+
+.save-button-container{
+    display:flex;
+    justify-content: space-around;
+}
+
+.save-button-container button{
+    padding:5px;
+    width:25%;
+}
+.save-button-container .save-button{
+    background-color: #00cc00;
+}
+
+.save-button-container .no-save-button{
+    background-color: #e60000;
+}
 
