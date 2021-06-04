@@ -171,15 +171,8 @@
 .popup-button.popup-close{
     position:relative;
     bottom:10px;
-    left:655px; 
+    left:680px; 
     background-color: red;   
-}
-
-.popup-button.popup-save{
-    position:relative;
-    bottom:10px;
-    left:605px;
-    background-color: green;
 }
 
 .popup-input{

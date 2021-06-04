@@ -19,6 +19,7 @@ exports.dayInformation=function(req,res){
         notes:0,
     }
 
+    console.log(req.body);
     //reaching information about plans
     pool.query(`SELECT plan.title,date_user_plan.done,plan.calories,"userTable".username FROM plan
     INNER JOIN date_user_plan ON plan."planId"=date_user_plan."planID"
@@ -257,3 +258,148 @@ exports.removeMealPlan = function(req,res){
         }
     });
 }
+
+//updating databse with information user has entered about one date
+exports.modifyDayInformation = async function(req,res){
+    console.log(req.body);
+    let d= await doesDateExists(req.body.date);
+    //if date doesn't exist in database, creating it first then insertig information about day in database
+    if(!d){
+        try{
+            //creating date in database
+            d=await createDate(req.body.date);
+            ///creating information about the day
+            let created= await creatingDayInformation(req,res,d);
+            if(created){
+                res.statusCode=200;
+                res.json({"message":"successful"});
+            }
+            else{
+                res.statusCode=404;
+                res.json({"message":"trouble creating day information"});
+            }
+        }
+        catch(err){
+            console.log(err);
+            res.statusCode=404;
+            res.json({"message":err});
+        }
+    }
+    else{   
+        try{
+        let existsDay=await doesDayInformationExists(d,req.body.name);
+        //does information about day already exists in database, if yes update
+        if(existsDay){
+            pool.query(`UPDATE user_dates 
+            SET "calorieIntake"='${req.body.calEaten}', "calorieSpent"='${req.body.calSpent}', weight='${req.body.weight}', "motivationLevel"='${req.body.motivation}', notes='${req.body.notes}'
+            WHERE "userID"=(SELECT "userId" FROM "userTable" WHERE username='${req.body.name}')
+            AND "dateID"=(SELECT "dateId" FROM dates WHERE date='${req.body.date}') `,(error,result)=>{
+                console.log(result.rowCount);
+                if(error){
+                    throw error;
+                }
+                if(result.rowCount===1){
+                    res.statusCode=200;
+                    res.json({"message":"Success"});
+                    res.end();
+                }
+                else{
+                    res.statusCode=404;
+                    res.json({"message":"Trouble updating database"});
+                    res.end();
+                }
+            });
+        }
+        //does information about day already exists in database, if not insert it
+        else{
+            let created= await creatingDayInformation(req,res,d);
+            if(created){
+                res.statusCode=200;
+                res.json({"message":"successful"});
+            }
+            else{
+                res.statusCode=404;
+                res.json({"message":"trouble creating day information"});
+            }
+        }
+    }
+        catch(err){
+            console.log(err);
+            res.statusCode=404;
+            res.json({"message":err});
+        }
+    }
+}
+
+//inserting information about the day in database
+function creatingDayInformation(req,res,date){
+    return new Promise((resolve,reject)=>{
+        pool.query(`INSERT INTO user_dates ("userID","dateID","calorieIntake","calorieSpent",weight,"motivationLevel",notes)
+        SELECT "userId", '${date}', '${req.body.calEaten}', '${req.body.calSpent}', '${req.body.weight}', '${req.body.motivation}', '${req.body.notes}'
+        FROM "userTable" WHERE username='${req.body.name}' `,(err,res)=>{
+            if(err){
+                reject(new Error("Error while inserting data in database."));
+            }
+            if(res.rowCount===1){
+                resolve(true);
+            }
+            else{
+                resolve(false);
+            }
+        });
+
+    })
+    
+}
+
+function doesDateExists(date){
+    return new Promise((resolve, reject) => {
+        pool.query(`SELECT "dateId" FROM dates WHERE date='${date}' `, (error,result)=>{
+            if(error){
+                reject(new Error("Error while searching date in database"));
+            }
+            console.log("inside doesDateExists",result.rows.length);
+            if(result.rows.length===1){
+                resolve(result.rows[0].dateId);
+            }
+            else{
+                resolve(false);
+            }
+        });
+
+    });
+}
+
+function doesDayInformationExists(date,user){
+    return new Promise((resolve,reject)=>{
+        pool.query(`SELECT "dateID", "userID" FROM user_dates
+        WHERE "dateID" = '${date}' AND "userID"=(SELECT "userId" FROM "userTable" WHERE username='${user}')`,(error,result)=>{
+            if(error){
+                reject(new Error("trouble checking does information about the day already exists"));
+            }
+            if(result.rows.length===1){
+                resolve(true);
+            }
+            else{
+                resolve(false);
+            }
+        });
+    })
+   
+}
+
+function createDate(date){
+    let formatedDate=new Date(date);
+    return new Promise((resolve,reject)=>{
+        pool.query(`INSERT INTO dates(date, day,month,year)
+        VALUES ('${date}','${formatedDate.getDate()}','${formatedDate.getMonth()}','${formatedDate.getFullYear()}')
+        RETURNING "dateId" `,(error,result)=>{
+            if(error){
+                reject(new Error("trouble creating date"));
+            }
+            console.log(result.rows[0].dateId);
+            resolve(result.rows[0].dateId);
+        });
+    })
+}
+

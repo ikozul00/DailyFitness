@@ -13,7 +13,7 @@ class DailyReport extends React.Component{
             CalEaten:0,
             CalSpent:0,
             motivationIcons:"",
-            // motivation:0,
+            motivation:0,
             weight:0,
             notes:"",
             done:0,
@@ -27,8 +27,8 @@ class DailyReport extends React.Component{
             errorExtraCalEaten:"",
             errorExtraCalSpent:"",
             errorWeight:"",
-            saveChanges:false,
-            modified:false
+            modified:false,
+            errorNotes:""
         }
         this.renderList=this.renderList.bind(this);
         this.clickedDoneButton=this.clickedDoneButton.bind(this);
@@ -41,15 +41,16 @@ class DailyReport extends React.Component{
         this.handleMotivationChange=this.handleMotivationChange.bind(this);
         this.onClickClose=this.onClickClose.bind(this);
         this.onClickSave=this.onClickSave.bind(this);
+        this.sendModifiedData=this.sendModifiedData.bind(this);
     }
 
   
 
     //content for a popup
     componentDidMount(){
-        console.log("evo");
         let username=sessionStorage.getItem("username");
         if(username){
+            console.log(this.props.date);
             axios.post('/api/dailyReport',{name:username,date:this.props.date})
             .then(response=>{
                 var res=response.data;
@@ -73,10 +74,29 @@ class DailyReport extends React.Component{
                     motivation:res.information.motivation,
                     weight:res.information.weight,
                     notes:res.information.notes ? res.information.notes:"",
-                    loaded:true
+                    loaded:true,
                 });
             },
             (error)=>{
+                console.log(error);
+            });
+        }
+    }
+
+
+    //sending changed data from fields Eaten additionally, Spent additionally, Weight, Motivation level and Notes to database
+    sendModifiedData(){
+        this.props.togglePopup();
+        if(this.state.modified){
+            let caloriesE=this.state.extraCalEaten==="" ? 0 : this.state.extraCalEaten;
+            let caloriesS=this.state.extraCalSpent==="" ? 0: this.state.extraCalSpent;
+            let w=this.state.weight==="" ? 0: this.state.weight;
+            axios.put('/api/modify/day',{name:sessionStorage.getItem('username'),date:this.props.date,motivation:this.state.motivation,notes:this.state.notes,calEaten:caloriesE,calSpent:caloriesS,weight:w})
+            .then(response=>{
+                if(response.status===404){
+                    alert("Error updating database");
+                }  
+            }, (error)=>{
                 console.log(error);
             });
         }
@@ -219,35 +239,40 @@ class DailyReport extends React.Component{
     }
 
 
-    //changing content of fields Additional calories eaten, Additional calories spent and weight
+    //changing content of fields Additional calories eaten, Additional calories spent, weight and notes
     handleChange(event){
         let value=event.target.value;
         let name=event.target.name;
-        if(value!==""){
-            let text=value;
-            if(text[text.length-1]===","){
-                this.chooseErrorElement("* decimal numbers must be written using '.' ",name);
-            }
-            else if(isNaN(text[text.length-1])){
-                this.chooseErrorElement("* input must be a number",name);
-            }
-            else if(text[text.length-1]==="."){
-                if(text.search(".")===-1){
-                    this.setState({[event.target.name]:text,modified:true});
-                    this.chooseErrorElement("* number must end with a digit",name);
+        if(name!=="notes"){
+            if(value!==""){
+                let text=value;
+                if(text[text.length-1]===","){
+                    this.chooseErrorElement("* decimal numbers must be written using '.' ",name);
+                }
+                else if(text[text.length-1]==="."){
+                    if(text.search(".")===-1){
+                        this.setState({[event.target.name]:text,modified:true});
+                        this.chooseErrorElement("* number must end with a digit",name);
+                    }
+                    else{
+                        this.chooseErrorElement("* invalid input",name);
+                        this.setState({[event.target.name]:text,modified:true});
+                    }
+                }
+                else if(isNaN(text[text.length-1])){
+                    this.chooseErrorElement("* input must be a number",name);
                 }
                 else{
-                    this.chooseErrorElement("* invalid input",name);
-                    this.setState({[event.target.name]:text,modified:true});
+                    this.setState({[event.target.name]:parseFloat(text),modified:true});
+                    this.chooseErrorElement("",name);
                 }
             }
             else{
-                this.setState({[event.target.name]:parseFloat(text),modified:true});
-                this.chooseErrorElement("",name);
+                this.setState({[event.target.name]:"",modified:true});
             }
         }
         else{
-            this.setState({[event.target.name]:"",modified:true});
+            this.setState({notes:value,modified:true});
         }
     }
 
@@ -269,8 +294,9 @@ class DailyReport extends React.Component{
         }
     }
 
+
+    //rendering matching emojis to a motivation level
     renderMotivationIcons(n){
-        console.log("pozvana render");
         let row=[];
         for(let i=0;i<n;i++){
             row.push(true);
@@ -287,7 +313,7 @@ class DailyReport extends React.Component{
                 full="far";
             }
             return(
-                <button className="popup-icons">
+                <button className="popup-icons" onClick={this.handleMotivationChange}>
                 <i className={`${full} fa-grin-stars`} ></i>
                 </button>
             );
@@ -297,14 +323,13 @@ class DailyReport extends React.Component{
     }
 
     handleMotivationChange(event){
-        console.log("pozvana handel");
         this.modified=true;
         let target=event.target;
         let emojis=document.querySelectorAll(".popup-icons");
         let br=1;
         for(let x of emojis){
             if(x.children[0]==target){
-                 this.setState({motivationIcons:this.renderMotivationIcons(br),modified:true/*motivation:br*/});
+                 this.setState({motivationIcons:this.renderMotivationIcons(br),modified:true,motivation:br});
             }
             br+=1;
         }
@@ -316,20 +341,22 @@ class DailyReport extends React.Component{
             if(!this.state.modified){
                 this.props.togglePopup();
             }
-            else{
+            else if(this.state.errorExtraCalSpent==="" && this.state.errorExtraCalEaten==="" && this.state.errorWeight==="" && this.state.errorNotes===""){
                 this.setState({saveChanges:true});
             }
+            else{
+                alert("All values must contain valid input!");
+            }
         }
-        else{
-            this.setState({saveChanges:false});
+        else if(name==="saveChanges"){
             this.props.togglePopup();
         }
     }
 
-    //sending modified data to database
+    //closing popup and calling function to save modifications
     onClickSave(){
-        console.log(this.props.date,sessionStorage.getItem('username'),this.state.motivation,this.state.notes,this.state.extraCalEaten,this.state.extraCalSpent,this.state.weight);
-        this.props.togglePopup();
+        this.sendModifiedData();
+         this.props.togglePopup();
     }
 
 
@@ -338,7 +365,7 @@ class DailyReport extends React.Component{
             <div class="popup-box">
                 {this.state.loaded&& 
                 <div class="popup-content">
-                    { this.state.saveChanges && <SaveChanges onSave={this.onClickSave} onDont={this.onClickClose}/> }
+                    {this.state.saveChanges && <SaveChanges onSave={this.onClickSave} onDont={this.onClickClose}/>}
                     <h2 class="popup-main-title">{this.props.date}</h2>
                     <div className="popup-categorie">
                         <p className="popup-title">Meal plan</p>
@@ -404,7 +431,6 @@ class DailyReport extends React.Component{
                             <p>Motivation level: {this.state.motivationIcons} </p>
                             <label for="notes">Notes: <br/><textarea className="popup-input popup-textarea" value={this.state.notes} name="notes" id="notes" onChange={this.handleChange}/> </label>
                        </div>
-                    <button className="popup-save popup-button" onClick={this.onClickSave}>Save changes</button>                                      
                     <button onClick={()=>{this.onClickClose("dailyReport")}} className="popup-close popup-button">Close</button>
                 </div>
                 }
@@ -426,7 +452,7 @@ class SaveChanges  extends React.Component{
         return(
             <div className="popup-box save-changes-box">
                 <div className="save-changes">
-                    <p>Do you want to save changes?</p>
+                    <p>Do you want to save changes you made in values Eaten additionally, Spent additionally, Weight, Motivation level and Notes?</p>
                     <div className="save-button-container">
                     <button className="save-button" onClick={this.props.onSave}>Save</button>
                     <button className="no-save-button" onClick={()=>{this.props.onDont("saveChanges")}}>Don't save</button>

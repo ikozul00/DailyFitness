@@ -6,6 +6,7 @@ const { response } = require('express');
 const loginController=require('./controllers/loginController');
 const registrationController=require('./controllers/registrationController');
 const dayController=require('./controllers/dayController');
+const monthController=require('./controllers/monthReportController');
 
 
 //login and registration routes
@@ -25,4 +26,8 @@ router.post('/remove/exercises',dayController.removeExercisePlan);
 //deleting exercise plan from a day plan
 router.post('/remove/meals',dayController.removeMealPlan);
 
-  module.exports = router
+router.put('/modify/day',dayController.modifyDayInformation);
+
+router.post('/monthReport',monthController.monthInformation);
+
+module.exports = router
