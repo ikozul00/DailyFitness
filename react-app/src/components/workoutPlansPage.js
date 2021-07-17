@@ -53,7 +53,7 @@ function loadAllPlans(name){
     else{
      axios.get('/api/all/?size='+0+'&value=plan')
      .then(response => {
-         let res=createPlans(response.data.plans);
+         let res=createPlans(response.data.list);
          setLoadPlans(false);
          setPlans(res);
      }, error => {

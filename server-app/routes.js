@@ -33,17 +33,10 @@ router.put('/modify/day',dayController.modifyDayInformation);
 
 router.post('/monthReport',monthController.monthInformation);
 
-//retriving plans written by logged user
-router.post('/myPlans',plansController.retriveMyPlans);
-
-//retriving all public plans from database
-router.get('/plans',plansController.retrivePlans);
-
-//retriving exercises written by logged user
-//router.post('/myExercises',exercisesController.retriveMyExercises);
-
+//retriving exercises, plans and recipies written by logged user
 router.post('/my',loadingListsController.retriveMy);
 
+//retriving all public plans, exercises or recipies from database
 router.get('/all',loadingListsController.retriveAll);
 
 module.exports = router;
