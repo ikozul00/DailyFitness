@@ -25,7 +25,7 @@ body {
     justify-content: flex-start;
     align-items: center;
     background:  #add8e6;
-    border-bottom:2px solid #19647d; 
+    border-bottom:2px solid #19647d;
 }
 
 .pageTopContainer{
@@ -45,7 +45,7 @@ body {
     flex-direction: row;
     justify-content: space-evenly;
     width:100%;
-    margin:0 0 10px;
+    margin:0 0 10px; 
 }
 
 .navContainer button{
@@ -53,15 +53,18 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding:5px;
+    padding:8px 5px;
     border-radius: 5px;
-    width: 200px;
+    width: 170px;
     border: 2px solid #f78fa7;
+    color:#000033;
 
 }
 
 .navContainer button:hover{
     background-color: #f78fa7;
+    transform: scale(1.05);
+    cursor: pointer;
 }
 
 

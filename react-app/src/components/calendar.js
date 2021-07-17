@@ -9,8 +9,8 @@ class CostumCalendar extends React.Component{
     }
     render(){
       return(
-        <Calendar locale="en" activeStartDate={this.props.startDate} maxDetail="month" minDetail="month" next2Label={null} prev2Label={null} view="month" className="calendar" tileClassName="dateField"
-        onClickDay={(value) => this.props.pickDay(value)} returnValue="start" value={new Date()} showNeighboringMonth={true} onActiveStartDateChange={(value)=>this.props.monthChange(value)} showFixedNumberOfWeeks="true"/> 
+        <Calendar locale="en" activeStartDate={this.props.startDate} maxDetail="month" minDetail="month" next2Label={null} prev2Label={null} view="month" tileClassName="dateField"
+        onClickDay={(value) => this.props.pickDay(value)} returnValue="start" value={new Date()} showNeighboringMonth={true} onActiveStartDateChange={(value)=>this.props.monthChange(value)} showFixedNumberOfWeeks={true}/> 
       )
     }
 

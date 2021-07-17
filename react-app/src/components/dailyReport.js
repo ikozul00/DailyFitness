@@ -328,7 +328,7 @@ class DailyReport extends React.Component{
         let emojis=document.querySelectorAll(".popup-icons");
         let br=1;
         for(let x of emojis){
-            if(x.children[0]==target){
+            if(x.children[0]===target){
                  this.setState({motivationIcons:this.renderMotivationIcons(br),modified:true,motivation:br});
             }
             br+=1;

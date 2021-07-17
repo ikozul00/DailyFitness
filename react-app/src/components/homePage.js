@@ -35,6 +35,7 @@ class HomePage extends React.Component{
     
       //retrieving username of currently logged user
       componentDidMount(){
+        this.props.handlerFunction();
         this.setState({name:sessionStorage.getItem('username')});
         this.valuesForMonthReport(this.state.startDate);
       }

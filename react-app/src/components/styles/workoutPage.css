@@ -1,0 +1,210 @@
+.sideNavContainer{
+    display:flex;
+    flex-direction:column;
+    height: 100%;
+    width:350px;
+    position: fixed;
+    left: 0;
+    top:85px;
+    background-color: #fffaf0;
+    border:3px solid #052d3b;
+    border-left:none;
+    border-top:2px solid #19647d;
+}
+
+.workouts-container{
+    margin-left:350px;
+}
+
+
+
+.workout-navigation{
+    display:flex;
+    flex-direction:column;
+}
+
+
+.workout-navigation .nav-link{
+    text-decoration: none;
+    font-weight: bold;
+    color:#000033;
+    width:348px;
+    background-color: #ffe6ee;
+    text-align: center;
+    text-transform: uppercase;
+    border-bottom: 1px solid #800040; 
+}
+
+.workout-navigation .nav-link:hover{
+    color:blanchedalmond;
+    background-color: #990033;
+}
+
+.workout-navigation .nav-link.clicked{
+    color:blanchedalmond;
+    background-color: #990033;
+}
+
+.workout-navigation .nav-link.upper-link{
+    margin-top: 25px;
+    border-top: 1px solid #800040;
+}
+
+.workout-navigation .nav-link.bottom-link{
+    border-bottom: 4px solid #80002a;
+}
+
+.search-container{
+    margin:30px auto;
+}
+
+.workout-search-form input[type=text] {
+    padding: 2px;
+    font-size:1.1em;
+    border: none;
+    width:250px;
+    border:2px solid #000033;
+  }
+
+  .workout-search-form .searchIcon{
+      background-color: #ff0055;
+      color:whitesmoke;
+  }
+
+  .workout-search-form .searchIcon:hover{
+      opacity:0.8;
+      cursor: pointer;
+  }
+
+  .workout-search-form .search-icon{
+      width:20px;
+      font-size:1.1em;
+      padding:4px;
+  }
+
+  .workout-categorie{
+      padding-left:15px;
+      padding-bottom: 15px;
+      border-top:1px solid #fc5a8d;
+  }
+
+  .workout-categorie.last{
+    border-bottom:1px solid #fc5a8d;
+  }
+
+  .workout-categorie.first{
+      border-top: 4px solid #80002a;
+  }
+
+  .workout-buttons-container{
+      display:flex;
+      flex-direction:row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+  }
+
+  .workout-buttons-container .workout-categorie-button{
+    margin:5px 10px;
+    width: 90px;
+    border:2px solid #990033;
+    border-radius:4px;
+    padding:3px;
+    background-color: #ffe6ee;
+  }
+
+  .workout-tags-container .search-button{
+      width:100px;
+      margin-top:20px;
+      margin-left:195px;
+      padding:10px;
+      background-color: #ff0055;
+      color:whitesmoke;
+      border-radius:3px;
+      border:none;
+  }
+
+  .workout-tags-container .search-button:hover{
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+
+  .workout-buttons-container .workout-categorie-button:hover{
+    background-color: #990033;
+    color:whitesmoke;
+    transform: scale(1.1);
+  }
+
+  .workout-buttons-container .workout-categorie-button.clicked{
+    background-color: #990033;
+    color:whitesmoke;
+    transform: scale(1.1);
+  }
+
+  .plans-container{
+      border-bottom:5px solid #000033;
+      color:#000033;
+      padding-left:15px;
+      padding-bottom:10px;
+  }
+
+  .create-new.plan{
+      padding:10px;
+      font-size:1.01em;
+      background-color: #000080;
+      color:whitesmoke;
+      border:none;
+      border-radius: 4px;
+  }
+
+  .create-new.plan:hover{
+      transform: scale(1.1);
+      cursor: pointer;
+  }
+
+  .plan-container{
+      border:1px solid #000033;
+      margin:10px;
+      padding:3px;
+      border-radius: 5px;
+  }
+
+  .workout-navigation .button-clicked{
+    color:blanchedalmond;
+    background-color: #990033;
+    font-weight: bolder;
+    text-align: center;
+    text-transform: uppercase;
+    border:none;
+    margin-left:0;
+    width: 348px;
+    font-size:1.2em;
+    padding-top:5px;
+    padding-bottom:5px;
+  }
+
+  .workout-navigation .link-button{
+    font-weight: bolder;
+    color:#000033;
+    background-color: #ffe6ee;
+    text-align: center;
+    text-transform: uppercase;
+    border:none;
+    margin-left:0;
+    width: 348px;
+    font-size:1.2em;
+    padding-top:5px;
+    padding-bottom:5px;
+  }
+
+  .workout-navigation .link-button:hover{
+    color:blanchedalmond;
+    background-color: #990033;
+    cursor: pointer;
+  }
+
+  .plans-container .link-title{
+    color:#000033;
+  }
+
+

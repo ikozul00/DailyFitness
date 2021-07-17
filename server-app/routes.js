@@ -7,6 +7,9 @@ const loginController=require('./controllers/loginController');
 const registrationController=require('./controllers/registrationController');
 const dayController=require('./controllers/dayController');
 const monthController=require('./controllers/monthReportController');
+const plansController=require('./controllers/planController');
+const exercisesController=require('./controllers/loadingListsController');
+const loadingListsController=require('./controllers/loadingListsController');
 
 
 //login and registration routes
@@ -30,4 +33,17 @@ router.put('/modify/day',dayController.modifyDayInformation);
 
 router.post('/monthReport',monthController.monthInformation);
 
-module.exports = router
+//retriving plans written by logged user
+router.post('/myPlans',plansController.retriveMyPlans);
+
+//retriving all public plans from database
+router.get('/plans',plansController.retrivePlans);
+
+//retriving exercises written by logged user
+//router.post('/myExercises',exercisesController.retriveMyExercises);
+
+router.post('/my',loadingListsController.retriveMy);
+
+router.get('/all',loadingListsController.retriveAll);
+
+module.exports = router;

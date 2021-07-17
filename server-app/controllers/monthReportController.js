@@ -2,11 +2,8 @@ var pool=require('../connectingDatabase');
 
 exports.monthInformation = async function(req,res){
     let calEalten=await averageCalorieIntake(req.body);
-    console.log("CalEaten: ",calEalten);
     let calSpent=await averageCalorieSpent(req.body);
-    console.log("CalSpent: ",calSpent);
     let motivation= await averageMotivation(req.body);
-    console.log("motivation: ",motivation);
     res.statusCode=200;
     res.json({"calEaten":calEalten,"calSpent":calSpent,"motivation":motivation});
     res.end();
@@ -29,7 +26,6 @@ function averageCalorieIntake(item){
              if(error){
                 reject(new Error("Error getting sum of eaten calories."));
              }
-            //  console.log("recipes: ",result.rows);
              for(let i=0;i<result.rows.length;i++){
                  info.dates.push(result.rows[i].dateID);
                 info.total+=parseFloat(result.rows[i].calories);
@@ -41,7 +37,6 @@ function averageCalorieIntake(item){
                 if(error){
                     reject(new Error("Error getting sum of eaten calories."));
                  }
-                //  console.log("extra cal eaten: ",result.rows);
                  for(let i=0;i<result.rows.length;i++){
                     if(result.rows[i].calories!==0){
                         info.total+=parseFloat(result.rows[i].calories);
@@ -72,7 +67,6 @@ function averageCalorieIntake(item){
             if(error){
                 reject(new Error("Error getting sum of spent calories."));
             }
-            // console.log("plans: ",result.rows);
             for(let i=0;i<result.rows.length;i++){
                 info.dates.push(result.rows[i].dateID);
                 info.total+=parseFloat(result.rows[i].calories);
@@ -84,7 +78,6 @@ function averageCalorieIntake(item){
                     if(error){
                         reject(new Error("Error getting sum of spent calories."));
                     }
-                    // console.log("extra cal spent: ",result.rows);
                     for(let i=0;i<result.rows.length;i++){
                         if(result.rows[i].calories!==0){
                             info.total+=parseFloat(result.rows[i].calories);
@@ -108,7 +101,6 @@ function averageCalorieIntake(item){
             if(error){
                 reject(new Error("Error getting average motivation level."));
             }
-            // console.log("motivationLevel: ",result.rows);
             let motivation=0;
             let br=0;
             for(let i=0;i<result.rows.length;i++){

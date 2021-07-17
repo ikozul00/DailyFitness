@@ -7,6 +7,7 @@ exports.checkUser=function(req,res){
           throw error
         }
         if(results.rows[0]){
+          console.log(req.body.name,req.body.password);
           bcrypt.compare(req.body.password, results.rows[0].password, function(err, response){
             if(response){
               res.json({"correct":true});
