@@ -138,6 +138,12 @@
   .workout-buttons-container .workout-categorie-button.clicked{
     background-color: #990033;
     color:whitesmoke;
+    z-index:-1;
+  }
+
+  .workout-buttons-container .workout-categorie-button.clicked{
+    background-color: #990033;
+    color:whitesmoke;
     transform: scale(1.1);
   }
 
@@ -146,6 +152,10 @@
       color:#000033;
       padding-left:15px;
       padding-bottom:10px;
+  }
+
+  .plans-container.load-all{
+      border:none;
   }
 
   .create-new.plan{
@@ -207,4 +217,24 @@
     color:#000033;
   }
 
+.sideNavContainer .disable-search{
+    position: fixed;
+    background: #000000a0;
+    width: 350px;
+    height: 98px;
+    top: 186px;
+    left: 0;
+    overflow: auto;
+    border:none;
+}
 
+.sideNavContainer .disable-tags{
+    position: fixed;
+    background: #000000a0;
+    width: 350px;
+    height: 475px;
+    top: 284px;
+    left: 0;
+    overflow: auto;
+    border:none;
+}

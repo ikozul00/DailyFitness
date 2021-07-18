@@ -34,11 +34,12 @@ exports.retriveAll = function(req,res){
                 throw error;
             } 
             let list=[];
-            if(req.query.size==='0' || result.rows.length<req.query.size){
+            let size=parseInt(req.query.size);
+            if(size===0 || result.rows.length<size){
                 res.json({"list":result.rows});
             }
             else{
-                for(let i=0;i<req.query.size;i++){
+                for(let i=0;i<size;i++){
                     list.push(result.rows[i]);
                 }
                 res.json({"list":list});

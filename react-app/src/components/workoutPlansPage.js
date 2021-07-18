@@ -36,32 +36,6 @@ export const Plans=function (props){
         props.handlerFunction("Workout plans");
    },[]);
 
-   //loading all the plans from database
-function loadAllPlans(name){
-    //retriving plans by user
-    if(name!==""){
-     axios.post('/api/my',{name:sessionStorage.getItem("username"),size:0,value:"plan"})
-     .then(response => {
-         let res=createPlans(response.data.list);
-         setLoadMyPlans(false);
-         setMyPlans(res);
-     }, error => {
-         console.log(error);
-     });
-    }
-    //retriving all public plans
-    else{
-     axios.get('/api/all/?size='+0+'&value=plan')
-     .then(response => {
-         let res=createPlans(response.data.list);
-         setLoadPlans(false);
-         setPlans(res);
-     }, error => {
-         console.log(error);
-     });
- }
-}
-
     return(
         <div>
             <div className="plans-container">
@@ -69,13 +43,13 @@ function loadAllPlans(name){
                 <p>Create your own custom workout plans. Add them to your schedule and share them with other users.</p>
                 <button class="create-new plan"><i class="fas fa-plus"></i> Create New</button>
                 {myPlans}
-                {loadMyPlans && <a href="javascript:void(0);" onClick={()=>{loadAllPlans(sessionStorage.getItem("username"))}} class="load-more-link">Load more...</a>}
+                {loadMyPlans && <a href="javascript:void(0);" onClick={()=>{history.push(path+'/MyPlans')}} class="load-more-link">Load more...</a>}
             </div>
             <div className="plans-container">
             <a className="link-title" href="javascript:void(0);" onClick={()=>{history.push(path+'/AllPlans')}}><h2>Plans</h2></a>
                 <p>If you don't want to bother with creating your own plans search plans that already exsist in app, add them to your schedule or save them for later.</p>
                 {plans}
-                {loadPlans && <a href="javascript:void(0);" onClick={()=>{loadAllPlans("")}} class="load-more-link">Load more...</a>}
+                {loadPlans && <a href="javascript:void(0);" onClick={()=>{history.push(path+'/AllPlans')}} class="load-more-link">Load more...</a>}
             </div>
 
         </div>
@@ -109,7 +83,7 @@ function loadAllPlans(name){
 }
 
 
-
+//component for presenting Plans created by currently logged user
 export const MyPlans=function (){
     const [myPlans, setMyPlans] = useState("");
 
@@ -127,7 +101,7 @@ export const MyPlans=function (){
 
     return(
         <div>
-            <div className="plans-container">
+            <div className="plans-container load-all">
                 <h2>My Plans</h2>
                 <p>Create your own custom workout plans. Add them to your schedule and share them with other users.</p>
                 <button class="create-new plan"><i class="fas fa-plus"></i> Create New</button>
@@ -137,6 +111,7 @@ export const MyPlans=function (){
     );
 }
 
+//component for presenting all public plans
 export const AllPlans=function(){
     const [plans,setPlans] = useState("");
 
@@ -153,7 +128,7 @@ export const AllPlans=function(){
 
    return(
     <div>
-        <div className="plans-container">
+        <div className="plans-container load-all">
             <h2>Plans</h2>
             <p>If you don't want to bother with creating your own plans search plans that already exsist in app, add them to your schedule or save them for later.</p>
             {plans}

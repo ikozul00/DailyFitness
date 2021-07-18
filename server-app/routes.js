@@ -7,8 +7,6 @@ const loginController=require('./controllers/loginController');
 const registrationController=require('./controllers/registrationController');
 const dayController=require('./controllers/dayController');
 const monthController=require('./controllers/monthReportController');
-const plansController=require('./controllers/planController');
-const exercisesController=require('./controllers/loadingListsController');
 const loadingListsController=require('./controllers/loadingListsController');
 
 
