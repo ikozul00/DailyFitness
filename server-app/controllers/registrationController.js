@@ -29,7 +29,6 @@ exports.checkExistingUser = function (name){
             if(error){
                 reject(new Error("Error checking if user exists."));
             }
-            console.log(result.rows.length);
             let exist=false;
             if(result.rows.length!==0){
                 exist=true;

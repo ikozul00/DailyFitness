@@ -16,6 +16,7 @@ function WorkoutPage(props){
     const [searchDisable,setSearchDisable] = useState(false);
     const [tagsDisable,setTagsDisable] = useState(false);
     const[tagsChosen,setTagsChosen] = useState([]);
+    const[tagsToSend,setTagsToSend] = useState([]);
     let history=useHistory();
     let tags=[];
 
@@ -31,6 +32,7 @@ function WorkoutPage(props){
 
    //setting style of button that is picked
    function menuButtonClicked(title){
+       
        if(title==="Workout plans"){
            setCategorie("Workout plans");
            setWorkoutClass("button-clicked");
@@ -85,16 +87,26 @@ function WorkoutPage(props){
 
    function startSearch(e){
        e.preventDefault();
-       console.log(searchValue.current.value);
         let currentPath=history.location.pathname;
-        if(currentPath===`${path}/plans` || currentPath===`${path}/plans/MyPlans` || currentPath===`${path}/plans/AllPlans` || currentPath===`${path}`){
-            history.push(path+"/plans/search/"+searchValue.current.value);
-        }
-        else if(currentPath===`${path}/exercise` || currentPath===`${path}/exercise/MyExercises` || currentPath===`${path}/exercise/AllExercises`){
+        if(currentPath.indexOf("exercise")!==-1){
             history.push(path+"/exercise/search/"+searchValue.current.value);
+        }
+        else{
+            history.push(path+"/plans/search/"+searchValue.current.value);
         }
    }
 
+   function startSearchTags(){
+       let currentPath=history.location.pathname;
+       if(currentPath.indexOf("exercise")!==-1){
+           setTagsToSend(tagsChosen);
+            history.push(path+"/exercise/search");
+        }
+        else{
+            setTagsToSend(tagsChosen);
+            history.push(path+"/plans/search");
+        }
+   }
 
     return (
         <div className="workout-main-container">
@@ -139,7 +151,7 @@ function WorkoutPage(props){
                         <button className="workout-categorie-button" onClick={tagClicked}>Strength</button>
                         </div>
                     </div>
-                    <button className="search-button"><i class="fas fa-search search-icon"></i> Search</button>
+                    <button className="search-button" onClick={startSearchTags}><i class="fas fa-search search-icon"></i> Search</button>
                 </div>
             </div>
             <div className="workouts-container">
@@ -151,8 +163,10 @@ function WorkoutPage(props){
                 <Route path={`${path}/plans/AllPlans`} render={()=> (<AllPlans/>)}/>
                 <Route path={`${path}/exercise/MyExercises`} render={()=> (<MyExercises/>)}/>
                 <Route path={`${path}/exercise/AllExercises`} render={()=> (<AllExercises/>)}/>
-                <Route path={`${path}/plans/search/:title`} render={() => (<SearchList parameter="search" value={searchValue.current.value}/>)}/>
+                <Route path={`${path}/plans/search/:title`} render={() => (<SearchList parameter="search"/>)}/>
                 <Route path={`${path}/exercise/search/:title`} render={() => (<SearchList parameter="search"/>)}/>
+                <Route path={`${path}/exercise/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend}/>)}/>
+                <Route path={`${path}/plans/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend}/>)}/>
             </Switch>
             </div>
         </div>
@@ -160,3 +174,40 @@ function WorkoutPage(props){
 }
 
 export default WorkoutPage;
+
+
+   //creating list of plan by displaying every plan in its div
+   export const createPlans = function(plans){
+    if(plans.length===0){
+        return(<div>
+            <p>No results found.</p>
+        </div>);
+    }
+    let result = plans.map((x) => {
+        let tags=createTags(x.tags);
+
+        return(
+         <div class="plan-container">
+             <h3>{x.title}</h3>
+             <p>by {x.username}</p>
+             <p>{x.description}</p>
+             <p>{x.calories} cal</p>  
+             <div className="tags-container">{tags}</div>
+         </div>
+        );
+
+    });
+    return result;
+}
+
+
+function createTags(tags){
+    let result=tags.map((x) => {
+        return(
+            <div className="tag">
+                <p className="tag-text">{x}</p>
+            </div>
+        )
+    });
+    return result;
+}

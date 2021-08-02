@@ -135,11 +135,6 @@
     transform: scale(1.1);
   }
 
-  .workout-buttons-container .workout-categorie-button.clicked{
-    background-color: #990033;
-    color:whitesmoke;
-    z-index:-1;
-  }
 
   .workout-buttons-container .workout-categorie-button.clicked{
     background-color: #990033;
@@ -153,6 +148,10 @@
       padding-left:15px;
       padding-bottom:10px;
   }
+
+  .plans-container.search-result{
+    border-bottom:5px solid #000033;
+}
 
   .plans-container.load-all{
       border:none;
@@ -238,3 +237,31 @@
     overflow: auto;
     border:none;
 }
+
+.plan-container .tags-container{
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.tags-container .tag{
+    font-size: 0.8em;
+    width:100px;
+    background-color: chartreuse;
+    text-align: center;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top:0px;
+    padding-bottom: 0px;
+    border-radius:10px;
+    margin:0 8px;
+}
+
+.tag-text{
+    padding:0;
+    margin:5px 0;
+}
+
+

@@ -1,13 +1,11 @@
 var express = require('express')
 var router = express.Router()
-var bodyParser = require('body-parser');
-var pool=require('./connectingDatabase');
-const { response } = require('express');
 const loginController=require('./controllers/loginController');
 const registrationController=require('./controllers/registrationController');
 const dayController=require('./controllers/dayController');
 const monthController=require('./controllers/monthReportController');
 const loadingListsController=require('./controllers/loadingListsController');
+const searchController=require('./controllers/searchController');
 
 
 //login and registration routes
@@ -36,5 +34,10 @@ router.post('/my',loadingListsController.retriveMy);
 
 //retriving all public plans, exercises or recipies from database
 router.get('/all',loadingListsController.retriveAll);
+
+//returning results of search request
+router.get('/search',searchController.searchByName);
+
+router.post('/search/tags',searchController.searchByTags);
 
 module.exports = router;

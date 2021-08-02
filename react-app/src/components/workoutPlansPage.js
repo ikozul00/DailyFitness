@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 import { useHistory} from 'react-router-dom';
+import {createPlans} from './workoutsPage';
+
 //functional component which displays all the information about workout plans
 export const Plans=function (props){
     const [myPlans, setMyPlans] = useState("");
@@ -17,6 +19,7 @@ export const Plans=function (props){
         //retriving list of all plans from database whose author is logged user
         axios.post('/api/my',{name:sessionStorage.getItem("username"),size:2,value:"plan"})
         .then(response => {
+            //using createPlans function from workoutsPage script
             let res=createPlans(response.data.list);
             setMyPlans(res);
         }, error => {
@@ -26,6 +29,7 @@ export const Plans=function (props){
         //retreving list of  all public plans from databse
         axios.get('/api/all/?size='+2+'&value=plan')
         .then(response => {
+            //using createPlans function from workoutsPage script
             let res=createPlans(response.data.list);
             setPlans(res);
         }, error => {
@@ -58,31 +62,6 @@ export const Plans=function (props){
 }
 
 
-
-
-
- //creating list of plans by displaying plan data by displaying every plan in its div
- export const createPlans = function(plans){
-    if(plans.length===0){
-        return(<div>
-            <p>No plans found.</p>
-        </div>);
-    }
-    let result = plans.map((x) => {
-        return(
-         <div class="plan-container">
-             <h3>{x.title}</h3>
-             <p>{x.username}</p>
-             <p>{x.description}</p>
-             <p>{x.calories}</p>  
-         </div>
-        );
-
-    });
-    return result;
-}
-
-
 //component for presenting Plans created by currently logged user
 export const MyPlans=function (){
     const [myPlans, setMyPlans] = useState("");
@@ -91,6 +70,7 @@ export const MyPlans=function (){
         //retriving list of all plans from database whose author is logged user
         axios.post('/api/my',{name:sessionStorage.getItem("username"),size:0,value:"plan"})
         .then(response => {
+            //using createPlans function from workoutsPage script
             let res=createPlans(response.data.list);
             setMyPlans(res);
         }, error => {
@@ -119,6 +99,7 @@ export const AllPlans=function(){
         //retreving list of  all public plans from databse
         axios.get('/api/all/?size='+0+'&value=plan')
         .then(response => {
+            //using createPlans function from workoutsPage script
             let res=createPlans(response.data.list);
             setPlans(res);
         }, error => {

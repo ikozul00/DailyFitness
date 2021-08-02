@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
-import {createPlans} from './workoutPlansPage';
+import {createPlans} from './workoutsPage';
 import { useHistory} from 'react-router-dom';
 
 //function component for displaying Exercises page
@@ -16,8 +16,9 @@ const path=history.location.pathname;
     //call only when component is mounting
     useEffect(() => {
             //retriving list of all exercises from database whose author is logged user
-            axios.post('/api/my',{name:sessionStorage.getItem("username"),size:0,value:"exercise"})
+            axios.post('/api/my',{name:sessionStorage.getItem("username"),size:2,value:"exercise"})
             .then(response => {
+                //using createPlans function from workoutsPage script
                 let res=createPlans(response.data.list);
                 setMyExercises(res);
             }, error => {
@@ -25,9 +26,10 @@ const path=history.location.pathname;
             });
     
             //retreving list of  all public plans from databse
-            axios.get('/api/all/?size='+0+'&value=exercise')
+            axios.get('/api/all/?size='+2+'&value=exercise')
             .then(response => {
                 console.log(response.data.list);
+                //using createPlans function from workoutsPage script
                 let res=createPlans(response.data.list);
                 setExercises(res);
             }, error => {
@@ -68,6 +70,7 @@ export const AllExercises = function(){
         axios.get('/api/all/?size='+0+'&value=exercise')
         .then(response => {
             console.log(response.data.list);
+            //using createPlans function from workoutsPage script
             let res=createPlans(response.data.list);
             setExercises(res);
         }, error => {
@@ -94,8 +97,9 @@ export const MyExercises = function(){
      //call only when component is mounting
      useEffect(() => {
         //retriving list of all exercises from database whose author is logged user
-        axios.post('/api/my',{name:sessionStorage.getItem("username"),size:1,value:"exercise"})
+        axios.post('/api/my',{name:sessionStorage.getItem("username"),size:0,value:"exercise"})
         .then(response => {
+            //using createPlans function from workoutsPage script
             let res=createPlans(response.data.list);
             setMyExercises(res);
         }, error => {
