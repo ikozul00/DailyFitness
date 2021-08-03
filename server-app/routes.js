@@ -6,6 +6,8 @@ const dayController=require('./controllers/dayController');
 const monthController=require('./controllers/monthReportController');
 const loadingListsController=require('./controllers/loadingListsController');
 const searchController=require('./controllers/searchController');
+const exerciseController=require('./controllers/exerciseController');
+const planController=require('./controllers/planController');
 
 
 //login and registration routes
@@ -38,6 +40,13 @@ router.get('/all',loadingListsController.retriveAll);
 //returning results of search request
 router.get('/search',searchController.searchByName);
 
+//returning result of search by tags
 router.post('/search/tags',searchController.searchByTags);
+
+//getting information about one exercise
+router.get('/exercise',exerciseController.getExercise);
+
+//getting information about one plan
+router.get('/plan',planController.getPlan);
 
 module.exports = router;

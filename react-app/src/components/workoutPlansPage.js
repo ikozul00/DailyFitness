@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 import { useHistory} from 'react-router-dom';
-import {createPlans} from './workoutsPage';
+import {CreatePlans} from './workoutsPage';
+//import {createTags} from './workoutsPage';
 
 //functional component which displays all the information about workout plans
 export const Plans=function (props){
@@ -20,7 +21,7 @@ export const Plans=function (props){
         axios.post('/api/my',{name:sessionStorage.getItem("username"),size:2,value:"plan"})
         .then(response => {
             //using createPlans function from workoutsPage script
-            let res=createPlans(response.data.list);
+            let res=CreatePlans(response.data.list,"plan",history);
             setMyPlans(res);
         }, error => {
             console.log(error);
@@ -30,7 +31,7 @@ export const Plans=function (props){
         axios.get('/api/all/?size='+2+'&value=plan')
         .then(response => {
             //using createPlans function from workoutsPage script
-            let res=createPlans(response.data.list);
+            let res=CreatePlans(response.data.list,"plan",history);
             setPlans(res);
         }, error => {
             console.log(error);
@@ -39,6 +40,7 @@ export const Plans=function (props){
         //making side navbar button Plans look like it is selected
         props.handlerFunction("Workout plans");
    },[]);
+
 
     return(
         <div>
@@ -65,19 +67,20 @@ export const Plans=function (props){
 //component for presenting Plans created by currently logged user
 export const MyPlans=function (){
     const [myPlans, setMyPlans] = useState("");
-
+    let history=useHistory();
+    console.log("pozvana");
     useEffect(() => {
         //retriving list of all plans from database whose author is logged user
         axios.post('/api/my',{name:sessionStorage.getItem("username"),size:0,value:"plan"})
         .then(response => {
             //using createPlans function from workoutsPage script
-            let res=createPlans(response.data.list);
+            console.log(response.data.list);
+            let res=CreatePlans(response.data.list,"plan",history);
             setMyPlans(res);
         }, error => {
             console.log(error);
         });
    },[]);
-
 
     return(
         <div>
@@ -94,18 +97,21 @@ export const MyPlans=function (){
 //component for presenting all public plans
 export const AllPlans=function(){
     const [plans,setPlans] = useState("");
+    let history=useHistory();
 
     useEffect(() => {
         //retreving list of  all public plans from databse
         axios.get('/api/all/?size='+0+'&value=plan')
         .then(response => {
             //using createPlans function from workoutsPage script
-            let res=createPlans(response.data.list);
+            let res=CreatePlans(response.data.list,"plan",history);
             setPlans(res);
         }, error => {
             console.log(error);
         });
    },[]);
+
+   
 
    return(
     <div>

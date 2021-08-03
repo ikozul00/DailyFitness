@@ -1,11 +1,13 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
-import { useLocation, useParams} from 'react-router-dom';
-import {createPlans} from './workoutsPage';
+import { useLocation, useParams,useHistory,Link} from 'react-router-dom';
+//import {createTags} from './workoutsPage';
+import {CreatePlans} from './workoutsPage';
 
 export const SearchList=function (props){
 
     const [result,setResult] = useState("");
+    let history=useHistory();
 
     let type="";
     let location=useLocation();
@@ -25,7 +27,7 @@ export const SearchList=function (props){
             .then(response => {
                 console.log("new data search");
                  //using createPlans function from workoutsPage script
-                    let res=createPlans(response.data.list);
+                    let res=CreatePlans(response.data.list,type,history);
                     setResult(res);
             }, error => {
                 console.log(error);
@@ -38,7 +40,7 @@ export const SearchList=function (props){
                 console.log("new data");
                 console.log(response);
                 //using createPlans function from workoutsPage script
-                let res=createPlans(response.data.list);
+                let res=CreatePlans(response.data.list,type,history);
                     setResult(res);
             },error => {
                 console.log(error);

@@ -1,11 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import { Route, Switch,Link, useRouteMatch,useHistory} from 'react-router-dom';
+import { __RouterContext } from 'react-router';
 import './styles/workoutPage.css';
 import {Plans,MyPlans,AllPlans} from './workoutPlansPage';
 import {Exercises, AllExercises, MyExercises} from './workoutExercisesPage';
 import {SearchList} from './searchList';
+import {Plan} from './plan';
+import {Exercise} from './exercise';
 
-function WorkoutPage(props){
+export const WorkoutPage=function WorkoutPage(props){
 
     const { path } = useRouteMatch();
     //const [searchValue, setSearchValue] = useState("");
@@ -19,6 +22,7 @@ function WorkoutPage(props){
     const[tagsToSend,setTagsToSend] = useState([]);
     let history=useHistory();
     let tags=[];
+    
 
     //setting button Workouts in main navbar as selected
     useEffect(() => {
@@ -32,7 +36,7 @@ function WorkoutPage(props){
 
    //setting style of button that is picked
    function menuButtonClicked(title){
-       
+
        if(title==="Workout plans"){
            setCategorie("Workout plans");
            setWorkoutClass("button-clicked");
@@ -108,6 +112,9 @@ function WorkoutPage(props){
         }
    }
 
+   
+
+
     return (
         <div className="workout-main-container">
             <div className="sideNavContainer">
@@ -159,6 +166,8 @@ function WorkoutPage(props){
             <Route path={`${path}`} render={(props)=> (<Plans handlerFunction={menuButtonClicked}/>)} exact/>
                 <Route path={`${path}/plans`} render={(props)=> (<Plans handlerFunction={menuButtonClicked}/>)} exact/>
                 <Route path={`${path}/exercise`} render={(props)=> (<Exercises handlerFunction={menuButtonClicked}/>)} exact/>
+                <Route path={`${path}/MyPlans`} render={()=> (<MyPlans/>)}/>
+                <Route path={`${path}/AllPlans`} render={()=> (<AllPlans/>)}/>
                 <Route path={`${path}/plans/MyPlans`} render={()=> (<MyPlans/>)}/>
                 <Route path={`${path}/plans/AllPlans`} render={()=> (<AllPlans/>)}/>
                 <Route path={`${path}/exercise/MyExercises`} render={()=> (<MyExercises/>)}/>
@@ -167,6 +176,8 @@ function WorkoutPage(props){
                 <Route path={`${path}/exercise/search/:title`} render={() => (<SearchList parameter="search"/>)}/>
                 <Route path={`${path}/exercise/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend}/>)}/>
                 <Route path={`${path}/plans/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend}/>)}/>
+                <Route path={`${path}/plan/open/:title/:author`} render={()=>(<Plan/>)}/>
+                <Route path={`${path}/exercise/open/:title/:author`} render={()=>(<Exercise/>)}/>
             </Switch>
             </div>
         </div>
@@ -175,9 +186,26 @@ function WorkoutPage(props){
 
 export default WorkoutPage;
 
+   
+//creating list of tags for a plan
+export const createTags=function createTags(tags){
+    let result=tags.map((x) => {
+        if(x!==null){
+            return(
+                <div className="tag">
+                    <p className="tag-text">{x}</p>
+                </div>
+            )
+        }
+        else{
+            return <div></div>
+        }
+    });
+    return result;
+}
 
    //creating list of plan by displaying every plan in its div
-   export const createPlans = function(plans){
+export const CreatePlans=function CreatePlans(plans,type,history){
     if(plans.length===0){
         return(<div>
             <p>No results found.</p>
@@ -185,10 +213,10 @@ export default WorkoutPage;
     }
     let result = plans.map((x) => {
         let tags=createTags(x.tags);
-
+        let linkStr="/workout/"+type+"/open/"+x.title+"/"+x.username;
         return(
          <div class="plan-container">
-             <h3>{x.title}</h3>
+            <a href="javascript:void(0);" onClick={()=>{history.push(linkStr)}}>{x.title}</a>
              <p>by {x.username}</p>
              <p>{x.description}</p>
              <p>{x.calories} cal</p>  
@@ -200,14 +228,3 @@ export default WorkoutPage;
     return result;
 }
 
-
-function createTags(tags){
-    let result=tags.map((x) => {
-        return(
-            <div className="tag">
-                <p className="tag-text">{x}</p>
-            </div>
-        )
-    });
-    return result;
-}
