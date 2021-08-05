@@ -384,7 +384,7 @@ function doesDayInformationExists(date,user){
    
 }
 
-exports.createDate=function createDate(date){
+function createDate(date){
     let formatedDate=new Date(date);
     return new Promise((resolve,reject)=>{
         pool.query(`INSERT INTO dates(date, day,month,year)
@@ -399,4 +399,6 @@ exports.createDate=function createDate(date){
 }
 
 exports.doesDateExists = doesDateExists;
+
+exports.createDate = createDate;
 

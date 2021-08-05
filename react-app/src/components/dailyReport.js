@@ -136,8 +136,8 @@ function DailyReport(props){
         done=!item.classList.contains("done");
         let categorie="";
         //changing status of an exercise plan
-        if(item.classList.contains("exercises")){
-            categorie="exercises";
+        if(item.classList.contains("plan")){
+            categorie="plan";
             axios.post(`/api/done/${categorie}`,{done:done,date:date,title:title,author:author,username:sessionStorage.getItem('username')})
             .then(response=>{
                 if(response.status===200){
@@ -178,8 +178,8 @@ function DailyReport(props){
         let categorie="";
 
         //removing exercise
-        if(item.classList.contains("exercises")){
-            categorie="exercises";
+        if(item.classList.contains("plan")){
+            categorie="plan";
             axios.post(`/api/remove/${categorie}`,{date:date,title:title,author:author,username:sessionStorage.getItem('username')})
             .then(response=>{
                 if(response.status===200){
@@ -213,7 +213,7 @@ function DailyReport(props){
     }
 
     function renderingExercises(res){
-        let exer= renderList(res.information.exercises,"exercises");
+        let exer= renderList(res.information.exercises,"plan");
         setExercise(exer);
         setCalSpent(res.information.calSpent);
         setPlannedCalSpent(res.information.plannedCalSpent);
@@ -371,6 +371,9 @@ function DailyReport(props){
     function addItem(){
         sessionStorage.setItem('date', date);
         props.history.push("/home/workout");
+        if(modified){
+            sendModifiedData();
+        }
     }
 
 

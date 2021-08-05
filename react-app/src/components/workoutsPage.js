@@ -203,64 +203,38 @@ export const createTags=function createTags(tags){
     return result;
 }
 
-   //creating list of plan by displaying every plan in its div
-export const CreatePlans=function CreatePlans(plans,type,history,path){
-    if(plans.length===0){
-        return(<div>
-            <p>No results found.</p>
-        </div>);
-    }
-    let addButtonDisplay;
-    if(type==="plan"){
-        addButtonDisplay=true;
-    }
-    else if(type==="exercise"){
-        addButtonDisplay=false;
-    }
-    let result = plans.map((x) => {
-        let tags=createTags(x.tags);
-        let linkStr="/home/workout/"+type+"/open/"+x.title+"/"+x.username;
-        return(
-         <div class="plan-container">
-            <a href="javascript:void(0);" onClick={()=>{history.push(linkStr)}}>{x.title}</a>
-             <p>by {x.username}</p>
-             <p>{x.description}</p>
-             <p>{x.calories} cal</p>  
-             <div className="tags-container">{tags}</div>
-            {addButtonDisplay && <button className="add-button" onClick={()=>{addToDB(type,x.title,x.username,history)}}>Add</button>}
-         </div>
-        );
 
-    });
-    return result;
-}
 
-//function which sends request to server to add plan to certain date in calendar
-export const addToDB=function addToDB (type,title,author,history){
-    let date=sessionStorage.getItem("date");
-    if(date){
-        console.log("In addToDB: "+date);
-        axios.post('/api/add/'+type,{title:title, author:author,username:sessionStorage.getItem("username"), date:date})
-        .then(response => {
-            if(response.data.status){
-                history.push("/home/date/"+date);
-            }
-            else{
-                if(response.data.exists){
-                    alert("Already added to calendar!");
-                }
-                else{
-                    alert("Problem while adding plan to calendar! Try later.");
-                }
-            }
-        }, error => {
-        });
-        return true;
-    }
-    else{
-        console.log("In addToDB: "+"nista");
-    }
-    
-}
+//   //creating list of exercise by displaying every exercise in its div
+//   export const CreatePlans=function CreatePlans(plans,type,history,path){
+//     if(plans.length===0){
+//         return(<div>
+//             <p>No results found.</p>
+//         </div>);
+//     }
+//     let addButtonDisplay;
+//     if(type==="plan"){
+//         addButtonDisplay=true;
+//     }
+//     else if(type==="exercise"){
+//         addButtonDisplay=false;
+//     }
+//     let result = plans.map((x) => {
+//         let tags=createTags(x.tags);
+//         let linkStr="/home/workout/"+type+"/open/"+x.title+"/"+x.username;
+//         return(
+//          <div class="plan-container">
+//             <a href="javascript:void(0);" onClick={()=>{history.push(linkStr)}}>{x.title}</a>
+//              <p>by {x.username}</p>
+//              <p>{x.description}</p>
+//              <p>{x.calories} cal</p>  
+//              <div className="tags-container">{tags}</div>
+//             {addButtonDisplay && <button className="add-button" onClick={()=>{addToDB(type,x.title,x.username,history)}}>Add</button>}
+//          </div>
+//         );
+
+//     });
+//     return result;
+// }
    
 

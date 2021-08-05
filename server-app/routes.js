@@ -18,12 +18,12 @@ router.post('/registration', registrationController.insertUser);
 router.post('/dailyReport',dayController.dayInformation);
 
 //updating list of done exercises and sending modified list
-router.post('/done/exercises',dayController.exerciseDone);
+router.post('/done/plan',dayController.exerciseDone);
 //updating list of eaten meals and sending modified list
 router.post('/done/meals',dayController.mealDone);
 
 //deleting exercise plan from a schedule
-router.post('/remove/exercises',dayController.removeExercisePlan);
+router.post('/remove/plan',dayController.removeExercisePlan);
 //deleting exercise plan from a day plan
 router.post('/remove/meals',dayController.removeMealPlan);
 

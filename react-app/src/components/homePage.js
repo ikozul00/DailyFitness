@@ -38,9 +38,7 @@ function HomePage(props){
 
       //selecting a day
       function daySelected(value){
-        // setShowDay(true);
         pickedDay=value.toDateString();
-        // setPickedDay(value.toDateString());
         history.push("/home/date/"+pickedDay);
       }
 
@@ -141,7 +139,7 @@ function HomePage(props){
       if(username){
         return(
             <div id="calendarContainer"> 
-             <CostumCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected}/> 
+             <CostumCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected} classAdd=""/> 
              <div className="monthly_report">
                 <h2 class="welcomeTitle">Welcome {name}</h2>
                  <h3>Monthly report for {returnMonth(startDate.getMonth())}</h3>

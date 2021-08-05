@@ -1,8 +1,7 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
-import {CreatePlans} from './workoutsPage';
 import { useHistory} from 'react-router-dom';
-//import {createTags} from './workoutsPage';
+import {createTags} from './workoutsPage';
 
 //function component for displaying Exercises page
 export const Exercises = function(props){
@@ -21,7 +20,7 @@ const path=history.location.pathname;
             axios.post('/api/my',{name:sessionStorage.getItem("username"),size:2,value:"exercise"})
             .then(response => {
                 //using createPlans function from workoutsPage script
-                let res=CreatePlans(response.data.list,"exercise",history,path);
+                let res=CreateExercises(response.data.list,history);
                 setMyExercises(res);
             }, error => {
                 console.log(error);
@@ -31,7 +30,7 @@ const path=history.location.pathname;
             axios.get('/api/all/?size='+2+'&value=exercise')
             .then(response => {
                 //using createPlans function from workoutsPage script
-                let res=CreatePlans(response.data.list,"exercise",history,path);
+                let res=CreateExercises(response.data.list,history);
                 setExercises(res);
             }, error => {
                 console.log(error);
@@ -86,7 +85,7 @@ export const AllExercises = function(props){
         axios.get('/api/all/?size='+0+'&value=exercise')
         .then(response => {
             //using createPlans function from workoutsPage script
-            let res=CreatePlans(response.data.list,"exercise",history);
+            let res=CreateExercises(response.data.list,history);
             setExercises(res);
         }, error => {
             console.log(error);
@@ -128,7 +127,7 @@ export const MyExercises = function(props){
         axios.post('/api/my',{name:sessionStorage.getItem("username"),size:0,value:"exercise"})
         .then(response => {
             //using createPlans function from workoutsPage script
-            let res=CreatePlans(response.data.list,"exercise",history);
+            let res=CreateExercises(response.data.list,history);
             setMyExercises(res);
         }, error => {
             console.log(error);
@@ -156,4 +155,30 @@ export const MyExercises = function(props){
             </div>
         </div>
     );
+}
+
+
+
+  //creating list of exercise by displaying every exercise in its div
+  export const CreateExercises=function CreateExercises(plans,history){
+    if(plans.length===0){
+        return(<div>
+            <p>No results found.</p>
+        </div>);
+    }
+    let result = plans.map((x) => {
+        let tags=createTags(x.tags);
+        let linkStr="/home/workout/exercise/open/"+x.title+"/"+x.username;
+        return(
+         <div class="plan-container">
+            <a href="javascript:void(0);" onClick={()=>{history.push(linkStr)}}>{x.title}</a>
+             <p>by {x.username}</p>
+             <p>{x.description}</p>
+             <p>{x.calories} cal</p>  
+             <div className="tags-container">{tags}</div>
+         </div>
+        );
+
+    });
+    return result;
 }

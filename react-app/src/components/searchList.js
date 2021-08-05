@@ -2,7 +2,8 @@ import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 import { useLocation, useParams,useHistory,Link} from 'react-router-dom';
 //import {createTags} from './workoutsPage';
-import {CreatePlans} from './workoutsPage';
+import {CreatePlans} from './workoutPlansPage';
+import { CreateExercises } from './workoutExercisesPage';
 
 export const SearchList=function (props){
 
@@ -28,9 +29,16 @@ export const SearchList=function (props){
             //sending get request to server with search value and information whether we are searching plans or exercises, this request is send and useeffect function is called only when text of search is changed
             axios.get('/api/search/?type='+type+'&value='+title)
             .then(response => {
-                console.log("new data search");
-                 //using createPlans function from workoutsPage script
-                    let res=CreatePlans(response.data.list,type,history);
+                let res="";
+                if(type==="plan"){
+                    //using createPlans function from workoutsPlansPage script
+                    res=CreatePlans(response.data.list,history);
+                }
+                else if(type==="exercise"){
+                    //using createExercise function from workoutsExercisesPage script
+                    res=CreateExercises(response.data.list,history);
+                }
+                 
                     setResult(res);
             }, error => {
                 console.log(error);
@@ -40,10 +48,15 @@ export const SearchList=function (props){
             console.log("tags:"+props.tags);
             axios.post('/api/search/tags',{tags:props.tags,type:type})
             .then(response => {
-                console.log("new data");
-                console.log(response);
-                //using createPlans function from workoutsPage script
-                let res=CreatePlans(response.data.list,type,history);
+                let res="";
+                if(type==="plan"){
+                    //using createPlans function from workoutsPlansPage script
+                    res=CreatePlans(response.data.list,history);
+                }
+                else if(type==="exercise"){
+                    //using createExercise function from workoutsExercisesPage script
+                    res=CreateExercises(response.data.list,history);
+                }
                     setResult(res);
             },error => {
                 console.log(error);

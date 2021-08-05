@@ -2,8 +2,9 @@ import React from 'react';
 import axios from 'axios';
 import { useHistory, useParams } from 'react-router-dom';
 import { useState,useEffect } from 'react';
-import { createTags,addToDB } from './workoutsPage';
+import { createTags} from './workoutsPage';
 import './styles/plan.css';
+import CostumCalendar from './calendar';
 
 export const Plan=function (props) {
     const {title,author}=useParams();
@@ -13,13 +14,15 @@ export const Plan=function (props) {
     const [tags,setTags]=useState("");
     const [exercise,setExercise]=useState("");
     const [pickedDate,setPickedDate] = useState(false);
+    const[addButton,setAddButton] = useState(true);
+    const[calendarDisplay,setCalendarDisplay] = useState(false);
+    const[startDate,setStartDate] = useState(new Date());
 
     let history=useHistory();
 
     useEffect(() => {
         axios.get('/api/plan/?title='+title+'&author='+author)
         .then(response => {
-            console.log(response.data);
             if(response.data.plan===null){
                 setErr(true);
             }
@@ -40,6 +43,54 @@ export const Plan=function (props) {
         }
 
     },[]);
+
+     //function which sends request to server to add plan to certain date in calendar
+     function addToCalendar(){
+        let date=sessionStorage.getItem("date");
+    if(date){
+       addToDB(date);
+    }
+    else{
+        setCalendarDisplay(true);
+        setAddButton(false);
+    }
+    }
+
+
+    function addToDB(date){
+        axios.post('/api/add/plan',{title:title, author:author,username:sessionStorage.getItem("username"), date:date})
+        .then(response => {
+            if(response.data.status){
+                history.push("/home/date/"+date);
+            }
+            else{
+                if(response.data.exists){
+                    alert("Already added to calendar!");
+                }
+                else{
+                    alert("Problem while adding plan to calendar! Try later.");
+                }
+            }
+        }, error => {
+            console.log(error);
+        });
+    }
+
+    //changing month that is displayed
+    function activeMonthChange(value){
+        setStartDate(value.activeStartDate);
+    }
+
+    //selecting a day
+    function daySelected(value,event){
+        let pickedDay=value.toDateString();
+        addToDB(pickedDay);
+      }
+
+    function closeCalendar(){
+        setCalendarDisplay(false);
+        setAddButton(true);
+    }
 
     function createExercises(items){
         let br=0;
@@ -83,7 +134,14 @@ export const Plan=function (props) {
                 <div className="first-exercise-container">
                     <h1 className="exercise-title">{title}</h1>
                     <h3 className="exercise-author">by {author}</h3>
-                    <button className="add-button" onClick={()=>{addToDB("plan",title,author,history)}}>Add</button>
+                    {addButton && <button className="add-button" onClick={()=>{addToCalendar()}}>Add</button>}
+                    {calendarDisplay &&
+                    <div className="plans-calendar-container">
+                        <p>Pick a date:</p>
+                        <button onClick={closeCalendar}>Close</button>
+                        <CostumCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected} classAdd="small"/> 
+                    </div>
+                    }
                 </div>
                 <div className="exercise-info">
                     <p>Burns:</p>
