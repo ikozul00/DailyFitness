@@ -261,7 +261,6 @@ exports.removeMealPlan = function(req,res){
 
 //updating databse with information user has entered about one date
 exports.modifyDayInformation = async function(req,res){
-    console.log(req.body);
     let d= await doesDateExists(req.body.date);
     //if date doesn't exist in database, creating it first then insertig information about day in database
     if(!d){
@@ -294,7 +293,6 @@ exports.modifyDayInformation = async function(req,res){
             SET "calorieIntake"='${req.body.calEaten}', "calorieSpent"='${req.body.calSpent}', weight='${req.body.weight}', "motivationLevel"='${req.body.motivation}', notes='${req.body.notes}'
             WHERE "userID"=(SELECT "userId" FROM "userTable" WHERE username='${req.body.name}')
             AND "dateID"=(SELECT "dateId" FROM dates WHERE date='${req.body.date}') `,(error,result)=>{
-                console.log(result.rowCount);
                 if(error){
                     throw error;
                 }
@@ -358,7 +356,6 @@ function doesDateExists(date){
             if(error){
                 reject(new Error("Error while searching date in database"));
             }
-            console.log("inside doesDateExists",result.rows.length);
             if(result.rows.length===1){
                 resolve(result.rows[0].dateId);
             }
@@ -397,7 +394,6 @@ function createDate(date){
             if(error){
                 reject(new Error("trouble creating date"));
             }
-            console.log(result.rows[0].dateId);
             resolve(result.rows[0].dateId);
         });
     })

@@ -23,7 +23,7 @@ exports.insertUser= async function(req,res){
 }
 
 //using promise to check if user already exists in database, if exists return true, else false
-exports.checkExistingUser = function (name){
+function checkExistingUser(name){
     return new Promise((resolve,reject)=>{
         pool.query(`SELECT username FROM "userTable" WHERE username='${name}' `, (error,result)=>{
             if(error){
@@ -40,3 +40,6 @@ exports.checkExistingUser = function (name){
         })
     });   
 }
+
+
+exports.checkExistingUser=checkExistingUser;

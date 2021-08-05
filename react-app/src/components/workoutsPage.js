@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Route, Switch,Link, useRouteMatch,useHistory} from 'react-router-dom';
+import { Route, Switch,Link, useRouteMatch,useHistory, useParams} from 'react-router-dom';
 import { __RouterContext } from 'react-router';
 import './styles/workoutPage.css';
 import {Plans,MyPlans,AllPlans} from './workoutPlansPage';
@@ -11,7 +11,6 @@ import {Exercise} from './exercise';
 export const WorkoutPage=function WorkoutPage(props){
 
     const { path } = useRouteMatch();
-    //const [searchValue, setSearchValue] = useState("");
     const searchValue=React.useRef(null);
     const[categorie,setCategorie] = useState("Workout plans");
     const[workoutClass,setWorkoutClass] = useState("link-button");
@@ -20,19 +19,19 @@ export const WorkoutPage=function WorkoutPage(props){
     const [tagsDisable,setTagsDisable] = useState(false);
     const[tagsChosen,setTagsChosen] = useState([]);
     const[tagsToSend,setTagsToSend] = useState([]);
+    const [dateInfo,setDateInfo] = useState(false);
+
     let history=useHistory();
     let tags=[];
-    
+    let {date}=useParams();
+    console.log(path);
 
     //setting button Workouts in main navbar as selected
     useEffect(() => {
         props.handlerFunction();
-   });
+        setDateInfo(date);
+   },[]);
 
-   //handling change of a search bar value
-//    function changingSearchValue(e){
-//         setSearchValue(e.target.value);
-//    }
 
    //setting style of button that is picked
    function menuButtonClicked(title){
@@ -117,9 +116,11 @@ export const WorkoutPage=function WorkoutPage(props){
 
     return (
         <div className="workout-main-container">
+            
+            
             <div className="sideNavContainer">
                 <nav class="workout-navigation">
-                    <Link to="/workout/plans" className="nav-link upper-link"><button className={workoutClass} onClick={()=>menuButtonClicked("Workout plans")} value="Workout plans">Workout plans</button></Link><Link to="/workout/exercise" className="nav-link bottom-link"><button className={exerciseClass} onClick={()=>menuButtonClicked("Exercises")} value="Exercises">Exercises</button></Link>
+                    <Link to={`${path}/plans`} className="nav-link upper-link"><button className={workoutClass} onClick={()=>menuButtonClicked("Workout plans")} value="Workout plans">Workout plans</button></Link><Link to={`${path}/exercise`} className="nav-link bottom-link"><button className={exerciseClass} onClick={()=>menuButtonClicked("Exercises")} value="Exercises">Exercises</button></Link>
                 </nav>
                 {searchDisable&&<button className="disable-search" onClick={searchChosen}></button>}
                 {tagsDisable && <button className="disable-tags" onClick={tagsInFocus}></button>}
@@ -163,21 +164,21 @@ export const WorkoutPage=function WorkoutPage(props){
             </div>
             <div className="workouts-container">
             <Switch>
-            <Route path={`${path}`} render={(props)=> (<Plans handlerFunction={menuButtonClicked}/>)} exact/>
-                <Route path={`${path}/plans`} render={(props)=> (<Plans handlerFunction={menuButtonClicked}/>)} exact/>
-                <Route path={`${path}/exercise`} render={(props)=> (<Exercises handlerFunction={menuButtonClicked}/>)} exact/>
-                <Route path={`${path}/MyPlans`} render={()=> (<MyPlans/>)}/>
-                <Route path={`${path}/AllPlans`} render={()=> (<AllPlans/>)}/>
-                <Route path={`${path}/plans/MyPlans`} render={()=> (<MyPlans/>)}/>
-                <Route path={`${path}/plans/AllPlans`} render={()=> (<AllPlans/>)}/>
-                <Route path={`${path}/exercise/MyExercises`} render={()=> (<MyExercises/>)}/>
-                <Route path={`${path}/exercise/AllExercises`} render={()=> (<AllExercises/>)}/>
-                <Route path={`${path}/plans/search/:title`} render={() => (<SearchList parameter="search"/>)}/>
-                <Route path={`${path}/exercise/search/:title`} render={() => (<SearchList parameter="search"/>)}/>
-                <Route path={`${path}/exercise/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend}/>)}/>
-                <Route path={`${path}/plans/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend}/>)}/>
-                <Route path={`${path}/plan/open/:title/:author`} render={()=>(<Plan/>)}/>
-                <Route path={`${path}/exercise/open/:title/:author`} render={()=>(<Exercise/>)}/>
+            <Route path={`${path}`} render={(props)=> (<Plans handlerFunction={menuButtonClicked} date={dateInfo}/>)} exact/>
+                <Route path={`${path}/plans`} render={(props)=> (<Plans handlerFunction={menuButtonClicked} date={dateInfo}/>)} exact/>
+                <Route path={`${path}/exercise`} render={(props)=> (<Exercises handlerFunction={menuButtonClicked} date={dateInfo}/>)} exact/>
+                <Route path={`${path}/MyPlans`} render={()=> (<MyPlans date={dateInfo}/>)}/>
+                <Route path={`${path}/AllPlans`} render={()=> (<AllPlans date={dateInfo}/>)}/>
+                <Route path={`${path}/plans/MyPlans`} render={()=> (<MyPlans date={dateInfo}/>)}/>
+                <Route path={`${path}/plans/AllPlans`} render={()=> (<AllPlans date={dateInfo}/>)}/>
+                <Route path={`${path}/exercise/MyExercises`} render={()=> (<MyExercises date={dateInfo}/>)}/>
+                <Route path={`${path}/exercise/AllExercises`} render={()=> (<AllExercises date={dateInfo}/>)}/>
+                <Route path={`${path}/plans/search/:title`} render={() => (<SearchList parameter="search" date={dateInfo}/>)}/>
+                <Route path={`${path}/exercise/search/:title`} render={() => (<SearchList parameter="search" date={dateInfo}/>)}/>
+                <Route path={`${path}/exercise/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend} date={dateInfo}/>)}/>
+                <Route path={`${path}/plans/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend} date={dateInfo}/>)}/>
+                <Route path={`${path}/plan/open/:title/:author`} render={()=>(<Plan date={dateInfo}/>)}/>
+                <Route path={`${path}/exercise/open/:title/:author`} render={()=>(<Exercise date={dateInfo}/>)}/>
             </Switch>
             </div>
         </div>
@@ -205,7 +206,8 @@ export const createTags=function createTags(tags){
 }
 
    //creating list of plan by displaying every plan in its div
-export const CreatePlans=function CreatePlans(plans,type,history){
+export const CreatePlans=function CreatePlans(plans,type,history,path){
+    console.log(path);
     if(plans.length===0){
         return(<div>
             <p>No results found.</p>
@@ -213,7 +215,7 @@ export const CreatePlans=function CreatePlans(plans,type,history){
     }
     let result = plans.map((x) => {
         let tags=createTags(x.tags);
-        let linkStr="/workout/"+type+"/open/"+x.title+"/"+x.username;
+        let linkStr="/home/workout/"+type+"/open/"+x.title+"/"+x.username;
         return(
          <div class="plan-container">
             <a href="javascript:void(0);" onClick={()=>{history.push(linkStr)}}>{x.title}</a>

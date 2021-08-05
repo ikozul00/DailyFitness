@@ -265,3 +265,15 @@
 }
 
 
+.date-message{
+    background-color: rgb(241, 10, 133);
+    width: 700px;;
+    position: fixed;
+    bottom:0;
+    right: 0;
+    height:5vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
-import { useHistory} from 'react-router-dom';
+import { useHistory,useRouteMatch} from 'react-router-dom';
 import {CreatePlans} from './workoutsPage';
 //import {createTags} from './workoutsPage';
 
@@ -14,14 +14,13 @@ export const Plans=function (props){
 
     const path=history.location.pathname;
 
-
     //call only when component is mounting
     useEffect(() => {
         //retriving list of all plans from database whose author is logged user
         axios.post('/api/my',{name:sessionStorage.getItem("username"),size:2,value:"plan"})
         .then(response => {
             //using createPlans function from workoutsPage script
-            let res=CreatePlans(response.data.list,"plan",history);
+            let res=CreatePlans(response.data.list,"plan",history,path);
             setMyPlans(res);
         }, error => {
             console.log(error);
@@ -31,7 +30,7 @@ export const Plans=function (props){
         axios.get('/api/all/?size='+2+'&value=plan')
         .then(response => {
             //using createPlans function from workoutsPage script
-            let res=CreatePlans(response.data.list,"plan",history);
+            let res=CreatePlans(response.data.list,"plan",history,path);
             setPlans(res);
         }, error => {
             console.log(error);
@@ -44,6 +43,7 @@ export const Plans=function (props){
 
     return(
         <div>
+             {props.date && <div class="date-message">You are currently located in day:  <b>{  props.date}</b></div>}
             <div className="plans-container">
             <a className="link-title" href="javascript:void(0);" onClick={()=>{history.push(path+'/MyPlans')}}><h2>My Plans</h2></a>
                 <p>Create your own custom workout plans. Add them to your schedule and share them with other users.</p>
@@ -65,8 +65,9 @@ export const Plans=function (props){
 
 
 //component for presenting Plans created by currently logged user
-export const MyPlans=function (){
+export const MyPlans=function (props){
     const [myPlans, setMyPlans] = useState("");
+    const path=useRouteMatch();
     let history=useHistory();
     console.log("pozvana");
     useEffect(() => {
@@ -75,7 +76,7 @@ export const MyPlans=function (){
         .then(response => {
             //using createPlans function from workoutsPage script
             console.log(response.data.list);
-            let res=CreatePlans(response.data.list,"plan",history);
+            let res=CreatePlans(response.data.list,"plan",history,path);
             setMyPlans(res);
         }, error => {
             console.log(error);
@@ -84,6 +85,7 @@ export const MyPlans=function (){
 
     return(
         <div>
+              {props.date && <div class="date-message">You are currently located in day:  <b>{  props.date}</b></div>}
             <div className="plans-container load-all">
                 <h2>My Plans</h2>
                 <p>Create your own custom workout plans. Add them to your schedule and share them with other users.</p>
@@ -95,16 +97,17 @@ export const MyPlans=function (){
 }
 
 //component for presenting all public plans
-export const AllPlans=function(){
+export const AllPlans=function(props){
     const [plans,setPlans] = useState("");
     let history=useHistory();
+    const path=useRouteMatch();
 
     useEffect(() => {
         //retreving list of  all public plans from databse
         axios.get('/api/all/?size='+0+'&value=plan')
         .then(response => {
             //using createPlans function from workoutsPage script
-            let res=CreatePlans(response.data.list,"plan",history);
+            let res=CreatePlans(response.data.list,"plan",history,path);
             setPlans(res);
         }, error => {
             console.log(error);
@@ -115,6 +118,7 @@ export const AllPlans=function(){
 
    return(
     <div>
+          {props.date && <div class="date-message">You are currently located in day:  <b>{  props.date}</b></div>}
         <div className="plans-container load-all">
             <h2>Plans</h2>
             <p>If you don't want to bother with creating your own plans search plans that already exsist in app, add them to your schedule or save them for later.</p>

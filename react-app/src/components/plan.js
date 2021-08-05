@@ -5,13 +5,14 @@ import { useState,useEffect } from 'react';
 import { createTags } from './workoutsPage';
 import './styles/plan.css';
 
-export const Plan=function () {
-    const {title,author}=useParams();
+export const Plan=function (props) {
+    const {date,title,author}=useParams();
     const [err,setErr]=useState(false);
     const [description,setDescription]=useState("");
     const [cal,setCal]=useState(0);
     const [tags,setTags]=useState("");
     const [exercise,setExercise]=useState("");
+    console.log(date,title,author);
 
     useEffect(() => {
         axios.get('/api/plan/?title='+title+'&author='+author)
@@ -66,6 +67,7 @@ export const Plan=function () {
     else{
         return(
             <div className="exercise-main-container">
+                {props.date && <div class="date-message">You are currently located in day:  <b>{props.date}</b></div>}
                 <div className="first-exercise-container">
                     <h1 className="exercise-title">{title}</h1>
                     <h3 className="exercise-author">by {author}</h3>

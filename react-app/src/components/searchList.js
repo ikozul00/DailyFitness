@@ -13,6 +13,7 @@ export const SearchList=function (props){
     let location=useLocation();
     //acessing parameters from URL
     let {title} =useParams();
+    console.log(title);
     //function is called when component is initially loaded and when value of title is changed
     useEffect(() => {
         if(location.pathname.indexOf("exercise")!==-1){
@@ -52,6 +53,7 @@ export const SearchList=function (props){
 
     return(
         <div>
+            {props.date && <div class="date-message">You are currently located in day:  <b>{  props.date}</b></div>}
             <div className="plans-container search-result">
                 <h2>We have found...</h2>
                 {result}

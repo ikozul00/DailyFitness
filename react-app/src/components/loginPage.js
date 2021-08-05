@@ -1,67 +1,60 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import './styles/login.css';
 import logoImage from './images/logo.png';
 import axios from 'axios';
+import {Link, useHistory} from 'react-router-dom';
 
-class LoginPage extends React.Component{
-    constructor(props){
-        super(props);
-        this.state={
-            username:"",
-            password:"",
-            formErrors: ""
-        }
-
-        this.handleChangePassword = this.handleChangePassword.bind(this);
-        this.handleChangeUsername = this.handleChangeUsername.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
-        this.validateLogin=this.validateLogin.bind(this);
-        this.handleRegistrationLinkClick=this.handleRegistrationLinkClick.bind(this);
-    }
+function LoginPage(props){
+    const [username,setUsername] = useState("");
+    const [password,setPassword] = useState("");
+    const [formErrors,setFormErrors] = useState("");
+    let formValid=true;
+    let history=useHistory();
 
     //controling password field
-       handleChangePassword(event) {
-         this.setState({password: event.target.value});
+       function handleChangePassword(event) {
+         setPassword(event.target.value);
        }
 
        //controling username field
-    handleChangeUsername(event) {
-        this.setState({username: event.target.value});
+    function handleChangeUsername(event) {
+        setUsername(event.target.value);
     }
 
     //checking if username and password fields are empty
-    validateLogin(){
-        if(this.state.username.length===0&&this.state.password.length===0){
-            this.setState({formErrors:"Please enter your username and password!"});
-            this.formValid=false;
+    function validateLogin(){
+        if(username.length===0&&password.length===0){
+            setFormErrors("Please enter your username and password!");
+            formValid=false;
         }
-        else if(this.state.username.length===0){
-            this.setState({formErrors:"Please enter your username!"});
-            this.formValid=false;
+        else if(username.length===0){
+            setFormErrors("Please enter your username!");
+            formValid=false;
         }
-        else if(this.state.password.length===0){
-            this.setState({formErrors:"Please enter your password!"});
-            this.formValid=false;
+        else if(password.length===0){
+            setFormErrors("Please enter your password!");
+            formValid=false;
         }
         else{
-            this.formValid=true;
+            formValid=true;
         }
     }
 
     //checking user data
-    handleLogin(event){
+   function handleLogin(event){
         event.preventDefault();
-        this.validateLogin();
-        if(this.formValid){
-            axios.post('/api/login', {name:this.state.username,password:this.state.password})
+        validateLogin();
+        if(formValid){
+            axios.post('/api/login', {name:username,password:password})
             .then(response => {
                 if(response.data.correct){
-                    sessionStorage.setItem('username', this.state.username);
-                    this.props.onPageChange("home");
+                    sessionStorage.setItem('username', username);
+                    // this.props.onPageChange("home");
+                    history.push("/home");
                 }
                 else{
-                    this.setState({formErrors:"Incorrect username or password!"});
+                    setFormErrors("Incorrect username or password!");
                 }
             },
             (error) => {
@@ -69,42 +62,33 @@ class LoginPage extends React.Component{
         }
     }
 
-    //opening registration form
-    handleRegistrationLinkClick(event){
-        event.preventDefault();
-        this.props.onPageChange("register");
-
-    }
-
-    render(){
                 return(
                     <div class="container">
                         <div className="logoContainer">
                         <img src={logoImage} alt="logo" className="logoImage"></img>
                         </div>
                     <div class="formContainer">
-                        <form id="loginForm" onSubmit={this.handleLogin}>
+                        <form id="loginForm" onSubmit={handleLogin}>
                         <h1>Login</h1>
                         <label for="username" class="form-labels">Username: </label>
                         <br/>
-                            <input type="text" value={this.state.username} id="usename" name="username" placeholder="Enter Username" onChange={this.handleChangeUsername}/>
+                            <input type="text" value={username} id="usename" name="username" placeholder="Enter Username" onChange={handleChangeUsername}/>
                         <br/>
                         <label class="form-labels" for="password">Password:</label>
                         <br/>
-                            <input type="password" value={this.state.password} id="password" name="password" placeholder="Enter Password" onChange={this.handleChangePassword}/>
+                            <input type="password" value={password} id="password" name="password" placeholder="Enter Password" onChange={handleChangePassword}/>
                         <br/>
                         <input type="submit" value="Login" class="loginButton"/>
                         <div>
                             <div class="bottom-container">
-                                <p class="form-errors">{this.state.formErrors}</p>
-                            <span class="register"> New here? <a href="javascript:void(0);" onClick={this.handleRegistrationLinkClick}>Create an account</a></span>
+                                <p class="form-errors">{formErrors}</p>
+                            <span class="register"> New here? <Link to="/registration" >Create an account</Link></span>
                         </div>
                         </div>
                         </form>
                         </div>
                     </div>
                 );
-            }
 }
 
 export default LoginPage;

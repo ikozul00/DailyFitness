@@ -20,7 +20,7 @@ const path=history.location.pathname;
             axios.post('/api/my',{name:sessionStorage.getItem("username"),size:2,value:"exercise"})
             .then(response => {
                 //using createPlans function from workoutsPage script
-                let res=CreatePlans(response.data.list,"exercise",history);
+                let res=CreatePlans(response.data.list,"exercise",history,path);
                 setMyExercises(res);
             }, error => {
                 console.log(error);
@@ -30,7 +30,7 @@ const path=history.location.pathname;
             axios.get('/api/all/?size='+2+'&value=exercise')
             .then(response => {
                 //using createPlans function from workoutsPage script
-                let res=CreatePlans(response.data.list,"exercise",history);
+                let res=CreatePlans(response.data.list,"exercise",history,path);
                 setExercises(res);
             }, error => {
                 console.log(error);
@@ -43,6 +43,7 @@ const path=history.location.pathname;
 
     return(
         <div>
+            {props.date && <div class="date-message">You are currently located in day:  <b>{  props.date}</b></div>}
             <div className="plans-container">
             <a className="link-title" href="javascript:void(0);" onClick={()=>{history.push(path+'/MyExercises')}}><h2>My Exercises</h2></a>
                 <p>Create your own custom exercises which you can then orginize in plans. Add them to your workout plans and share them with other users.</p>
@@ -62,7 +63,7 @@ const path=history.location.pathname;
 }
 
 //component for presenting all public exercises
-export const AllExercises = function(){
+export const AllExercises = function(props){
     const[exercises,setExercises]=useState("");
     let history=useHistory();
 
@@ -81,6 +82,7 @@ export const AllExercises = function(){
 
     return(
         <div>
+            {props.date && <div class="date-message">You are currently located in day:  <b>{  props.date}</b></div>}
             <div className="plans-container load-all">
             <h2>Exercises</h2>
                 <p>If you don't want to bother with creating your own exercises search exercises that already exsist in app, organize them in your costum plans or save them for later.</p>
@@ -91,7 +93,7 @@ export const AllExercises = function(){
 }
 
 //component for presenting exercises created by currently logged user
-export const MyExercises = function(){
+export const MyExercises = function(props){
     console.log("pozvana");
     const [myExercises,setMyExercises]=useState("");
     let history=useHistory();
@@ -111,6 +113,7 @@ export const MyExercises = function(){
 
     return(
         <div>
+            {props.date && <div class="date-message">You are currently located in day:  <b>{  props.date}</b></div>}
             <div className="plans-container load-all">
             <h2>My Exercises</h2>
                 <p>Create your own custom exercises which you can then orginize in plans. Add them to your workout plans and share them with other users.</p>
