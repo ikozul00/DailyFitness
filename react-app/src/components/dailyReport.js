@@ -40,7 +40,7 @@ function DailyReport(props){
             axios.post('/api/dailyReport',{name:username,date:date})
             .then(response=>{
                 var res=response.data;
-                let exer= renderList(res.information.exercises,"exercises");
+                let exer= renderList(res.information.exercises,"plan");
                 let meals= renderList(res.information.meals,"meals");
                 let mealsOut= renderList(res.information.mealsOutOfPlan,"mealsOut");
                 let icons=renderMotivationIcons(res.information.motivation);
@@ -65,6 +65,10 @@ function DailyReport(props){
                 console.log(error);
             });
         }
+         //if some date was previously picked, removing it from memory
+         if(sessionStorage.getItem("date")){
+            sessionStorage.removeItem("date");
+          }
     },[]);
 
 
@@ -92,7 +96,7 @@ function DailyReport(props){
             let done="not-done";
             let checkable=true;
             let checked="";
-            if(categorie==="exercises" || categorie==="meals"){
+            if(categorie==="plan" || categorie==="meals"){
                 checkable=true;
             }
             else{
@@ -102,10 +106,17 @@ function DailyReport(props){
                 done="done";
                 checked="checked";
             }
+            let linkStr;
+            if(categorie==="plan"){
+                linkStr="/home/workout/"+categorie+"/open/"+x[0]+"/"+x[1];
+            }
+            else{
+                linkStr="/home";
+            }
             return(
                 <div className={`listItem ${done} ${categorie}`}>
                     <button className="x-button" onClick={deleteItem}><i class="fas fa-times"></i></button>
-                    <p className="item-title">{x[0]}</p>
+                    <a href="javascript:void(0);" onClick={()=>{props.history.push(linkStr)}} className="item-title">{x[0]}</a>
                     <p style={{fontSize:"small"}} className="item-author">{x[1]}</p>
                     <p className="item-calories">{x[2]} cal</p>
                     {checkable && <button className={`check-button ${checked}`} onClick={clickedDoneButton}><i class="fas fa-check"></i></button>}
@@ -319,7 +330,7 @@ function DailyReport(props){
     }
 
     function handleMotivationChange(event){
-        this.modified=true;
+        setModified(true);
         let target=event.target;
         let emojis=document.querySelectorAll(".popup-icons");
         let br=1;
@@ -358,7 +369,8 @@ function DailyReport(props){
     }
 
     function addItem(){
-        props.history.push("/home/add/workout/"+date);
+        sessionStorage.setItem('date', date);
+        props.history.push("/home/workout");
     }
 
 

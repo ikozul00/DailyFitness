@@ -49,4 +49,6 @@ router.get('/exercise',exerciseController.getExercise);
 //getting information about one plan
 router.get('/plan',planController.getPlan);
 
+router.post('/add/plan', planController.addPlanToDB);
+
 module.exports = router;

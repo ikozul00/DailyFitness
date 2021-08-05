@@ -19,7 +19,6 @@ exports.dayInformation=function(req,res){
         notes:0,
     }
 
-    console.log(req.body);
     //reaching information about plans
     pool.query(`SELECT plan.title,date_user_plan.done,plan.calories,"userTable".username FROM plan
     INNER JOIN date_user_plan ON plan."planId"=date_user_plan."planID"
@@ -385,7 +384,7 @@ function doesDayInformationExists(date,user){
    
 }
 
-function createDate(date){
+exports.createDate=function createDate(date){
     let formatedDate=new Date(date);
     return new Promise((resolve,reject)=>{
         pool.query(`INSERT INTO dates(date, day,month,year)
@@ -398,4 +397,6 @@ function createDate(date){
         });
     })
 }
+
+exports.doesDateExists = doesDateExists;
 

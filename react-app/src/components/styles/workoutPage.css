@@ -266,7 +266,7 @@
 
 
 .date-message{
-    background-color: rgb(241, 10, 133);
+    background-color: rgb(238, 176, 209);
     width: 700px;;
     position: fixed;
     bottom:0;
@@ -275,5 +275,19 @@
     display:flex;
     justify-content: center;
     align-items: center;
+}
+
+.cancel-date-button{
+    margin:3px;
+    margin-left:50px;
+    padding:5px;
+    background-color: rgb(241, 10, 21);
+    font-weight: bold;
+    border:none;
+}
+
+.add-button{
+    padding: 10px;
+    background-color: coral;
 }
 

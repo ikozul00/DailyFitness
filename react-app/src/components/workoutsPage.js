@@ -7,6 +7,7 @@ import {Exercises, AllExercises, MyExercises} from './workoutExercisesPage';
 import {SearchList} from './searchList';
 import {Plan} from './plan';
 import {Exercise} from './exercise';
+import axios from 'axios';
 
 export const WorkoutPage=function WorkoutPage(props){
 
@@ -19,17 +20,16 @@ export const WorkoutPage=function WorkoutPage(props){
     const [tagsDisable,setTagsDisable] = useState(false);
     const[tagsChosen,setTagsChosen] = useState([]);
     const[tagsToSend,setTagsToSend] = useState([]);
-    const [dateInfo,setDateInfo] = useState(false);
+    // const [dateInfo,setDateInfo] = useState(false);
 
     let history=useHistory();
     let tags=[];
     let {date}=useParams();
-    console.log(path);
 
     //setting button Workouts in main navbar as selected
     useEffect(() => {
         props.handlerFunction();
-        setDateInfo(date);
+        // setDateInfo(date);
    },[]);
 
 
@@ -115,12 +115,10 @@ export const WorkoutPage=function WorkoutPage(props){
 
 
     return (
-        <div className="workout-main-container">
-            
-            
+        <div className="workout-main-container"> 
             <div className="sideNavContainer">
                 <nav class="workout-navigation">
-                    <Link to={`${path}/plans`} className="nav-link upper-link"><button className={workoutClass} onClick={()=>menuButtonClicked("Workout plans")} value="Workout plans">Workout plans</button></Link><Link to={`${path}/exercise`} className="nav-link bottom-link"><button className={exerciseClass} onClick={()=>menuButtonClicked("Exercises")} value="Exercises">Exercises</button></Link>
+                    <Link to="/home/workout/plans" className="nav-link upper-link"><button className={workoutClass} onClick={()=>menuButtonClicked("Workout plans")} value="Workout plans">Workout plans</button></Link><Link to="/home/workout/exercise" className="nav-link bottom-link"><button className={exerciseClass} onClick={()=>menuButtonClicked("Exercises")} value="Exercises">Exercises</button></Link>
                 </nav>
                 {searchDisable&&<button className="disable-search" onClick={searchChosen}></button>}
                 {tagsDisable && <button className="disable-tags" onClick={tagsInFocus}></button>}
@@ -164,21 +162,21 @@ export const WorkoutPage=function WorkoutPage(props){
             </div>
             <div className="workouts-container">
             <Switch>
-            <Route path={`${path}`} render={(props)=> (<Plans handlerFunction={menuButtonClicked} date={dateInfo}/>)} exact/>
-                <Route path={`${path}/plans`} render={(props)=> (<Plans handlerFunction={menuButtonClicked} date={dateInfo}/>)} exact/>
-                <Route path={`${path}/exercise`} render={(props)=> (<Exercises handlerFunction={menuButtonClicked} date={dateInfo}/>)} exact/>
-                <Route path={`${path}/MyPlans`} render={()=> (<MyPlans date={dateInfo}/>)}/>
-                <Route path={`${path}/AllPlans`} render={()=> (<AllPlans date={dateInfo}/>)}/>
-                <Route path={`${path}/plans/MyPlans`} render={()=> (<MyPlans date={dateInfo}/>)}/>
-                <Route path={`${path}/plans/AllPlans`} render={()=> (<AllPlans date={dateInfo}/>)}/>
-                <Route path={`${path}/exercise/MyExercises`} render={()=> (<MyExercises date={dateInfo}/>)}/>
-                <Route path={`${path}/exercise/AllExercises`} render={()=> (<AllExercises date={dateInfo}/>)}/>
-                <Route path={`${path}/plans/search/:title`} render={() => (<SearchList parameter="search" date={dateInfo}/>)}/>
-                <Route path={`${path}/exercise/search/:title`} render={() => (<SearchList parameter="search" date={dateInfo}/>)}/>
-                <Route path={`${path}/exercise/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend} date={dateInfo}/>)}/>
-                <Route path={`${path}/plans/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend} date={dateInfo}/>)}/>
-                <Route path={`${path}/plan/open/:title/:author`} render={()=>(<Plan date={dateInfo}/>)}/>
-                <Route path={`${path}/exercise/open/:title/:author`} render={()=>(<Exercise date={dateInfo}/>)}/>
+            <Route path={`${path}`} render={(props)=> (<Plans handlerFunction={menuButtonClicked}/>)} exact/>
+                <Route path={`${path}/plans`} render={(props)=> (<Plans handlerFunction={menuButtonClicked}/>)} exact/>
+                <Route path={`${path}/exercise`} render={(props)=> (<Exercises handlerFunction={menuButtonClicked}/>)} exact/>
+                <Route path={`${path}/MyPlans`} render={()=> (<MyPlans/>)}/>
+                <Route path={`${path}/AllPlans`} render={()=> (<AllPlans/>)}/>
+                <Route path={`${path}/plans/MyPlans`} render={()=> (<MyPlans/>)}/>
+                <Route path={`${path}/plans/AllPlans`} render={()=> (<AllPlans/>)}/>
+                <Route path={`${path}/exercise/MyExercises`} render={()=> (<MyExercises/>)}/>
+                <Route path={`${path}/exercise/AllExercises`} render={()=> (<AllExercises/>)}/>
+                <Route path={`${path}/plans/search/:title`} render={() => (<SearchList parameter="search"/>)}/>
+                <Route path={`${path}/exercise/search/:title`} render={() => (<SearchList parameter="search"/>)}/>
+                <Route path={`${path}/exercise/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend}/>)}/>
+                <Route path={`${path}/plans/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend}/>)}/>
+                <Route path={`${path}/plan/open/:title/:author`} render={()=>(<Plan/>)}/>
+                <Route path={`${path}/exercise/open/:title/:author`} render={()=>(<Exercise/>)}/>
             </Switch>
             </div>
         </div>
@@ -207,11 +205,17 @@ export const createTags=function createTags(tags){
 
    //creating list of plan by displaying every plan in its div
 export const CreatePlans=function CreatePlans(plans,type,history,path){
-    console.log(path);
     if(plans.length===0){
         return(<div>
             <p>No results found.</p>
         </div>);
+    }
+    let addButtonDisplay;
+    if(type==="plan"){
+        addButtonDisplay=true;
+    }
+    else if(type==="exercise"){
+        addButtonDisplay=false;
     }
     let result = plans.map((x) => {
         let tags=createTags(x.tags);
@@ -223,10 +227,40 @@ export const CreatePlans=function CreatePlans(plans,type,history,path){
              <p>{x.description}</p>
              <p>{x.calories} cal</p>  
              <div className="tags-container">{tags}</div>
+            {addButtonDisplay && <button className="add-button" onClick={()=>{addToDB(type,x.title,x.username,history)}}>Add</button>}
          </div>
         );
 
     });
     return result;
 }
+
+//function which sends request to server to add plan to certain date in calendar
+export const addToDB=function addToDB (type,title,author,history){
+    let date=sessionStorage.getItem("date");
+    if(date){
+        console.log("In addToDB: "+date);
+        axios.post('/api/add/'+type,{title:title, author:author,username:sessionStorage.getItem("username"), date:date})
+        .then(response => {
+            if(response.data.status){
+                history.push("/home/date/"+date);
+            }
+            else{
+                if(response.data.exists){
+                    alert("Already added to calendar!");
+                }
+                else{
+                    alert("Problem while adding plan to calendar! Try later.");
+                }
+            }
+        }, error => {
+        });
+        return true;
+    }
+    else{
+        console.log("In addToDB: "+"nista");
+    }
+    
+}
+   
 

@@ -76,7 +76,7 @@ function MainPage(props){
             <Route path={`${path}/recipe`} component={Search} />
             <Route path={`${path}/about`} component={About} />
             <Route path={`${path}/date/:date`} render={(props)=> (< DailyReport history={history}/>)}/>
-            <Route path={`${path}/add/workout/:date`} render={(props)=> (<Workout handlerFunction={handleExerciseButton} date={true}/>)}/>
+            {/* <Route path={`${path}/add/workout/:date`} render={(props)=> (<Workout handlerFunction={handleExerciseButton} date={true}/>)}/> */}
           </Route>
           </Switch>
           </div>

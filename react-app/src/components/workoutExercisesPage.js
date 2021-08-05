@@ -10,6 +10,7 @@ const [myExercises,setMyExercises]=useState("");
 const[exercises,setExercises]=useState("");
 const[loadExercises,setLoadExercises]=useState(true);
 const[loadMyExercises,setLoadMyExercises]=useState(true);
+const [date,setDate] = useState(false);
 
 let history=useHistory();
 const path=history.location.pathname;
@@ -38,12 +39,22 @@ const path=history.location.pathname;
     
         //making side navbar button Exercises look like it is selected
         props.handlerFunction("Exercises");
+
+          //checking if date on calendar is currently picked
+          if(sessionStorage.getItem("date")){
+            setDate(sessionStorage.getItem("date"));
+        }
    },[]);
+
+   function quitDate(){
+    sessionStorage.removeItem("date");
+    setDate(false);
+}   
 
 
     return(
         <div>
-            {props.date && <div class="date-message">You are currently located in day:  <b>{  props.date}</b></div>}
+           {date && <div class="date-message"><p>You are currently located in day:  <b>{  date}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
             <div className="plans-container">
             <a className="link-title" href="javascript:void(0);" onClick={()=>{history.push(path+'/MyExercises')}}><h2>My Exercises</h2></a>
                 <p>Create your own custom exercises which you can then orginize in plans. Add them to your workout plans and share them with other users.</p>
@@ -65,6 +76,8 @@ const path=history.location.pathname;
 //component for presenting all public exercises
 export const AllExercises = function(props){
     const[exercises,setExercises]=useState("");
+    const [date,setDate] = useState(false);
+
     let history=useHistory();
 
      //call only when component is mounting
@@ -78,11 +91,21 @@ export const AllExercises = function(props){
         }, error => {
             console.log(error);
         });
+
+          //checking if date on calendar is currently picked
+          if(sessionStorage.getItem("date")){
+            setDate(sessionStorage.getItem("date"));
+        }
 },[]);
+
+function quitDate(){
+    sessionStorage.removeItem("date");
+    setDate(false);
+}   
 
     return(
         <div>
-            {props.date && <div class="date-message">You are currently located in day:  <b>{  props.date}</b></div>}
+            {date && <div class="date-message"><p>You are currently located in day:  <b>{  date}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
             <div className="plans-container load-all">
             <h2>Exercises</h2>
                 <p>If you don't want to bother with creating your own exercises search exercises that already exsist in app, organize them in your costum plans or save them for later.</p>
@@ -94,8 +117,9 @@ export const AllExercises = function(props){
 
 //component for presenting exercises created by currently logged user
 export const MyExercises = function(props){
-    console.log("pozvana");
     const [myExercises,setMyExercises]=useState("");
+    const [date,setDate] = useState(false);
+
     let history=useHistory();
 
      //call only when component is mounting
@@ -109,11 +133,21 @@ export const MyExercises = function(props){
         }, error => {
             console.log(error);
         });
+
+          //checking if date on calendar is currently picked
+          if(sessionStorage.getItem("date")){
+            setDate(sessionStorage.getItem("date"));
+        }
     },[]);
+
+    function quitDate(){
+        sessionStorage.removeItem("date");
+        setDate(false);
+    }   
 
     return(
         <div>
-            {props.date && <div class="date-message">You are currently located in day:  <b>{  props.date}</b></div>}
+            {date && <div class="date-message"><p>You are currently located in day:  <b>{  date}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
             <div className="plans-container load-all">
             <h2>My Exercises</h2>
                 <p>Create your own custom exercises which you can then orginize in plans. Add them to your workout plans and share them with other users.</p>

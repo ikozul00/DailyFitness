@@ -67,6 +67,9 @@
 
 .item-title{
     font-size:1em;
+    margin:3px;
+    margin-top:7px;
+    margin-right:8px;
 }
 
 .item-calories{
@@ -114,7 +117,7 @@
 
 .x-button{
     position:relative;
-    left:45px;
+    left:68px;
     bottom:10px;
     border:none;
     color:#660000;

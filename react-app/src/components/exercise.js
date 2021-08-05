@@ -11,6 +11,7 @@ export const Exercise= function () {
     const [content,setContent]=useState("");
     const [cal,setCal]=useState(0);
     const [tags,setTags]=useState("");
+    const [date,setDate] = useState(false);
     
     useEffect(() => {
         axios.get('/api/exercise/?title='+title+'&author='+author)
@@ -29,7 +30,17 @@ export const Exercise= function () {
             console.log(error);
         });
 
+         //checking if date on calendar is currently picked
+         if(sessionStorage.getItem("date")){
+            setDate(sessionStorage.getItem("date"));
+        }
+
     },[]);
+
+    function quitDate(){
+        sessionStorage.removeItem("date");
+        setDate(false);
+    }   
 
     if(err){
         return(
@@ -41,6 +52,7 @@ export const Exercise= function () {
     else{
         return(
             <div className="exercise-main-container">
+                {date && <div class="date-message"><p>You are currently located in day:  <b>{  date}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
                 <div className="first-exercise-container">
                     <h1 className="exercise-title">{title}</h1>
                     <h3 className="exercise-author">by {author}</h3>

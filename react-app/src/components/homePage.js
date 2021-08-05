@@ -29,6 +29,11 @@ function HomePage(props){
         props.handlerFunction();
         valuesForMonthReport(startDate);
         setName(sessionStorage.getItem('username'));
+
+        //if some date was previously picked, removing it from memory
+        if(sessionStorage.getItem("date")){
+          sessionStorage.removeItem("date");
+        }
       },[]);
 
       //selecting a day

@@ -1,18 +1,20 @@
 import React from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useState,useEffect } from 'react';
-import { createTags } from './workoutsPage';
+import { createTags,addToDB } from './workoutsPage';
 import './styles/plan.css';
 
 export const Plan=function (props) {
-    const {date,title,author}=useParams();
+    const {title,author}=useParams();
     const [err,setErr]=useState(false);
     const [description,setDescription]=useState("");
     const [cal,setCal]=useState(0);
     const [tags,setTags]=useState("");
     const [exercise,setExercise]=useState("");
-    console.log(date,title,author);
+    const [pickedDate,setPickedDate] = useState(false);
+
+    let history=useHistory();
 
     useEffect(() => {
         axios.get('/api/plan/?title='+title+'&author='+author)
@@ -31,6 +33,11 @@ export const Plan=function (props) {
         },error =>{
             console.log(error);
         });
+
+          //checking if date on calendar is currently picked
+          if(sessionStorage.getItem("date")){
+            setPickedDate(sessionStorage.getItem("date"));
+        }
 
     },[]);
 
@@ -57,6 +64,11 @@ export const Plan=function (props) {
         return result;
     }
 
+    function quitDate(){
+        sessionStorage.removeItem("date");
+        setPickedDate(false);
+    }   
+
     if(err){
         return(
             <div>
@@ -67,10 +79,11 @@ export const Plan=function (props) {
     else{
         return(
             <div className="exercise-main-container">
-                {props.date && <div class="date-message">You are currently located in day:  <b>{props.date}</b></div>}
+                {pickedDate && <div class="date-message"><p>You are currently located in day:  <b>{  pickedDate}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
                 <div className="first-exercise-container">
                     <h1 className="exercise-title">{title}</h1>
                     <h3 className="exercise-author">by {author}</h3>
+                    <button className="add-button" onClick={()=>{addToDB("plan",title,author,history)}}>Add</button>
                 </div>
                 <div className="exercise-info">
                     <p>Burns:</p>

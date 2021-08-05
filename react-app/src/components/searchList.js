@@ -7,6 +7,8 @@ import {CreatePlans} from './workoutsPage';
 export const SearchList=function (props){
 
     const [result,setResult] = useState("");
+    const [date,setDate] = useState(false);
+
     let history=useHistory();
 
     let type="";
@@ -47,13 +49,23 @@ export const SearchList=function (props){
                 console.log(error);
             })
         }
+
+         //checking if date on calendar is currently picked
+         if(sessionStorage.getItem("date")){
+            setDate(sessionStorage.getItem("date"));
+        }
        
     },[title,props.tags]);
+
+    function quitDate(){
+        sessionStorage.removeItem("date");
+        setDate(false);
+    }   
 
 
     return(
         <div>
-            {props.date && <div class="date-message">You are currently located in day:  <b>{  props.date}</b></div>}
+ {date && <div class="date-message"><p>You are currently located in day:  <b>{  date}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
             <div className="plans-container search-result">
                 <h2>We have found...</h2>
                 {result}
