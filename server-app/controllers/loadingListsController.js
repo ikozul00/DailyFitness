@@ -21,7 +21,7 @@ exports.retriveMy = async function(req,res){
 
 function getMy(req){
     return new Promise((resolve,reject) => {
-        let query=`SELECT title,description, calories, username FROM `+req.body.value+`
+        let query=`SELECT title,description, calories, username, private FROM `+req.body.value+`
         INNER JOIN "userTable" on "userTable"."userId"= `+req.body.value+`."userID"
         WHERE username='${req.body.name}' `;
         pool.query(query,(error,result) => {
@@ -60,7 +60,7 @@ exports.retriveAll = async function(req,res){
 
 function getAll(req){
     return new Promise((resolve,reject) => {
-        let query=`SELECT title,description, calories, username FROM `+req.query.value+
+        let query=`SELECT title,description, calories, username, private FROM `+req.query.value+
         ` INNER JOIN "userTable" on "userTable"."userId"=`+req.query.value+`."userID"
          WHERE private=false `
          pool.query(query,(error,result) => {

@@ -8,6 +8,8 @@ const loadingListsController=require('./controllers/loadingListsController');
 const searchController=require('./controllers/searchController');
 const exerciseController=require('./controllers/exerciseController');
 const planController=require('./controllers/planController');
+const pictureController=require('./controllers/pictureController');
+const userController = require('./controllers/userController');
 
 
 //login and registration routes
@@ -49,6 +51,24 @@ router.get('/exercise',exerciseController.getExercise);
 //getting information about one plan
 router.get('/plan',planController.getPlan);
 
+//adding to database information about connection between user, date and plan (user added plan to calendar)
 router.post('/add/plan', planController.addPlanToDB);
+
+//creating new exercise in database
+router.post('/create/exercise',exerciseController.createExercise);
+
+//adding exercises to a plan
+router.post('/modify/plan',planController.AddExerciseToPlan);
+
+//creating new plan in database
+router.post('/create/plan',planController.NewPlan);
+
+router.post("/picture",pictureController.getPicture);
+
+router.get("/user",userController.getUserData);
+
+router.delete("/delete/plan",planController.deletePlan);
+
+router.delete("/delete/exercise",exerciseController.deleteExercise);
 
 module.exports = router;

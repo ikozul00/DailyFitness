@@ -48,6 +48,17 @@ export const Plans=function (props){
         //making side navbar button Plans look like it is selected
         props.handlerFunction("Workout plans");
 
+        
+        //if some plan was previosy picked, reminding user
+        if(sessionStorage.getItem("plan")){
+            history.push("/home/workout/exercise/cancel");
+          }
+
+           //if there is plan in memory that is currently creating, remind user
+        if(sessionStorage.getItem("planCreating")){
+            history.push("/home/workout/plan/cancel");
+          }
+
    },[]);
 
    function quitDate(){
@@ -62,7 +73,7 @@ export const Plans=function (props){
             <div className="plans-container">
             <a className="link-title" href="javascript:void(0);" onClick={()=>{history.push(path+'/MyPlans')}}><h2>My Plans</h2></a>
                 <p>Create your own custom workout plans. Add them to your schedule and share them with other users.</p>
-                {!date && <button class="create-new plan"><i class="fas fa-plus"></i> Create New</button>}
+                {!date && <button class="create-new plan" onClick={()=>{history.push("/home/workout/plan/create")}}><i class="fas fa-plus"></i> Create New</button>}
                 {myPlans}
                 {loadMyPlans && <a href="javascript:void(0);" onClick={()=>{history.push(path+'/MyPlans')}} class="load-more-link">Load more...</a>}
             </div>
@@ -101,6 +112,18 @@ export const MyPlans=function (props){
         }, error => {
             console.log(error);
         });
+
+        
+        //if some plan was previosy picked, reminding user
+        if(sessionStorage.getItem("plan")){
+            history.push("/home/workout/exercise/cancel");
+          }
+
+           //if there is plan in memory that is currently creating, remind user
+        if(sessionStorage.getItem("planCreating")){
+            history.push("/home/workout/plan/cancel");
+          }
+
    },[]);
 
    function quitDate(){
@@ -114,7 +137,7 @@ export const MyPlans=function (props){
             <div className="plans-container load-all">
                 <h2>My Plans</h2>
                 <p>Create your own custom workout plans. Add them to your schedule and share them with other users.</p>
-                {!date && <button class="create-new plan"><i class="fas fa-plus"></i> Create New</button>}
+                {!date && <button class="create-new plan" onClick={()=>{history.push("/home/workout/plan/create")}}><i class="fas fa-plus"></i> Create New</button>}
                 {myPlans}
             </div>
         </div>
@@ -143,7 +166,19 @@ export const AllPlans=function(props){
             setPlans(res);
         }, error => {
             console.log(error);
-        });       
+        });    
+        
+        
+        //if some plan was previosy picked, reminding user
+        if(sessionStorage.getItem("plan")){
+            history.push("/home/workout/exercise/cancel");
+          }
+
+           //if there is plan in memory that is currently creating, remind user
+        if(sessionStorage.getItem("planCreating")){
+            history.push("/home/workout/plan/cancel");
+          }
+
    },[]);
 
    function quitDate(){
@@ -174,7 +209,7 @@ export const AllPlans=function(props){
     }
     let result = plans.map((x) => {
         return(
-         <ShortPlan tags={x.tags} title={x.title} username={x.username} description={x.description} calories={x.calories} history={history}/>
+         <ShortPlan tags={x.tags} title={x.title} username={x.username} description={x.description} calories={x.calories} history={history} private={x.private}/>
         );
 
     });
@@ -208,7 +243,7 @@ function ShortPlan(props){
         axios.post('/api/add/plan',{title:title, author:author,username:sessionStorage.getItem("username"), date:date})
         .then(response => {
             if(response.data.status){
-                history.push("/home/date/"+date);
+                    history.push("/home/date/"+date);
             }
             else{
                 if(response.data.exists){
@@ -233,6 +268,9 @@ function ShortPlan(props){
         let pickedDay=value.toDateString();
         //getting clicked planContainer
         let item=event.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+        if(item.classList.contains("plans-calendar-container")){
+            item=item.parentElement;
+        }
         let title=item.querySelector(".plan-title").innerHTML;
         let author=item.querySelector(".plan-author").innerHTML;
         addToDB(pickedDay,title,author);
@@ -249,6 +287,7 @@ function ShortPlan(props){
            <p>by <span className="plan-author">{props.username}</span></p>
             <p>{props.description}</p>
             <p>{props.calories} cal</p>  
+            {props.private && <p>PRIVATE</p>}
             {calendarDisplay &&
             <div className="plans-calendar-container">
                 <p>Pick a date:</p>

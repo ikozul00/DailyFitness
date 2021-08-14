@@ -34,6 +34,16 @@ function HomePage(props){
         if(sessionStorage.getItem("date")){
           sessionStorage.removeItem("date");
         }
+
+        //if some plan was previosy picked, reminding user
+        if(sessionStorage.getItem("plan")){
+          history.push("/home/workout/exercise/cancel");
+        }
+
+        //if there is plan in memory that is currently creating, remind user
+        if(sessionStorage.getItem("planCreating")){
+          history.push("/home/workout/plan/cancel");
+        }
       },[]);
 
       //selecting a day

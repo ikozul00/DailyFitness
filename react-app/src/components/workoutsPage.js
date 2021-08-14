@@ -7,7 +7,10 @@ import {Exercises, AllExercises, MyExercises} from './workoutExercisesPage';
 import {SearchList} from './searchList';
 import {Plan} from './plan';
 import {Exercise} from './exercise';
-import axios from 'axios';
+import { NewExercise } from './createExercise';
+import {NewPlan } from './createPlan';
+import { CancelCreatingPlan} from './cancelCreatingPlan';
+import { CancelAddingExercise } from './cancelAddingExercise';
 
 export const WorkoutPage=function WorkoutPage(props){
 
@@ -177,6 +180,10 @@ export const WorkoutPage=function WorkoutPage(props){
                 <Route path={`${path}/plans/search`} render={() => (<SearchList parameter="tags" tags={tagsToSend}/>)}/>
                 <Route path={`${path}/plan/open/:title/:author`} render={()=>(<Plan/>)}/>
                 <Route path={`${path}/exercise/open/:title/:author`} render={()=>(<Exercise/>)}/>
+                <Route path={`${path}/exercise/create`} render={()=>(<NewExercise/>)}/>
+                <Route path={`${path}/plan/create`} render={()=>(<NewPlan/>)}/>
+                <Route path={`${path}/plan/cancel`} render={()=>(<CancelCreatingPlan/>)}/>
+                <Route path={`${path}/exercise/cancel`} render={()=>(<CancelAddingExercise/>)}/>
             </Switch>
             </div>
         </div>
@@ -188,53 +195,26 @@ export default WorkoutPage;
    
 //creating list of tags for a plan
 export const createTags=function createTags(tags){
-    let result=tags.map((x) => {
-        if(x!==null){
-            return(
-                <div className="tag">
-                    <p className="tag-text">{x}</p>
-                </div>
-            )
-        }
-        else{
-            return <div></div>
-        }
-    });
-    return result;
+    if(!tags){
+        return(
+            <div></div>
+        );
+    }
+    else{
+        let result=tags.map((x) => {
+            if(x!==null){
+                return(
+                    <div className="tag">
+                        <p className="tag-text">{x}</p>
+                    </div>
+                )
+            }
+            else{
+                return <div></div>
+            }
+        });
+        return result;
+    }
 }
 
-
-
-//   //creating list of exercise by displaying every exercise in its div
-//   export const CreatePlans=function CreatePlans(plans,type,history,path){
-//     if(plans.length===0){
-//         return(<div>
-//             <p>No results found.</p>
-//         </div>);
-//     }
-//     let addButtonDisplay;
-//     if(type==="plan"){
-//         addButtonDisplay=true;
-//     }
-//     else if(type==="exercise"){
-//         addButtonDisplay=false;
-//     }
-//     let result = plans.map((x) => {
-//         let tags=createTags(x.tags);
-//         let linkStr="/home/workout/"+type+"/open/"+x.title+"/"+x.username;
-//         return(
-//          <div class="plan-container">
-//             <a href="javascript:void(0);" onClick={()=>{history.push(linkStr)}}>{x.title}</a>
-//              <p>by {x.username}</p>
-//              <p>{x.description}</p>
-//              <p>{x.calories} cal</p>  
-//              <div className="tags-container">{tags}</div>
-//             {addButtonDisplay && <button className="add-button" onClick={()=>{addToDB(type,x.title,x.username,history)}}>Add</button>}
-//          </div>
-//         );
-
-//     });
-//     return result;
-// }
-   
 

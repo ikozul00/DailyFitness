@@ -139,7 +139,6 @@ function RegistrationPage(){
               axios.post('/api/registration',{name:username,password:password,email:email,weight:weight,height:height,age:age})
               .then(response =>{
                   if(response.data.correct){
-                      console.log("result: "+response.data.correct);
                       sessionStorage.setItem('username', username);
                     history.push("/home");
                   }

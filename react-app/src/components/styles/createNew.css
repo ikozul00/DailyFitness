@@ -1,0 +1,29 @@
+.new-exercise-container{
+    width:100%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#new-exercise-form{
+    width:800px;
+    background-color: blueviolet;
+    margin-top:70px;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: center;
+}
+
+#new-exercise-form .form-field{
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    width:500px;
+}
+
+#new-exercise-form .form-field.checkbox{
+    display: flex;
+    flex-direction: row;
+}
+

@@ -12,15 +12,15 @@ function LoginPage(props){
     let formValid=true;
     let history=useHistory();
 
-    //controling password field
-       function handleChangePassword(event) {
-         setPassword(event.target.value);
-       }
-
        //controling username field
     function handleChangeUsername(event) {
         setUsername(event.target.value);
     }
+
+     //controling password field
+     function handleChangePassword(event) {
+        setPassword(event.target.value);
+      }
 
     //checking if username and password fields are empty
     function validateLogin(){

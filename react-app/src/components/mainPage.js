@@ -5,9 +5,10 @@ import { Switch,Route,useRouteMatch, useHistory} from 'react-router-dom';
 import {Link} from 'react-router-dom';
 import Home from './homePage';
 import Search from './search';
-import About from './about';
+import Profile from './myProfile';
 import Workout from './workoutsPage';
 import DailyReport from './dailyReport';
+import MyProfile from './myProfile';
 
 //function component implemented using Hooks
 function MainPage(props){
@@ -29,7 +30,7 @@ function MainPage(props){
     } 
   }
 
-  function handleAboutButton(e){
+  function handleProfileButton(e){
     if(classAbout==='buttonInactive'){
       setClassAbout("buttonActive");
       setClassExercise("buttonInactive");
@@ -64,7 +65,7 @@ function MainPage(props){
           <Link to="/home" className="links" style={{ textDecoration: 'none' }}><button className={classHome}><i className="fa fa-home"></i>Home</button></Link>
           <Link to="/home/workout" className="links" style={{ textDecoration: 'none' }}><button className={classExercise}><i className="fas fa-running" ></i>Workouts</button></Link>
           <Link to="/home/recipe" className="links" style={{ textDecoration: 'none' }}><button  className={classRecipe}><i className="fa fa-cutlery"></i>Recipes</button></Link>
-          <Link to="/home/about" className="links" style={{ textDecoration: 'none' }}><button  className={classAbout}><i className="fa fa-user"></i>About</button></Link>
+          <Link to="/home/profile" className="links" style={{ textDecoration: 'none' }}><button  className={classAbout}><i className="fa fa-user"></i>MyProfile</button></Link>
           </nav>
           </div>
           </div>
@@ -74,7 +75,7 @@ function MainPage(props){
           <Route path={`${path}`} render={(props)=> (<Home handlerFunction={handleHomeButton}/>)} exact/>
           <Route path={`${path}/workout`} render={(props)=> (<Workout handlerFunction={handleExerciseButton} date={false}/>)}/>
             <Route path={`${path}/recipe`} component={Search} />
-            <Route path={`${path}/about`} component={About} />
+            <Route path={`${path}/profile`} render={(props)=> (<MyProfile handlerFunction={handleProfileButton} />)} />
             <Route path={`${path}/date/:date`} render={(props)=> (< DailyReport history={history}/>)}/>
             {/* <Route path={`${path}/add/workout/:date`} render={(props)=> (<Workout handlerFunction={handleExerciseButton} date={true}/>)}/> */}
           </Route>

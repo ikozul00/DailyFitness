@@ -69,6 +69,17 @@ function DailyReport(props){
          if(sessionStorage.getItem("date")){
             sessionStorage.removeItem("date");
           }
+
+          
+        //if some plan was previosy picked, reminding user
+        if(sessionStorage.getItem("plan")){
+            props.history.push("/home/workout/exercise/cancel");
+          }
+
+           //if there is plan in memory that is currently creating, remind user
+        if(sessionStorage.getItem("planCreating")){
+            props.history.push("/home/workout/plan/cancel");
+          }
     },[]);
 
 
@@ -348,7 +359,7 @@ function DailyReport(props){
     function onClickClose(name){
         if(name==="dailyReport"){
             if(!modified){
-                props.history.goBack();
+                props.history.push("/home");
             }
             else if(errorExtraCalSpent==="" && errorExtraCalEaten==="" && errorWeight==="" && errorNotes===""){
                 setSaveChanges(true);
@@ -358,14 +369,14 @@ function DailyReport(props){
             }
         }
         else if(name==="saveChanges"){
-            props.history.goBack();
+            props.history.push("/home");
         }
     }
 
     //closing popup and calling function to save modifications
     function onClickSave(){
         sendModifiedData();
-        props.history.goBack();
+        props.history.push("/home");
     }
 
     function addItem(){
