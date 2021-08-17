@@ -31,7 +31,7 @@ router.post('/remove/exercise',dayController.deleteExercise);
 
 router.put('/modify/day',dayController.modifyDayInformation);
 
-// router.post('/monthReport',monthController.monthInformation);
+router.post('/monthReport',monthController.monthInformation);
 
 //retriving exercises, plans and recipies written by logged user
 router.post('/my',loadingListsController.retriveMy);
