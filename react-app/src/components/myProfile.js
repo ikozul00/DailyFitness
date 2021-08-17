@@ -4,6 +4,8 @@ import axios from 'axios';
 import './styles/profile.css';
 import { MyExercises } from './workoutExercisesPage';
 import { MyPlans } from './workoutPlansPage';
+import { FavoriteExercises } from './favorites';
+import { FavoritePlans } from './favorites';
 
 export default function MyProfile(props) {
 
@@ -49,7 +51,7 @@ export default function MyProfile(props) {
       {username &&
       <div>
         <div className = "personal-info">
-        <button onClick={logOut}>Log out</button>
+        <button className="login-button-profile" onClick={logOut}>Log out</button>
         <p>Username: {username}</p>
         <p>Email: {email}</p>
         <p>Weight: {weight}</p>
@@ -59,12 +61,16 @@ export default function MyProfile(props) {
         <nav>
           <Link to="/home/profile/MyExercises">My Exercises</Link>
           <Link to="/home/profile/MyPlans">My Plans</Link>
+          <Link to="/home/profile/favoriteExercises">Favorite Exercises</Link>
+          <Link to="/home/profile/favoritePlans">Favorite Plans</Link>
         </nav>
         <div>
           <Switch>
             <Route path={`${path}`} render={()=> (<MyExercises/>)} exact/>
             <Route path={`${path}/MyExercises`} render={()=> (<MyExercises/>)}/>
             <Route path={`${path}/MyPlans`} render={()=> (<MyPlans/>)}/>
+            <Route path={`${path}/favoriteExercises`} render={()=> (<FavoriteExercises/>)}/>
+            <Route path={`${path}/favoritePlans`} render={()=> (<FavoritePlans/>)}/>
           </Switch>
         </div>
         </div>

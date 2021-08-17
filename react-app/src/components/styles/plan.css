@@ -1,3 +1,11 @@
 .plan-step-container{
     border:3px solid blue;
 }
+
+.heart-icon{
+    font-size:1.5em;
+}
+
+.heart-icon:hover{
+    transform: scale(1.2);
+}

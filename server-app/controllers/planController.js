@@ -5,6 +5,7 @@ const exerciseController = require('./exerciseController');
 //processing request from frontend
 exports.getPlan = async function(req,res){
     let plan= await retrivePlan(req);
+    plan.favorite = await planFavorite(plan.planId,req.query.user);
     plan = await retriveExercises(plan.planId,plan);
     res.json({"plan":plan});
 }
@@ -26,6 +27,7 @@ function retrivePlan(req){
             plan.planId=result.rows[0].planId;
             plan.privatePlan=result.rows[0].private;
             plan.tags=[];
+            plan.favorite=false;
             for(let i=0;i<result.rows.length;i++){
                 plan.tags.push(result.rows[i].planTag);
             }
@@ -33,6 +35,76 @@ function retrivePlan(req){
         });
     });
 }
+
+//checking if currently logged user had added plan with planId to favorite plans
+function planFavorite(planId,user){
+    return new Promise((resolve, reject) => {
+        pool.query(`SELECT * FROM "planSaved"
+        WHERE "planID" = '${planId}' AND "userID" = (SELECT "userId" FROM "userTable" 
+        WHERE username='${user}')`, (error,result) => {
+            if(error){
+                reject(new Error("Error checking if plan is put in favorites."));
+            }
+            if(result.rows.length===0){
+                resolve(false);
+            }
+            else{
+                resolve(true);
+            }
+        });
+    });
+}
+
+//removing plan from favorites or adding it to favorites
+exports.togglePlanFavorite = async function togglePlanFavorite(req,res){
+    let saved = await planFavorite(req.body.planId, req.body.user);
+    if(saved && !req.body.save){
+        pool.query(`DELETE FROM "planSaved"
+        WHERE "planID"='${req.body.planId}' AND "userID" = (SELECT "userId" FROM "userTable"
+        WHERE username='${req.body.user}' )
+        RETURNING * `, (error, result) => {
+            if(error){
+                throw error;
+            }
+            if(result.rows.length===0){
+                res.json({"success":false});
+            }
+            else{
+                res.json({"success":true});
+            }
+        });
+    }
+
+    else if(!saved && req.body.save){
+        let userId= await getUserId(req.body.user);
+        if(!userId){
+            res.json({"success":false});
+        }
+        else{
+            pool.query(`INSERT INTO "planSaved" ("userID", "planID")
+            VALUES ('${userId}', '${req.body.planId}')
+            RETURNING *`, (error,result) => {
+                if(error){
+                    throw error;
+                }
+                if(result.rows.length===0){
+                    res.json({"success":false});
+                }
+                else{
+                    res.json({"success":true});
+                }
+            });
+        }
+       
+    }
+
+    else{
+        res.json({"success":false});
+
+    }
+}
+
+
 
 //getting exercises which are part of plan identified by id from database
 function retriveExercises(id,plan){

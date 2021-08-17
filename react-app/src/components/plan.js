@@ -21,11 +21,13 @@ export const Plan=function (props) {
     const [displayAddExercise,setDisplayAddExercise] = useState(false);
     const [displayDelete, setDisplayDelete] = useState(false);
     const [deleteMessage, setDeleteMessage] = useState(false);
+    const [heartIcon, setHeartIcon] = useState("far");
+    const [planId,setPlanId] = useState("");
 
     let history=useHistory();
 
     useEffect(() => {
-        axios.get('/api/plan/?title='+title+'&author='+author)
+        axios.get('/api/plan/?title='+title+'&author='+author+'&user='+sessionStorage.getItem("username"))
         .then(response => {
             if(response.data.plan===null){
                 setErr(true);
@@ -37,6 +39,13 @@ export const Plan=function (props) {
                 setTags(createTags(response.data.plan.tags));
                 setExercise(createExercises(response.data.plan.exercise));
                 setPrivatePlan(response.data.plan.privatePlan);
+                setPlanId(response.data.plan.planId);
+                if(response.data.plan.favorite){
+                    setHeartIcon("fas");
+                }
+                else{
+                    setHeartIcon("far");
+                }
                 if(sessionStorage.getItem("username")===author && !sessionStorage.getItem("date")){
                     setDisplayDelete(true);
                 }
@@ -141,8 +150,9 @@ export const Plan=function (props) {
 
     function quitDate(){
         sessionStorage.removeItem("date");
-        setPickedDate(false);
-    }   
+        history.push("/home/date/"+pickedDate);
+    } 
+
 
     function addExercise(){
         sessionStorage.setItem("plan",JSON.stringify({"title":title,"author":author}));
@@ -172,6 +182,30 @@ export const Plan=function (props) {
         setDeleteMessage(false);
     }
 
+    function heartIconClicked(e){
+        let save=false;
+        if(heartIcon==="far"){
+            save=true;
+        }
+        else if(heartIcon==="fas"){
+            save=false;
+        }
+        axios.post('/api/modify/planSave',{planId:planId, save:save, user:sessionStorage.getItem("username")})
+        .then(response => {
+            if(save && response.data.success){
+                setHeartIcon("fas");
+            }
+            else if(!save && response.data.success){
+                setHeartIcon("far");
+            }
+            else{
+                alert("Problem has occured!");
+            }
+        }, error => {
+            console.log(error);
+        });
+    }
+
     if(err){
         return(
             <div>
@@ -188,6 +222,7 @@ export const Plan=function (props) {
                 <div className="first-exercise-container">
                     <h1 className="exercise-title">{title}</h1>
                     <h3 className="exercise-author">by {author}</h3>
+                    <i class={`${heartIcon} fa-heart heart-icon`} onClick={heartIconClicked}></i>
                     {privatePlan && <div>PRIVATE</div>}
                     {addButton && <button className="add-button" onClick={()=>{addToCalendar()}}>Add</button>}
                     {calendarDisplay &&

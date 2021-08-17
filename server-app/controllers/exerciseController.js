@@ -1,31 +1,47 @@
 var pool=require('../connectingDatabase');
 let planController=require('./planController');
+let dayController = require('./dayController');
 
-//getting data about one exercise and its tags from database and sending it to frontend
-exports.getExercise = function(req,res){
-    pool.query(`SELECT title, calories,content,"planTag", private,description FROM exercise
-    LEFT JOIN "exercise_planTag" ON "exercise_planTag"."exerciseID"=exercise."exerciseId"
-    LEFT JOIN "planTags" ON "planTags"."planTagId"="exercise_planTag"."planTagID"
-    WHERE title='${req.query.title}' AND "userID" =(SELECT "userId" FROM "userTable"
-    WHERE username='${req.query.author}')`,(error,result) => {
-        if (error){
-            throw error;
-        }
-        if(result.rows.length===0){
-            res.json({"exercise":null});
-        }
-        else{
-           let exercise={};
-           exercise.calories=result.rows[0].calories;
-           exercise.content=result.rows[0].content;
-           exercise.privateEx=result.rows[0].private;
-           exercise.description=result.rows[0].description;
-           exercise.tags=[];
-           for(let i=0;i<result.rows.length;i++){
-               exercise.tags.push(result.rows[i].planTag);
-           }
-           res.json({"exercise":exercise});
-        }
+//getting data about one exercise and sending it to frontend
+exports.getExerciseInfo = async function(req,res){
+    let exercise = await getExercise(req);
+    if(!exercise){
+        res.json({"exercise":null});
+    }
+    else{
+        exercise.favorite = await exerciseFavorite(exercise.exerciseId, req.query.user);
+        res.json({"exercise":exercise});
+    }
+}
+//getting data about one exercise and its tags from database and returning it
+function getExercise(req){
+    return new Promise((resolve, reject) => {
+        pool.query(`SELECT title, "exerciseId", calories,content,"planTag", private,description FROM exercise
+        LEFT JOIN "exercise_planTag" ON "exercise_planTag"."exerciseID"=exercise."exerciseId"
+        LEFT JOIN "planTags" ON "planTags"."planTagId"="exercise_planTag"."planTagID"
+        WHERE title='${req.query.title}' AND "userID" =(SELECT "userId" FROM "userTable"
+        WHERE username='${req.query.author}')`,(error,result) => {
+            if (error){
+                reject(new Error("Error retriving exercise from database."));
+            }
+            if(result.rows.length===0){
+                resolve(false);
+            }
+            else{
+               let exercise={};
+               exercise.exerciseId=result.rows[0].exerciseId;
+               exercise.calories=result.rows[0].calories;
+               exercise.content=result.rows[0].content;
+               exercise.privateEx=result.rows[0].private;
+               exercise.description=result.rows[0].description;
+               exercise.tags=[];
+               exercise.favorite=false;
+               for(let i=0;i<result.rows.length;i++){
+                   exercise.tags.push(result.rows[i].planTag);
+               }
+              resolve(exercise);
+            }
+        });
     });
 }
 
@@ -47,6 +63,71 @@ function getExerciseID(title,author){
             }
         });
     });
+}
+
+function exerciseFavorite(exerciseId,user){
+    return new Promise((resolve, reject) => {
+        pool.query(`SELECT * FROM "exerciseSaved"
+        WHERE "exerciseID" = '${exerciseId}' AND "userID" = (SELECT "userId" FROM "userTable" 
+        WHERE username='${user}')`, (error,result) => {
+            if(error){
+                reject(new Error("Error checking if exercise is put in favorites."));
+            }
+            if(result.rows.length===0){
+                resolve(false);
+            }
+            else{
+                resolve(true);
+            }
+        });
+    });
+}
+
+
+exports.toggleExerciseFavorite = async function (req,res){
+    let saved = await exerciseFavorite(req.body.exerciseId, req.body.user);
+    if(saved && !req.body.save){
+        pool.query(`DELETE FROM "exerciseSaved" 
+        WHERE "exerciseID"='${req.body.exerciseId}' AND "userID" = (SELECT "userId" FROM "userTable"
+        WHERE username='${req.body.user}' )
+        RETURNING * `, (error,result) => {
+            if(error){
+                throw error;
+            }
+            if(result.rows.length===0){
+                res.json({"success":false});
+            }
+            else{
+                res.json({"success":true});
+            }
+        });
+    }
+
+    else if(!saved && req.body.save){
+        let userId = await planController.getUserId(req.body.user);
+        if(!userId){
+            res.json({"success":false});
+        }
+        else{
+            pool.query(`INSERT INTO "exerciseSaved" ("userID", "exerciseID")
+            VALUES ('${userId}', '${req.body.exerciseId}' )
+            RETURNING * `, (error, result) => {
+                if(error){
+                    throw error;
+                }
+                if(result.rows.length===0){
+                    res.json({"success":false});
+                }
+                else{
+                    res.json({"success":true});
+                }
+            });
+        }
+    }
+
+    else{
+        res.json({"success":false});
+    }
 }
 
 //creating new exercise in database
@@ -87,40 +168,6 @@ exports.createExercise = async function (req,res){
                 }
 
             }
-            // pool.query(`INSERT INTO exercise (title,description,calories,"userID",private,content)
-            // VALUES ('${req.body.title}', '${req.body.description}', '${req.body.calories}', '${userID}', '${req.body.private}', '${req.body.content}')
-            // RETURNING exerciseId `, (error,result) => {
-            //     if(error){
-            //         throw error;
-            //     }
-            //     if(result.rows.length===0){
-            //         res.json({"success":false,"exists":false});
-            //     }
-            //     else{
-            //         let tags=req.body.tags;
-            //         let success=true;
-            //         let exerciseId=result.rows[0].exerciseId;
-            //         console.log(exerciseId);
-            //        for(let i=0;i<tags.length;i++){
-            //            let tagId= await getTagId(tags[i]);
-            //            console.log(tagId);
-            //            if(!tagId){
-            //                success=false;
-            //                break;
-            //            }
-            //            success= await addTagToExercise(tagId,exerciseId);
-            //            if(!success){
-            //                break;
-            //            }
-            //        }
-            //        if(success){
-            //         res.json({"true":false,"exists":false});
-            //        }
-            //        else{
-            //         res.json({"success":false,"exists":false});
-            //        }
-            //     }
-            // });
         }
 
     }
@@ -163,24 +210,6 @@ function addTagToExercise(tagId,exerciseId){
     });
 }
 
-// function insertExerciseInDB(req,userID){
-//     return new Promise((resolve,reject) =>{
-//         pool.query(`INSERT INTO exercise (title,description,calories,"userID",private,content)
-//             VALUES ('${req.body.title}', '${req.body.description}', '${req.body.calories}', '${userID}', '${req.body.private}', '${req.body.content}')
-//             RETURNING exerciseId `, (error,result) => {
-//                 if(error){
-//                     reject(new Error("trouble inserting exercise in DB"));
-//                 }
-//                 if(result.rows.length===0){
-//                     resolve(false);
-//                 }
-//                 else{
-//                     resolve(result.rows[0].exerciseId);
-//                 }
-//             });
-
-//     });
-// }
 
 function insertExerciseInDB(req,userID){
     return new Promise((resolve,reject) => {
@@ -256,6 +285,70 @@ function deleteExercisePlanConnection(exerciseId){
             }
             resolve(true);
         });
+    });
+}
+
+//add infrormation about connection between exercise,date and user in database, so it can be displayed in calendar
+exports.addExerciseToDB = async function (req,res){
+    console.log(req.body);
+    let dateId=await dayController.doesDateExists(req.body.date);
+    console.log("DateId: "+dateId);
+    if(!dateId){
+        dateId=await dayController.createDate(req.body.date);
+    }
+
+    let userId= await planController.getUserId(req.body.username);
+    console.log("userId: "+userId);
+    if(!userId){
+        res.json({"status":false,"exists":false});
+    }
+    else{
+        let exerciseId = await getExerciseID(req.body.title,req.body.username);
+        console.log("exerciseID: "+exerciseId);
+        if(!exerciseId){
+            res.json({"status":false,"exists":false});
+        }
+        else{
+            let exists=await dataExistsDB(userId,exerciseId,dateId);
+            console.log(exists);
+            if(exists){
+                res.json({"status":false,"exists":true});
+            }
+            else{
+                pool.query(`INSERT INTO date_user_exercise ("userID","exerciseID","dateID",timestamp,done)
+                VALUES ('${userId}', '${exerciseId}', '${dateId}', '${new Date().toDateString()}', false)
+                RETURNING *`, (error,result) => {
+                    if(error){
+                        throw error;
+                    }
+                    if(result.rows.length===0){
+                        res.json({"status":false,"exists":false});
+                    }
+                    else{
+                        res.json({"status":true,"exists":false});
+                    }
+            });
+        }
+        }
+    }
+}
+
+//check if row that connects date,user and exercise already exsists
+function dataExistsDB(userId,exerciseId,dateId){
+    return new Promise((resolve,reject) =>{
+        pool.query(`SELECT * FROM date_user_exercise 
+        WHERE "exerciseID"='${exerciseId}' AND "userID"='${userId}' AND "dateID"='${dateId}' `,(error,result) => {
+            if(error){
+                reject(new Error("Problem checking if data exists in database"));
+            }
+            if(result.rows.length===0){
+                resolve(false);
+            }
+            else{
+                resolve(true);
+            }
+        });
+
     });
 }
 

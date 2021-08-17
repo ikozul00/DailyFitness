@@ -14,6 +14,8 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//making files inside public directory avaliable to frontend
+app.use(express.static('public'));
 
 app.use('/api',router);
 app.get('/api',(req,res)=>{

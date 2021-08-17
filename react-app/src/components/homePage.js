@@ -9,7 +9,6 @@ import {useHistory} from 'react-router-dom';
 
 function HomePage(props){
       const [startDate,setStartDate]=useState(new Date());
-      const [showDay,setShowDay] = useState(false);
       const [calConsumed,setCalConsumed] = useState(0);
       const [calSpent, setCalSpent] = useState(0);
       const [motivation, setMotivation] = useState(0);

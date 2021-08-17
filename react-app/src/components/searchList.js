@@ -87,8 +87,9 @@ export const SearchList=function (props){
 
     function quitDate(){
         sessionStorage.removeItem("date");
-        setDate(false);
-    }   
+        history.push("/home/date/"+date);
+    } 
+
 
     function quitPlan(){
         sessionStorage.removeItem("plan");

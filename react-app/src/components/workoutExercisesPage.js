@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 import { useHistory} from 'react-router-dom';
 import {createTags} from './workoutsPage';
+import CostumCalendar from './calendar';
 
 //function component for displaying Exercises page
 export const Exercises = function(props){
@@ -21,7 +22,6 @@ const path=history.location.pathname;
             //retriving list of all exercises from database whose author is logged user
             axios.post('/api/my',{name:sessionStorage.getItem("username"),size:2,value:"exercise"})
             .then(response => {
-                //using createPlans function from workoutsPage script
                 let res=CreateExercises(response.data.list,history);
                 setMyExercises(res);
             }, error => {
@@ -31,7 +31,6 @@ const path=history.location.pathname;
             //retreving list of  all public plans from databse
             axios.get('/api/all/?size='+2+'&value=exercise')
             .then(response => {
-                //using createPlans function from workoutsPage script
                 let res=CreateExercises(response.data.list,history);
                 setExercises(res);
             }, error => {
@@ -58,9 +57,10 @@ const path=history.location.pathname;
    },[]);
 
    function quitDate(){
-    sessionStorage.removeItem("date");
-    setDate(false);
-}   
+        sessionStorage.removeItem("date");
+        history.push("/home/date/"+date);
+    } 
+
 
 
 function quitPlan(){
@@ -82,7 +82,7 @@ function quitPlanCreating(){
             <div className="plans-container">
             <a className="link-title" href="javascript:void(0);" onClick={()=>{history.push(path+'/MyExercises')}}><h2>My Exercises</h2></a>
                 <p>Create your own custom exercises which you can then orginize in plans. Add them to your workout plans and share them with other users.</p>
-                <button class="create-new plan" onClick={()=>{history.push(path+'/create')}}><i class="fas fa-plus"></i> Create New</button>
+                {!date && !plan && !planCreating && <button class="create-new plan" onClick={()=>{history.push(path+'/create')}}><i class="fas fa-plus"></i> Create New</button>}
                 {myExercises}
                 {loadMyExercises && <a href="javascript:void(0);" onClick={()=>{history.push(path+'/MyExercises');setLoadMyExercises(false)}} class="load-more-link">Load more...</a>}
             </div>
@@ -111,7 +111,6 @@ export const AllExercises = function(props){
         //retreving list of  all public plans from databse
         axios.get('/api/all/?size='+0+'&value=exercise')
         .then(response => {
-            //using createPlans function from workoutsPage script
             let res=CreateExercises(response.data.list,history);
             setExercises(res);
         }, error => {
@@ -135,8 +134,8 @@ export const AllExercises = function(props){
 
 function quitDate(){
     sessionStorage.removeItem("date");
-    setDate(false);
-}   
+    history.push("/home/date/"+date);
+} 
 
 function quitPlan(){
     sessionStorage.removeItem("plan");
@@ -177,7 +176,6 @@ export const MyExercises = function(props){
         //retriving list of all exercises from database whose author is logged user
         axios.post('/api/my',{name:sessionStorage.getItem("username"),size:0,value:"exercise"})
         .then(response => {
-            //using createPlans function from workoutsPage script
             let res=CreateExercises(response.data.list,history);
             setMyExercises(res);
         }, error => {
@@ -201,8 +199,9 @@ export const MyExercises = function(props){
 
     function quitDate(){
         sessionStorage.removeItem("date");
-        setDate(false);
+        history.push("/home/date/"+date);
     } 
+
     
     function quitPlan(){
         sessionStorage.removeItem("plan");
@@ -223,7 +222,7 @@ export const MyExercises = function(props){
             <div className="plans-container load-all">
             <h2>My Exercises</h2>
                 <p>Create your own custom exercises which you can then orginize in plans. Add them to your workout plans and share them with other users.</p>
-                <button class="create-new plan" onClick={()=>{history.push("/home/workout/exercise/create")}}><i class="fas fa-plus"></i> Create New</button>
+                {!date && !plan && !planCreating && <button class="create-new plan" onClick={()=>{history.push("/home/workout/exercise/create")}}><i class="fas fa-plus"></i> Create New</button>}
                 {myExercises}
             </div>
         </div>
@@ -259,6 +258,9 @@ function ShortExercise(props){
     const [formMessage,setFromMessage]= useState(false);
     const [planCreating, setPlanCreating] = useState(false);
     const [privateExercise,setPrivateExercise] = useState(false);
+    const[calendarDisplay,setCalendarDisplay] = useState(false);
+    const[startDate,setStartDate] = useState(new Date());
+    const[addButton,setAddButton] = useState(true);
 
     let history=useHistory();
 
@@ -278,6 +280,55 @@ function ShortExercise(props){
 
         setPrivateExercise(props.private);
     }, []);
+
+    //function which sends request to server to add exercise to certain date in calendar
+    function addToCalendar(){
+        let date=sessionStorage.getItem("date");
+        if(date){
+            addToDB(date);
+        }
+        else{
+            setCalendarDisplay(true);
+            setAddButton(false);
+        }
+    }
+
+    function addToDB(date){
+        axios.post('/api/add/exercise',{title:props.title, author:props.author,username:sessionStorage.getItem("username"), date:date})
+        .then(response => {
+            console.log(response);
+            if(response.data.status){
+                    history.push("/home/date/"+date);
+            }
+            else{
+                if(response.data.exists){
+                    alert("Already added to calendar!");
+                }
+                else{
+                    alert("Problem while adding exercise to calendar! Try later.");
+                }
+            }
+        }, error => {
+            console.log(error);
+        });
+    }
+
+     //changing month that is displayed
+     function activeMonthChange(value){
+        setStartDate(value.activeStartDate);
+    }
+
+    //selecting a day
+    function daySelected(value,event){
+        let pickedDay=value.toDateString();
+        addToDB(pickedDay);
+      }
+
+    function closeCalendar(){
+        setCalendarDisplay(false);
+        setAddButton(true);
+    }
+
 
     // function handleSelectChange(event){
     //     setSelectedValue(event.target.value);
@@ -379,6 +430,15 @@ function ShortExercise(props){
                  <button onClick={cancelClicked}>Cancel</button> 
             </form>
             }        */}
+
+            {calendarDisplay &&
+            <div className="plans-calendar-container">
+                <p>Pick a date:</p>
+                <button onClick={closeCalendar}>Close</button>
+                <CostumCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected} classAdd="small"/> 
+            </div>
+            }  
+            {addButton && <button className="add-button" onClick={addToCalendar}>Add</button>}     
         </div>
        );
 

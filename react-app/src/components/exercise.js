@@ -6,6 +6,7 @@ import './styles/exercise.css';
 import { createTags } from './workoutsPage';
 import { useHistory } from 'react-router-dom';
 import { DeleteItem } from './plan';
+import CostumCalendar from './calendar';
 
 export const Exercise= function () {
     const {title,author}=useParams();
@@ -19,18 +20,23 @@ export const Exercise= function () {
     const [selectedValue,setSelectedValue] = useState("sec");
     const [duration,setDuration] = useState(0);
     const [formMessage,setFromMessage]= useState(false);
-    const [addDisplay,setAddDisplay] = useState(false);
+    const [calendarButton,setCalendarButton] = useState(true);
     const [formDisplay,setFormDisplay] = useState(false);
     const [planCreating, setPlanCreating] = useState(false);
     const [tagsText, setTagsText] = useState([]);
     const [shortDescription, setShortDescription] = useState("");
     const [displayDelete, setDisplayDelete] = useState(false);
     const [deleteMessage, setDeleteMessage] = useState(false);
+    const [heartIcon, setHeartIcon] = useState("far");
+    const [exerciseId, setExerciseId] = useState("");
+    const[addToPlan,setAddToPlan] = useState(false);
+    const[calendarDisplay,setCalendarDisplay] = useState(false);
+    const[startDate,setStartDate] = useState(new Date());
 
     let history=useHistory();
     
     useEffect(() => {
-        axios.get('/api/exercise/?title='+title+'&author='+author)
+        axios.get('/api/exercise/?title='+title+'&author='+author+'&user='+sessionStorage.getItem("username"))
         .then(response => {
             if(response.data.exercise===null){
                 setErr(true);
@@ -43,6 +49,13 @@ export const Exercise= function () {
                 setTags(createTags(response.data.exercise.tags));
                 setPrivateEx(response.data.exercise.privateEx);
                 setShortDescription(response.data.exercise.description);
+                setExerciseId(response.data.exercise.exerciseId);
+                if(response.data.exercise.favorite){
+                    setHeartIcon("fas");
+                }
+                else{
+                    setHeartIcon("far");
+                }
             }
         },error =>{
             console.log(error);
@@ -51,6 +64,11 @@ export const Exercise= function () {
          //checking if date on calendar is currently picked
          if(sessionStorage.getItem("date")){
             setDate(sessionStorage.getItem("date"));
+            setAddToPlan(false);
+        }
+
+        if(sessionStorage.getItem("plan") || sessionStorage.getItem("planCreating")){
+            setCalendarButton(false);
         }
 
         if(sessionStorage.getItem("username") === author && !sessionStorage.getItem("date") && !sessionStorage.getItem("plan") && !sessionStorage.getItem("planCreating")){
@@ -60,11 +78,11 @@ export const Exercise= function () {
          //checking if user is currenly adding exercises to some plan
         if(sessionStorage.getItem("plan")){
             setPlan(JSON.parse(sessionStorage.getItem("plan")));
-            setAddDisplay(true);
+            setAddToPlan(true);
         }
         else if(sessionStorage.getItem("planCreating")){
             setPlanCreating(JSON.parse(sessionStorage.getItem("planCreating")));
-            setAddDisplay(true);
+            setAddToPlan(true);
         }
 
 
@@ -72,7 +90,7 @@ export const Exercise= function () {
 
     function quitDate(){
         sessionStorage.removeItem("date");
-        setDate(false);
+        history.push("/home/date/"+date);
     } 
 
     function quitPlan(){
@@ -191,6 +209,77 @@ export const Exercise= function () {
             console.log(error);
         });       
     }
+
+    function heartIconClicked(e){
+        let save=false;
+        if(heartIcon==="far"){
+            save=true;
+        }
+        else if(heartIcon==="fas"){
+            save=false;
+        }
+        axios.post('/api/modify/exerciseSave',{exerciseId:exerciseId, save:save, user:sessionStorage.getItem("username")})
+        .then(response => {
+            if(save && response.data.success){
+                setHeartIcon("fas");
+            }
+            else if(!save && response.data.success){
+                setHeartIcon("far");
+            }
+            else{
+                alert("Problem has occured!");
+            }
+        }, error => {
+            console.log(error);
+        });
+    }
+
+      //function which sends request to server to add exercise to certain date in calendar
+      function addToCalendar(){
+        if(date){
+            addToDB(date);
+        }
+        else{
+            setCalendarDisplay(true);
+            setCalendarButton(false);
+        }
+    }
+
+    function addToDB(date){
+        axios.post('/api/add/exercise',{title:title, author:author,username:sessionStorage.getItem("username"), date:date})
+        .then(response => {
+            if(response.data.status){
+                    history.push("/home/date/"+date);
+            }
+            else{
+                if(response.data.exists){
+                    alert("Already added to calendar!");
+                }
+                else{
+                    alert("Problem while adding exercise to calendar! Try later.");
+                }
+            }
+        }, error => {
+            console.log(error);
+        });
+    }
+
+     //changing month that is displayed
+     function activeMonthChange(value){
+        setStartDate(value.activeStartDate);
+    }
+
+    //selecting a day
+    function daySelected(value,event){
+        let pickedDay=value.toDateString();
+        addToDB(pickedDay);
+      }
+
+    function closeCalendar(){
+        setCalendarButton(true);
+        setCalendarDisplay(false);
+    }
+
     
 
     if(err){
@@ -208,7 +297,7 @@ export const Exercise= function () {
                 {date && <div class="date-message"><p>You are currently located in day:  <b>{  date}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
                 {displayDelete && <button onClick={deleteExercise}>Delete</button>}
                 {deleteMessage && <DeleteItem name={title} onDeleteYes={onDeleteYes} onDeleteNo={onDeleteNo} type="exercise"/>}
-                {addDisplay && <button className="add-button" onClick={openForm}>Add</button>}
+                {addToPlan && <button className="add-button" onClick={openForm}>Add to plan</button>}
                 {formDisplay && <form>
                 <p>Adding to plan: {plan.title} by {plan.author}</p>
                 <label>Duration:
@@ -223,10 +312,19 @@ export const Exercise= function () {
                  <input type="submit" value="Add" onClick={addExercise}/>
                  <button onClick={cancelClicked}>Cancel</button> 
             </form>
-            }       
+            }     
+              {calendarButton && <button className="add-button" onClick={()=>{addToCalendar()}}>Add to calendar</button>}
+                    {calendarDisplay &&
+                    <div className="plans-calendar-container">
+                        <p>Pick a date:</p>
+                        <button onClick={closeCalendar}>Close</button>
+                        <CostumCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected} classAdd="small"/> 
+                    </div>
+                    }
                 <div className="first-exercise-container">
                     <h1 className="exercise-title">{title}</h1>
                     <h3 className="exercise-author">by {author}</h3>
+                    <i class={`${heartIcon} fa-heart heart-icon`} onClick={heartIconClicked}></i>
                     {privateEx && <div>PRIVATE</div>}
                 </div>
                 <div className="exercise-info">

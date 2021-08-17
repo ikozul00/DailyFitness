@@ -1,3 +1,4 @@
+const { response } = require('express');
 var pool=require('../connectingDatabase');
 const registration=require('./registrationController');
 
@@ -115,6 +116,55 @@ function getTagsExercises(list){
                     list.tags.push(result2.rows[j].planTag);
                 }
                 resolve(list);
+        });
+    });
+}
+
+exports.loadFavoriteExercises = async function(req, res){
+   let exercises = await getFavoriteExercises(req);
+   for(let i=0;i<exercises.length;i++){
+       exercises[i] = await getTagsExercises(exercises[i]);
+   }
+   res.json({"exercises":exercises});
+}
+
+function getFavoriteExercises(req){
+    return new Promise((resolve, reject) => {
+        pool.query( `SELECT title,description, calories, username, private FROM "exerciseSaved"
+        INNER JOIN exercise ON exercise."exerciseId" = "exerciseSaved"."exerciseID"
+        INNER JOIN "userTable" ON exercise."userID" = "userTable"."userId"
+        WHERE "exerciseSaved"."userID" = (SELECT "userId" FROM "userTable"
+        WHERE username='${req.body.name}') `, (error, result) => {
+            if(error){
+                reject(new Error("Error getting favorite exercises."));
+            }
+            
+            resolve(result.rows);
+        });
+    });
+}
+
+
+exports.loadFavoritePlans = async function (req,res){
+    let plans= await getFavoritePlans(req);
+    for(let i=0; i < plans.length; i++){
+        plans[i] = await getTagsPlans(plans[i]);
+    }
+    res.json({"plans":plans});
+}
+
+function getFavoritePlans(req){
+    return new Promise((resolve, reject) => {
+        pool.query( `SELECT title,description, calories, username, private FROM "planSaved"
+        INNER JOIN plan ON plan."planId" = "planSaved"."planID"
+        INNER JOIN "userTable" ON plan."userID" = "userTable"."userId"
+        WHERE "planSaved"."userID" = (SELECT "userId" FROM "userTable"
+        WHERE username='${req.body.name}') `, (error, result) => {
+            if(error){
+                reject(new Error("Error getting favorite plans."));
+            }
+            
+            resolve(result.rows);
         });
     });
 }

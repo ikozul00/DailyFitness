@@ -62,9 +62,10 @@ export const Plans=function (props){
    },[]);
 
    function quitDate(){
-       sessionStorage.removeItem("date");
-       setDate(false);
-   }
+    sessionStorage.removeItem("date");
+    history.push("/home/date/"+date);
+} 
+
 
 
     return(
@@ -128,8 +129,9 @@ export const MyPlans=function (props){
 
    function quitDate(){
     sessionStorage.removeItem("date");
-    setDate(false);
-}
+    history.push("/home/date/"+date);
+} 
+
 
     return(
         <div>
@@ -183,8 +185,9 @@ export const AllPlans=function(props){
 
    function quitDate(){
     sessionStorage.removeItem("date");
-    setDate(false);
-}   
+    history.push("/home/date/"+date);
+} 
+
 
    return(
     <div>
