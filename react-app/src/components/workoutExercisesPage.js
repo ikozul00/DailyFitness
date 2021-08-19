@@ -241,7 +241,7 @@ export const MyExercises = function(props){
     }
     let result = plans.map((x) => {
         return(
-        <ShortExercise title={x.title} username={x.username} description={x.description} calories={x.calories} private={x.private} tags={x.tags}/>
+        <ShortExercise title={x.title} username={x.username} description={x.description} calories={x.calories} private={x.private} tags={x.tags} picture={x.picture}/>
         );
 
     });
@@ -410,6 +410,7 @@ function ShortExercise(props){
         <div class="plan-container">
            <a href="javascript:void(0);" className="exercise-title" onClick={()=>{history.push(linkStr)}}>{props.title}</a>
            <p>by <span className="exercise-author">{props.username}</span></p>
+           <img src={props.picture} className="list-picture"></img>
             <p className="exercise-description">{props.description}</p>
             <p><span className="exercise-cal">{props.calories}</span> cal</p> 
             {privateExercise && <p>PRIVATE</p>}

@@ -6,8 +6,14 @@ exports.insertUser= async function(req,res){
     let exists= await checkExistingUser(req.body.name);
     if(!exists){
         let userRole="user";
+        let picture="";
+        if(req.files.profileImg){
+            picture=req.files.profileImg;
+            picture.mv("./public/images/"+picture.name);
+            picture="/images/"+picture.name;
+        }
         bcrypt.hash(req.body.password, 10, function(err, hash){
-        pool.query(`INSERT INTO "userTable"(username,password,email,role,weight,height,age) VALUES ('${req.body.name}','${hash}','${req.body.email}','${userRole}','${req.body.weight}','${req.body.height}','${req.body.age}') `,(error,result)=>{
+        pool.query(`INSERT INTO "userTable"(username,password,email,role,weight,height,age,"profilePicture") VALUES ('${req.body.name}','${hash}','${req.body.email}','${userRole}','${req.body.weight}','${req.body.height}','${req.body.age}', '${picture}') `,(error,result)=>{
             if(error){
                 throw error;
             }

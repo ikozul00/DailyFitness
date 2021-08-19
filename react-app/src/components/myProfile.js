@@ -14,6 +14,7 @@ export default function MyProfile(props) {
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [age, setAge] = useState("");
+  const [profileImg, setProfileImg] = useState("");
 
   let history=useHistory();
   const { path } = useRouteMatch();
@@ -29,6 +30,7 @@ export default function MyProfile(props) {
         setAge(user.age===0 ? "no data" :user.age);
         setWeight(user.weight === 0 ? "no data" : user.weight);
         setHeight(user.height === 0 ? "no data" : user.height);
+        setProfileImg(user.img);
       }, error => {
         console.log(error);
       });
@@ -52,6 +54,7 @@ export default function MyProfile(props) {
       <div>
         <div className = "personal-info">
         <button className="login-button-profile" onClick={logOut}>Log out</button>
+        <img className="plan-page-image" src={profileImg}></img>
         <p>Username: {username}</p>
         <p>Email: {email}</p>
         <p>Weight: {weight}</p>

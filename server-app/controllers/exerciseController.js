@@ -1,6 +1,7 @@
 var pool=require('../connectingDatabase');
 let planController=require('./planController');
 let dayController = require('./dayController');
+const { getPicture } = require('./pictureController');
 
 //getting data about one exercise and sending it to frontend
 exports.getExerciseInfo = async function(req,res){
@@ -16,7 +17,7 @@ exports.getExerciseInfo = async function(req,res){
 //getting data about one exercise and its tags from database and returning it
 function getExercise(req){
     return new Promise((resolve, reject) => {
-        pool.query(`SELECT title, "exerciseId", calories,content,"planTag", private,description FROM exercise
+        pool.query(`SELECT title, "exerciseId", calories,content,"planTag", private,description, picture FROM exercise
         LEFT JOIN "exercise_planTag" ON "exercise_planTag"."exerciseID"=exercise."exerciseId"
         LEFT JOIN "planTags" ON "planTags"."planTagId"="exercise_planTag"."planTagID"
         WHERE title='${req.query.title}' AND "userID" =(SELECT "userId" FROM "userTable"
@@ -36,6 +37,7 @@ function getExercise(req){
                exercise.description=result.rows[0].description;
                exercise.tags=[];
                exercise.favorite=false;
+               exercise.img=result.rows[0].picture;
                for(let i=0;i<result.rows.length;i++){
                    exercise.tags.push(result.rows[i].planTag);
                }
@@ -142,12 +144,17 @@ exports.createExercise = async function (req,res){
             res.json({"success":false,"exists":false});
         }
         else{
-            let exerciseId=await insertExerciseInDB(req,userID);
+            let picture="";
+            if(req.files){
+                picture=req.files.exerciseImg;
+                picture.mv("./public/images/"+picture.name);
+            }
+            let exerciseId=await insertExerciseInDB(req,userID,picture);
             if(!exerciseId){
                 res.json({"success":false,"exists":false});
             }
             else{
-                let tags=req.body.tags;
+                let tags=JSON.parse(req.body.tags);
                 let success=true;
                 for(let i=0;i<tags.length;i++){
                     let tagId= await getTagId(tags[i]);
@@ -211,12 +218,20 @@ function addTagToExercise(tagId,exerciseId){
 }
 
 
-function insertExerciseInDB(req,userID){
+function insertExerciseInDB(req,userID,picture){
     return new Promise((resolve,reject) => {
-        pool.query(`INSERT INTO exercise (title,description,calories,"userID",private,content)
-        VALUES ('${req.body.title}', '${req.body.description}', '${req.body.calories}', '${userID}', '${req.body.private}', '${req.body.content}')
+        let pictureUrl;
+        if(picture===""){
+            pictureUrl="";
+        }
+        else{
+            pictureUrl="/images/"+picture.name;
+        }
+        pool.query(`INSERT INTO exercise (title,description,calories,"userID",private,content,picture)
+        VALUES ('${req.body.title}', '${req.body.description}', '${req.body.calories}', '${userID}', '${req.body.private}', '${req.body.content}', '${pictureUrl}')
         RETURNING "exerciseId" `,(error,result) => {
             if(error){
+                throw error;
                 reject(new Error("trouble inserting exercise in DB"));
             }
             if(result.rows.length===0){
@@ -246,19 +261,33 @@ exports.deleteExercise = async function deleteExercise(req,res){
                 res.json({"success":false});
             }
             else{
-                pool.query(`DELETE FROM exercise
-                WHERE "exerciseId" = '${exerciseId}'
-                RETURNING * `, (error,result) => {
-                    if(error){
-                        throw error;
-                    }
-                    if(result.rows.length===0){
+                success = await deleteExerciseFavoriteConnection(exerciseId);
+                if(!success){
+                    res.json({"success":false});
+                }
+                else{
+                    success = await deleteExerciseDateConnection(exerciseId);
+                    if(!success){
                         res.json({"success":false});
                     }
                     else{
-                        res.json({"success":true});
+                        pool.query(`DELETE FROM exercise
+                        WHERE "exerciseId" = '${exerciseId}'
+                        RETURNING * `, (error,result) => {
+                            if(error){
+                                throw error;
+                            }
+                            if(result.rows.length===0){
+                                res.json({"success":false});
+                            }
+                            else{
+                                res.json({"success":true});
+                            }
+                        });
                     }
-                });
+                   
+                }
+                
             }
         }
     }
@@ -288,29 +317,48 @@ function deleteExercisePlanConnection(exerciseId){
     });
 }
 
+function deleteExerciseFavoriteConnection(exerciseId,username){
+    return new Promise((resolve, reject) => {
+        pool.query(`DELETE FROM "exerciseSaved"
+        WHERE "exerciseID"='${exerciseId}' `, (error,result) => {
+            if(error){
+                reject(new Error("Error deleting connection between exercise and favorite."));
+            }
+            resolve(true);
+        });
+    });  
+}
+
+function deleteExerciseDateConnection(exerciseId, username){
+    return new Promise((resolve, reject) => {
+        pool.query(`DELETE FROM date_user_exercise
+        WHERE "exerciseID"='${exerciseId}'`, (error,result) => {
+            if(error){
+                reject(new Error("Error deleting connection between exercise and date."));
+            }
+            resolve(true);
+        });
+    });  
+}
+
 //add infrormation about connection between exercise,date and user in database, so it can be displayed in calendar
 exports.addExerciseToDB = async function (req,res){
-    console.log(req.body);
     let dateId=await dayController.doesDateExists(req.body.date);
-    console.log("DateId: "+dateId);
     if(!dateId){
         dateId=await dayController.createDate(req.body.date);
     }
 
     let userId= await planController.getUserId(req.body.username);
-    console.log("userId: "+userId);
     if(!userId){
         res.json({"status":false,"exists":false});
     }
     else{
         let exerciseId = await getExerciseID(req.body.title,req.body.username);
-        console.log("exerciseID: "+exerciseId);
         if(!exerciseId){
             res.json({"status":false,"exists":false});
         }
         else{
             let exists=await dataExistsDB(userId,exerciseId,dateId);
-            console.log(exists);
             if(exists){
                 res.json({"status":false,"exists":true});
             }

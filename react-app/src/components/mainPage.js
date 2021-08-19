@@ -64,7 +64,7 @@ function MainPage(props){
           <nav className="navContainer">
           <Link to="/home" className="links" style={{ textDecoration: 'none' }}><button className={classHome}><i className="fa fa-home"></i>Home</button></Link>
           <Link to="/home/workout" className="links" style={{ textDecoration: 'none' }}><button className={classExercise}><i className="fas fa-running" ></i>Workouts</button></Link>
-          <Link to="/home/recipe" className="links" style={{ textDecoration: 'none' }}><button  className={classRecipe}><i className="fa fa-cutlery"></i>Recipes</button></Link>
+          {/* <Link to="/home/recipe" className="links" style={{ textDecoration: 'none' }}><button  className={classRecipe}><i className="fa fa-cutlery"></i>Recipes</button></Link> */}
           <Link to="/home/profile" className="links" style={{ textDecoration: 'none' }}><button  className={classAbout}><i className="fa fa-user"></i>MyProfile</button></Link>
           </nav>
           </div>
@@ -74,7 +74,7 @@ function MainPage(props){
           <Route path="/home">
           <Route path={`${path}`} render={(props)=> (<Home handlerFunction={handleHomeButton}/>)} exact/>
           <Route path={`${path}/workout`} render={(props)=> (<Workout handlerFunction={handleExerciseButton} date={false}/>)}/>
-            <Route path={`${path}/recipe`} component={Search} />
+            {/* <Route path={`${path}/recipe`} component={Search} /> */}
             <Route path={`${path}/profile`} render={(props)=> (<MyProfile handlerFunction={handleProfileButton} />)} />
             <Route path={`${path}/date/:date`} render={(props)=> (< DailyReport history={history}/>)}/>
             {/* <Route path={`${path}/add/workout/:date`} render={(props)=> (<Workout handlerFunction={handleExerciseButton} date={true}/>)}/> */}

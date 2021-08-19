@@ -66,7 +66,7 @@ router.post('/modify/plan',planController.AddExerciseToPlan);
 //creating new plan in database
 router.post('/create/plan',planController.NewPlan);
 
-router.post("/picture",pictureController.getPicture);
+router.post("/image",pictureController.getPicture);
 
 //getting information about user from DB so we can display it in user profile
 router.get("/user",userController.getUserData);

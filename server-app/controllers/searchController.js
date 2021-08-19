@@ -3,9 +3,9 @@ var pool=require('../connectingDatabase');
 //function which retrives list of all plans from database whose title or author name is similar to search text
 function searchResult(req,identical){
     return new Promise((resolve,reject) => {
-        let query=`SELECT title,description,calories,username FROM `+req.query.type+ 
+        let query=`SELECT title,description,calories,username, picture FROM `+req.query.type+ 
         ` INNER JOIN "userTable" ON "userTable"."userId"=`+req.query.type+`."userID"
-        WHERE (private=false) AND (username LIKE '%`+req.query.value+`%' OR title LIKE '%`+req.query.value+`%')`;
+        WHERE (private=false) AND (username LIKE '%`+req.query.value+`%' OR LOWER(title) LIKE '%`+req.query.value.toLowerCase()+`%')`;
         pool.query(query,(error,result) => {
             if(error){
                 reject(new Error("Error searching for data."));
@@ -33,7 +33,7 @@ function searchResult(req,identical){
 //function which retrives list of all plans from database whose title or author name is identical to search text
 function searchIdentical(type,value){
     return new Promise((resolve,reject) => {
-        let query=`SELECT title,description,calories,username FROM `+type+ 
+        let query=`SELECT title,description,calories,username,picture FROM `+type+ 
         ` INNER JOIN "userTable" ON "userTable"."userId"=`+type+`."userID"
         WHERE (private=false) AND (username='${value}' OR title='${value}')`;
         pool.query(query,(error,result) => {
@@ -88,7 +88,7 @@ exports.searchByTags=async function (req,res){
 //gets plans from database which have wanted tags
 function getPlansByTags(queryTags){
     return new Promise((resolve,reject) => {
-        let query=`SELECT title,description,calories, COUNT(plan."planId"),username FROM plan 
+        let query=`SELECT title,description,calories, COUNT(plan."planId"),username,picture FROM plan 
         INNER JOIN "plan_planTags" ON "plan_planTags"."planID"=plan."planId"
         INNER JOIN "planTags" ON "planTags"."planTagId"="plan_planTags"."planTagID"
         INNER JOIN "userTable" ON plan."userID"="userTable"."userId"
@@ -106,7 +106,7 @@ function getPlansByTags(queryTags){
 
 function getExercisesByTags(queryTags){
     return new Promise((resolve,reject) => {
-        let query=`SELECT title,description,calories, COUNT(exercise."exerciseId"),username FROM exercise
+        let query=`SELECT title,description,calories, COUNT(exercise."exerciseId"),username,picture FROM exercise
         INNER JOIN "exercise_planTag" ON "exercise_planTag"."exerciseID"=exercise."exerciseId"
         INNER JOIN "planTags" ON "planTags"."planTagId"="exercise_planTag"."planTagID"
         INNER JOIN "userTable" ON exercise."userID"="userTable"."userId"

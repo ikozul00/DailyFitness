@@ -14,6 +14,7 @@ export const Exercise= function () {
     const [content,setContent]=useState("");
     const [cal,setCal]=useState(0);
     const [tags,setTags]=useState("");
+    const [picture, setPicture] = useState("");
     const [date,setDate] = useState(false);
     const [privateEx,setPrivateEx] = useState(false);
     const [plan,setPlan] = useState(false);
@@ -50,6 +51,7 @@ export const Exercise= function () {
                 setPrivateEx(response.data.exercise.privateEx);
                 setShortDescription(response.data.exercise.description);
                 setExerciseId(response.data.exercise.exerciseId);
+                setPicture(response.data.exercise.img);
                 if(response.data.exercise.favorite){
                     setHeartIcon("fas");
                 }
@@ -324,6 +326,7 @@ export const Exercise= function () {
                 <div className="first-exercise-container">
                     <h1 className="exercise-title">{title}</h1>
                     <h3 className="exercise-author">by {author}</h3>
+                    <img className="plan-page-image" src={picture}></img>
                     <i class={`${heartIcon} fa-heart heart-icon`} onClick={heartIconClicked}></i>
                     {privateEx && <div>PRIVATE</div>}
                 </div>

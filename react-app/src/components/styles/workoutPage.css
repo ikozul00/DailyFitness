@@ -236,6 +236,7 @@
     left: 0;
     overflow: auto;
     border:none;
+    z-index: 1;
 }
 
 .plan-container .tags-container{
@@ -291,3 +292,7 @@
     background-color: coral;
 }
 
+
+.list-picture{
+    width: 200px;
+}

@@ -25,6 +25,8 @@ function RegistrationPage(){
     const [validAge,setValidAge] = useState(false);
     const [formErrors,setFormErrors] = useState("");
     const [formValid,setFormValid] = useState(false);
+    const [profileImg,setProfileImg] = useState("");
+    const [imagePreview,setImagePreview] = useState("");
 
     let history=useHistory();
 
@@ -93,6 +95,12 @@ function RegistrationPage(){
         }
       }
 
+       //function called when file is uploaded
+    function fileUpload(e){
+        setProfileImg(e.target.files[0]);
+        setImagePreview(URL.createObjectURL(e.target.files[0]));
+    }
+
       function validation(){
           let message="Please enter valid:";
           let valid=true;
@@ -136,7 +144,18 @@ function RegistrationPage(){
         console.log("pozvana");
         console.log("validacija: ",validation());
           if(validation()){
-              axios.post('/api/registration',{name:username,password:password,email:email,weight:weight,height:height,age:age})
+            let data= new FormData();
+            data.append("name",username);
+            data.append("password",password);
+            data.append("email",email);
+            data.append("weight",weight);
+            data.append("height",height);
+            data.append("age",age);
+            data.append("profileImg",profileImg);
+              axios.post('/api/registration',data,{
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                }})
               .then(response =>{
                   if(response.data.correct){
                       sessionStorage.setItem('username', username);
@@ -202,6 +221,11 @@ function RegistrationPage(){
             <br/>
                 <input type="text"  id="age" name="age" placeholder="Enter Your Age" value={age} onChange={handleChange}/>
                 <div className="error_message"><span className="small">{errorsAge}</span></div>
+            <br/>
+            <br/>
+                <input type="file" onChange={fileUpload}/>
+                <br/>
+                <img src={imagePreview} className="image-upload-exercise"/>
             <br/>
             <p class="form-errors">{formErrors}</p>
             <div className="buttonHolder">

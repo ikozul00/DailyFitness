@@ -14,9 +14,8 @@ export const NewExercise=function CreateExercise()
     const [formMessage,setFormMessage] = useState("");
     const [privateEx, setPrivateEx] = useState(false);
     const [tagsChosen,setTagsChosen] = useState([]);
-    const [imageEx,setImageEx] = useState("");
-    const [imageUrl,setImageUrl] = useState("");
-    // const FileInput=React.useRef(null);
+    const [imageEx,setImageEx] = useState(false);
+    const [imagePreview,setImagePreview] = useState("");
 
     let history=useHistory();
 
@@ -116,21 +115,35 @@ export const NewExercise=function CreateExercise()
         e.preventDefault();
         let valid = await formValidation();
         if(valid){
-        axios.post('/api/create/exercise',{"title":title,"calories":calories,"description":description,"content":content,"username":sessionStorage.getItem("username"),"private":privateEx,"tags":tagsChosen})
-        .then(response => {
-            if(response.data.exists){
-                alert(`You have already created exercise with title '${title}'!`);
+            let data= new FormData();
+            if(imageEx){
+                data.append('exerciseImg',imageEx,imageEx.name);
             }
-            else if(response.data.success){
-                history.push("/home/workout/exercise/open/"+title+"/"+sessionStorage.getItem("username"));
-            }
-            else{
-                alert("Problem has occured while adding exercise to datbase. Try again later!");
-            }
-        },error =>{
-            console.log(error);
-        });
-    }
+            data.append("title",title);
+            data.append("calories",calories);
+            data.append("description",description);
+            data.append("username",sessionStorage.getItem("username"));
+            data.append("private",privateEx);
+            data.append("tags",JSON.stringify(tagsChosen));
+            data.append("content",content);
+            axios.post('/api/create/exercise',data,{
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                }})
+            .then(response => {
+                if(response.data.exists){
+                    alert(`You have already created exercise with title '${title}'!`);
+                }
+                else if(response.data.success){
+                    history.push("/home/workout/exercise/open/"+title+"/"+sessionStorage.getItem("username"));
+                }
+                else{
+                    alert("Problem has occured while adding exercise to datbase. Try again later!");
+                }
+            },error =>{
+                console.log(error);
+            });
+        }
     }
 
 
@@ -156,30 +169,10 @@ export const NewExercise=function CreateExercise()
         }
     }
 
+    //function called when file is uploaded
     function fileUploaded(e){
-        console.log(e.target.files[0]);
         setImageEx(e.target.files[0]);
-        //FileReader object lets web applications asynchronously read the contents of files
-        let reader=new FileReader();
-       
-        reader.onloadend = () => {
-            console.log(reader.result);
-            setImageUrl(reader.result);}
-
-        reader.readAsDataURL(e.target.files[0]);
-    }
-
-    function SendPicture(e){
-        e.preventDefault();
-        let data= new FormData();
-        data.append('image',imageEx,imageEx.name);
-        console.log(data);
-        axios.post("/api/picture",{"data":data})
-        .then(response=>{
-            console.log(response);
-        },error => {
-            console.log(error);
-        });
+        setImagePreview(URL.createObjectURL(e.target.files[0]));
     }
 
     return(
@@ -240,10 +233,9 @@ export const NewExercise=function CreateExercise()
                     </div>
                 </div>
                 <div>
-    <input type="file" onChange={fileUploaded} />
-    <img src={imageUrl}/>
-    </div>
-                <button onClick={SendPicture}>Send Picture</button>
+                <input type="file" onChange={fileUploaded} name="image"/>
+                <img src={imagePreview} className="image-upload-exercise"/>
+                </div>
                 <div><span>{formMessage}</span></div>
                 <input type="submit" value="Save" onClick={handleSave}/>
                 <button onClick={cancelClicked}>Cancel</button>    

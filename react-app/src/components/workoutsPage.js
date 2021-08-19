@@ -123,15 +123,15 @@ export const WorkoutPage=function WorkoutPage(props){
                 <nav class="workout-navigation">
                     <Link to="/home/workout/plans" className="nav-link upper-link"><button className={workoutClass} onClick={()=>menuButtonClicked("Workout plans")} value="Workout plans">Workout plans</button></Link><Link to="/home/workout/exercise" className="nav-link bottom-link"><button className={exerciseClass} onClick={()=>menuButtonClicked("Exercises")} value="Exercises">Exercises</button></Link>
                 </nav>
-                {searchDisable&&<button className="disable-search" onClick={searchChosen}></button>}
-                {tagsDisable && <button className="disable-tags" onClick={tagsInFocus}></button>}
                 <div class="search-container">
+                {searchDisable&&<button className="disable-search" onClick={searchChosen}></button>}
                         <form class="workout-search-form" onSubmit={startSearch}>
                             <input type="text" placeholder="Search" name="search" ref={searchValue}  onFocus={searchChosen}/>
                             <button type="submit" class="searchIcon"><i class="fas fa-search search-icon"></i></button>
                         </form>
                     </div>
                 <div className="workout-tags-container">
+                {tagsDisable && <button className="disable-tags" onClick={tagsInFocus}></button>}
                     <div className="workout-categorie first">
                         <p>Difficulty:</p>
                         <div className="workout-buttons-container">

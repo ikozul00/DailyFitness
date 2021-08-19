@@ -22,11 +22,12 @@ exports.retriveMy = async function(req,res){
 
 function getMy(req){
     return new Promise((resolve,reject) => {
-        let query=`SELECT title,description, calories, username, private FROM `+req.body.value+`
+        let query=`SELECT title,description, calories, username, private,picture FROM `+req.body.value+`
         INNER JOIN "userTable" on "userTable"."userId"= `+req.body.value+`."userID"
         WHERE username='${req.body.name}' `;
         pool.query(query,(error,result) => {
             if(error){
+                throw error;
                 reject(new Error("Error retriving plans from database."));
             }
             let list=[];
@@ -61,7 +62,7 @@ exports.retriveAll = async function(req,res){
 
 function getAll(req){
     return new Promise((resolve,reject) => {
-        let query=`SELECT title,description, calories, username, private FROM `+req.query.value+
+        let query=`SELECT title,description, calories, username, private,picture FROM `+req.query.value+
         ` INNER JOIN "userTable" on "userTable"."userId"=`+req.query.value+`."userID"
          WHERE private=false `
          pool.query(query,(error,result) => {
@@ -130,7 +131,7 @@ exports.loadFavoriteExercises = async function(req, res){
 
 function getFavoriteExercises(req){
     return new Promise((resolve, reject) => {
-        pool.query( `SELECT title,description, calories, username, private FROM "exerciseSaved"
+        pool.query( `SELECT title,description, calories, username, private,picture FROM "exerciseSaved"
         INNER JOIN exercise ON exercise."exerciseId" = "exerciseSaved"."exerciseID"
         INNER JOIN "userTable" ON exercise."userID" = "userTable"."userId"
         WHERE "exerciseSaved"."userID" = (SELECT "userId" FROM "userTable"
@@ -155,7 +156,7 @@ exports.loadFavoritePlans = async function (req,res){
 
 function getFavoritePlans(req){
     return new Promise((resolve, reject) => {
-        pool.query( `SELECT title,description, calories, username, private FROM "planSaved"
+        pool.query( `SELECT title,description, calories, username, private,picture FROM "planSaved"
         INNER JOIN plan ON plan."planId" = "planSaved"."planID"
         INNER JOIN "userTable" ON plan."userID" = "userTable"."userId"
         WHERE "planSaved"."userID" = (SELECT "userId" FROM "userTable"

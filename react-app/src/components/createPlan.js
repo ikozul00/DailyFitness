@@ -13,6 +13,8 @@ export const NewPlan = function NewPlan(){
     const [calError,setCalError] = useState("");
     const [formMessage,setFormMessage] = useState("");
     const [exercisesText,setExercisesText] = useState("");
+    const [imagePlan,setImagePlan] = useState(false);
+    const [imagePreview,setImagePreview] = useState("");
 
     let history= useHistory();
 
@@ -20,6 +22,7 @@ export const NewPlan = function NewPlan(){
     useEffect(() => {
         let plan=JSON.parse(sessionStorage.getItem("planCreating"));
         if(plan){
+            console.log(plan);
             setTitle(plan.title);
             setDescription(plan.description);
             setCalories(plan.calories);
@@ -133,7 +136,21 @@ export const NewPlan = function NewPlan(){
         e.preventDefault();
         let valid= await formValidation();
         if(valid){
-            axios.post("/api/create/plan",{"title":title,"description":description,"cal":calories,"author":sessionStorage.getItem("username"),"private":privatePlan,"tags":tagsChosen,"exercises":exercisesText})
+            let data= new FormData();
+            if(imagePlan){
+                data.append('planImg',imagePlan,imagePlan.name);
+            }
+            data.append("title",title);
+            data.append("cal",calories);
+            data.append("description",description);
+            data.append("author",sessionStorage.getItem("username"));
+            data.append("private",privatePlan);
+            data.append("tags",JSON.stringify(tagsChosen));
+            data.append("exercises",JSON.stringify(exercisesText));
+            axios.post("/api/create/plan",data,{
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                }})
             .then(response => {
                 if(response.data.exists){
                     setFormMessage("Plan with that title already exists!");
@@ -215,6 +232,13 @@ export const NewPlan = function NewPlan(){
         history.push("/home/workout/plans");
     }
 
+    //function called when file is uploaded
+    function fileUploaded(e){
+        setImagePlan(e.target.files[0]);
+        setImagePreview(URL.createObjectURL(e.target.files[0]));
+    }
+
+
 
 
     return(
@@ -272,6 +296,8 @@ export const NewPlan = function NewPlan(){
                 </div>
                 {createExercisesList(exercisesText)}
                 <button onClick={addExerciseClicked}>Add Exercise</button>
+                <input type="file" onChange={fileUploaded} name="image"/>
+                <img src={imagePreview} className="image-upload-exercise"/>
                 <div><span>{formMessage}</span></div>
                 <input type="submit" value="Save" onClick={handleSave}/>
                 <button onClick={cancelClicked}>Cancel</button>    

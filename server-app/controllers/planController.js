@@ -13,7 +13,7 @@ exports.getPlan = async function(req,res){
 //getting information about plans, tags related to that plan from database
 function retrivePlan(req){
     return new Promise((resolve, reject) => {
-        pool.query(`SELECT calories,description,"planId","planTag",private FROM plan
+        pool.query(`SELECT calories,description,"planId","planTag",private, plan.picture FROM plan
         LEFT JOIN "plan_planTags" ON "plan_planTags"."planID"=plan."planId"
         LEFT JOIN "planTags" ON "planTags"."planTagId"="plan_planTags"."planTagID"
         WHERE title='${req.query.title}' AND "userID" =(SELECT "userId" FROM "userTable"
@@ -28,6 +28,7 @@ function retrivePlan(req){
             plan.privatePlan=result.rows[0].private;
             plan.tags=[];
             plan.favorite=false;
+            plan.img=result.rows[0].picture;
             for(let i=0;i<result.rows.length;i++){
                 plan.tags.push(result.rows[i].planTag);
             }
@@ -109,7 +110,7 @@ exports.togglePlanFavorite = async function togglePlanFavorite(req,res){
 //getting exercises which are part of plan identified by id from database
 function retriveExercises(id,plan){
     return new Promise((resolve,reject) =>{
-        pool.query(`SELECT title,content,calories,username,length,measure FROM exercise
+        pool.query(`SELECT title,content,calories,username,length,measure,exercise.picture FROM exercise
         INNER JOIN plan_exercise ON plan_exercise."exerciseID"=exercise."exerciseId"
         INNER JOIN "userTable" ON "userTable"."userId"=exercise."userID"
         WHERE plan_exercise."planID"='${id}'`, (error,result) =>{
@@ -293,20 +294,26 @@ exports.NewPlan= async function NewPlan(req,res){
         res.json({"success":false, "exists":false});
        }
        else{
-           let planId= await createPlan(req,userId);
+            let picture="";
+            if(req.files){
+                picture=req.files.planImg;
+                picture.mv("./public/images/"+picture.name);
+            }
+            let planId= await createPlan(req,userId,picture);
            if(!planId){
             res.json({"success":false, "exists":false});
            }
            else{
                let error=false;
                let exerciseInfo=[];
-               for(let i=0;i<req.body.exercises.length;i++){
-                let exerciseId= await getExerciseId(req.body.exercises[i].title,req.body.exercises[i].author);
+               exercises=JSON.parse(req.body.exercises);
+               for(let i=0;i<exercises.length;i++){
+                let exerciseId= await getExerciseId(exercises[i].title,exercises[i].author);
                 if(!exerciseId){
                     error=true;
                     break;
                 }
-                if(!(await ConnectPlanExercise(planId,exerciseId,req.body.exercises[i].lengthEx,req.body.exercises[i].measure))){
+                if(!(await ConnectPlanExercise(planId,exerciseId,exercises[i].lengthEx,exercises[i].measure))){
                     error=true;
                     break;
                 }
@@ -316,8 +323,9 @@ exports.NewPlan= async function NewPlan(req,res){
                }
                else{
                    let error=false;
-                   for(let i=0;i<req.body.tags.length;i++){
-                        let tagId= await exerciseController.getTagId(req.body.tags[i]);
+                   let tags=JSON.parse(req.body.tags);
+                   for(let i=0;i<tags.length;i++){
+                        let tagId= await exerciseController.getTagId(tags[i]);
                         if(!tagId){
                             error=true;
                             break;
@@ -339,10 +347,17 @@ exports.NewPlan= async function NewPlan(req,res){
    }
 }
 
-function createPlan(req, userId){
+function createPlan(req, userId, picture){
     return new Promise((resolve,reject) => {
-        pool.query(`INSERT INTO plan (title,description, calories, "userID", private)
-        VALUES ('${req.body.title}', '${req.body.description}', '${req.body.cal}', '${userId}', '${req.body.private}')
+        let pictureUrl;
+        if(picture===""){
+            pictureUrl="";
+        }
+        else{
+            pictureUrl="/images/"+picture.name;
+        }
+        pool.query(`INSERT INTO plan (title,description, calories, "userID", private, picture)
+        VALUES ('${req.body.title}', '${req.body.description}', '${req.body.cal}', '${userId}', '${req.body.private}', '${pictureUrl}')
         RETURNING * `, (error,result) => {
             if(error){
                 reject(new Error("Error creating new plan in plan table."));
@@ -421,20 +436,28 @@ exports.deletePlan = async function deletePlan(req,res){
                     res.json({"success":false});
                 }
                 else{
-                    //deleting row from plan table that has corresponding value for planId
-                    pool.query(`DELETE FROM plan
-                    WHERE "planId" = '${planId}' 
-                    RETURNING *`, (error, result) => {
-                        if(error){
-                            throw error;
-                        }
-                        if(result.rows.length===0){
-                            res.json({"success":false});
-                        }
-                        else{
-                            res.json({"success":true});
-                        }
-                    });
+                    //deleting this plan from planSaved table
+                    success = await deletePlanFavoriteConnection(planId);
+                    if(!success){
+                        res.json({"success":false});
+                    }
+                    else{
+                         //deleting row from plan table that has corresponding value for planId
+                        pool.query(`DELETE FROM plan
+                        WHERE "planId" = '${planId}' 
+                        RETURNING *`, (error, result) => {
+                            if(error){
+                                throw error;
+                            }
+                            if(result.rows.length===0){
+                                res.json({"success":false});
+                            }
+                            else{
+                                res.json({"success":true});
+                            }
+                        });
+                    }
+                   
                 }
             }
         }
@@ -479,6 +502,18 @@ function deletePlanDateConnection(planId){
             resolve(true);
         });
     });  
+}
+
+function deletePlanFavoriteConnection(planId){
+    return new Promise((resolve, reject) => {
+        pool.query(`DELETE FROM "planSaved"
+        WHERE "planID"='${planId}' `, (error,result) => {
+            if(error){
+                reject(new Error("Error deleting connection between plan and favorite."));
+            }
+            resolve(true);
+        });
+    });
 }
 
 exports.getUserId=getUserId;

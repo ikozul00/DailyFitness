@@ -23,6 +23,7 @@ export const Plan=function (props) {
     const [deleteMessage, setDeleteMessage] = useState(false);
     const [heartIcon, setHeartIcon] = useState("far");
     const [planId,setPlanId] = useState("");
+    const [image, setImage] = useState("");
 
     let history=useHistory();
 
@@ -40,6 +41,7 @@ export const Plan=function (props) {
                 setExercise(createExercises(response.data.plan.exercise));
                 setPrivatePlan(response.data.plan.privatePlan);
                 setPlanId(response.data.plan.planId);
+                setImage(response.data.plan.img);
                 if(response.data.plan.favorite){
                     setHeartIcon("fas");
                 }
@@ -135,6 +137,7 @@ export const Plan=function (props) {
                         <p>{br}.</p>
                         <p>{x.title}</p>
                         <p>by {x.username}</p>
+                        <img className="plan-page-image" src={x.picture}></img>
                         <p>{x.calories} cal</p>
                         <p>{x.content}</p>
                         <p>{x.length} {x.measure}</p>
@@ -222,6 +225,7 @@ export const Plan=function (props) {
                 <div className="first-exercise-container">
                     <h1 className="exercise-title">{title}</h1>
                     <h3 className="exercise-author">by {author}</h3>
+                    <img className="plan-page-image" src={image}></img>
                     <i class={`${heartIcon} fa-heart heart-icon`} onClick={heartIconClicked}></i>
                     {privatePlan && <div>PRIVATE</div>}
                     {addButton && <button className="add-button" onClick={()=>{addToCalendar()}}>Add</button>}

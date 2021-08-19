@@ -212,7 +212,7 @@ export const AllPlans=function(props){
     }
     let result = plans.map((x) => {
         return(
-         <ShortPlan tags={x.tags} title={x.title} username={x.username} description={x.description} calories={x.calories} history={history} private={x.private}/>
+         <ShortPlan tags={x.tags} title={x.title} username={x.username} description={x.description} calories={x.calories} history={history} private={x.private} picture={x.picture}/>
         );
 
     });
@@ -288,6 +288,7 @@ function ShortPlan(props){
         <div class="plan-container">
            <a className="plan-title" href="javascript:void(0);" onClick={()=>{history.push(linkStr)}}>{props.title}</a>
            <p>by <span className="plan-author">{props.username}</span></p>
+           <img src={props.picture} className="list-picture"></img>
             <p>{props.description}</p>
             <p>{props.calories} cal</p>  
             {props.private && <p>PRIVATE</p>}

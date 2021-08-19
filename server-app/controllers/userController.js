@@ -7,7 +7,7 @@ exports.getUserData = async function (req,res){
         res.json({"user":null});
     }
     else{
-        pool.query(`SELECT email,age,weight,height FROM "userTable"
+        pool.query(`SELECT email,age,weight,height,"profilePicture" FROM "userTable"
         WHERE username='${req.query.name}' `, (error, result) => {
             if(error){
                 throw error;
@@ -17,7 +17,7 @@ exports.getUserData = async function (req,res){
             }
             else{
                 let user=result.rows[0];
-                res.json({"user":{"email":user.email,"age":user.age,"weight":user.weight,"height":user.height}});
+                res.json({"user":{"email":user.email,"age":user.age,"weight":user.weight,"height":user.height,"img":user.profilePicture}});
             }
         });
     }

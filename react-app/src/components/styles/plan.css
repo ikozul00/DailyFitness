@@ -9,3 +9,7 @@
 .heart-icon:hover{
     transform: scale(1.2);
 }
+
+.plan-page-image{
+    width: 200px;
+}
