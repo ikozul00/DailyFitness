@@ -8,11 +8,11 @@
   }
 
   .react-calendar.small .dateField{
-    height: 5vh;
+    height: 3.5vh;
 }
 
 .react-calendar.small .react-calendar__navigation {
-    height: 30px;
+    height: 20px;
     margin-bottom: 1em;
    
   }
@@ -27,7 +27,7 @@
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;
-    font-size: 0.7em;
+    font-size: 0.65em;
     border-bottom: 1px solid #000033;
     margin-bottom: 5px;
     text-decoration: underline;

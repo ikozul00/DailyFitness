@@ -197,6 +197,12 @@ export const MyExercises = function(props){
         }
     },[]);
 
+    useEffect(() => {
+        if(props.setChoosen!==undefined){
+            props.setChoosen(false,"My Exercises");
+           }
+    });
+
     function quitDate(){
         sessionStorage.removeItem("date");
         history.push("/home/date/"+date);
@@ -240,6 +246,9 @@ export const MyExercises = function(props){
         </div>);
     }
     let result = plans.map((x) => {
+        if(x.picture===null){
+            x.picture="/images/no-image-found-360x250.png";
+        }
         return(
         <ShortExercise title={x.title} username={x.username} description={x.description} calories={x.calories} private={x.private} tags={x.tags} picture={x.picture}/>
         );
@@ -251,7 +260,7 @@ export const MyExercises = function(props){
 
 function ShortExercise(props){
     const [formDisplay,setFormDisplay] = useState(false);
-    const [addDisplay,setAddDisplay] = useState(false);
+    const [addToPlan,setAddToPlan] = useState(false);
     const [plan,setPlan] = useState({});
     const [selectedValue,setSelectedValue] = useState("sec");
     const [duration,setDuration] = useState(0);
@@ -264,17 +273,19 @@ function ShortExercise(props){
 
     let history=useHistory();
 
-    let tags=createTags(props.tags);
+    let tags=props.tags.length===0 ? false : createTags(props.tags);
     let linkStr="/home/workout/exercise/open/"+props.title+"/"+props.username;
 
     useEffect(() => {
         if(sessionStorage.getItem("plan")){
-            setAddDisplay(true);
+            setAddButton(false);
+            setAddToPlan(true);
             setPlan(JSON.parse(sessionStorage.getItem("plan")));
         }
 
         if(sessionStorage.getItem("planCreating")){
-            setAddDisplay(true);
+            setAddButton(false);
+            setAddToPlan(true);
             setPlanCreating(JSON.parse(sessionStorage.getItem("planCreating")));
         }
 
@@ -294,7 +305,7 @@ function ShortExercise(props){
     }
 
     function addToDB(date){
-        axios.post('/api/add/exercise',{title:props.title, author:props.author,username:sessionStorage.getItem("username"), date:date})
+        axios.post('/api/add/exercise',{title:props.title, author:props.username,username:sessionStorage.getItem("username"), date:date})
         .then(response => {
             console.log(response);
             if(response.data.status){
@@ -330,116 +341,141 @@ function ShortExercise(props){
     }
 
 
-    // function handleSelectChange(event){
-    //     setSelectedValue(event.target.value);
-    // }
+    function handleSelectChange(event){
+        setSelectedValue(event.target.value);
+    }
 
-    // function handleTextChange(event){
-    //     let value=event.target.value;
-    //     if(value==""){
-    //         setFromMessage("");
-    //         setDuration("");
-    //     }
-    //     else if(value.indexOf(".")!==-1 || value.indexOf(",")!==-1 || isNaN(value[value.length-1])){
-    //         setFromMessage("*input must be a non-decimal number");
-    //         setDuration(value);
-    //     }
-    //     else{
-    //         setFromMessage("");
-    //         setDuration(parseInt(value));
-    //     }
-    // }
+    function handleTextChange(event){
+        let value=event.target.value;
+        if(value==""){
+            setFromMessage("");
+            setDuration("");
+        }
+        else if(value.indexOf(".")!==-1 || value.indexOf(",")!==-1 || isNaN(value[value.length-1])){
+            setFromMessage("*input must be a non-decimal number");
+            setDuration(value);
+        }
+        else{
+            setFromMessage("");
+            setDuration(parseInt(value));
+        }
+    }
 
-    // function addExercise(event){
-    //     event.preventDefault();
-    //     if(plan.title){
-    //         //accessing container which contains exercise we want to add to plan
-    //         let item=event.target.parentElement.parentElement;
-    //         let exTitle=item.querySelector(".exercise-title").innerHTML;
-    //         let exAuthor=item.querySelector(".exercise-author").innerHTML;
-    //         axios.post("/api/modify/plan",{"title":plan.title,"author":plan.author,"exAuthor":exAuthor,"exTitle":exTitle,"length":duration,"measure":selectedValue})
-    //         .then(response => {
-    //             if(response.data.exists){
-    //                 alert(`Exercise '${exTitle}' is already a part of plan '${plan.title}'.`);
-    //             }
-    //             else{
-    //                 if(response.data.success){
-    //                     history.push("/home/workout/plan/open/"+plan.title+"/"+plan.author);
-    //                     sessionStorage.removeItem("plan");
-    //                 }
-    //                 else{
-    //                     alert("Problem adding exercise to plan. Try again later!");
-    //                 }
-    //             }
-    //         },error =>{
-    //             console.log(error);
-    //         });
-    //     }
-    //     else if(planCreating.title || planCreating.title===""){
-    //         let exercise={};
-    //         //accessing container which contains exercise we want to add to plan
-    //         let item=event.target.parentElement.parentElement;
-    //         exercise.title=item.querySelector(".exercise-title").innerHTML;
-    //         exercise.author=item.querySelector(".exercise-author").innerHTML;
-    //         exercise.cal=item.querySelector(".exercise-cal").innerHTML;
-    //         exercise.private=privateExercise;
-    //         let exTags=item.querySelectorAll(".tag-text");
-    //         exercise.tags=[];
-    //         console.log("Extags:");
-    //         console.log(exTags);
-    //         //retriving text of element by iterating through NodeList
-    //         exTags.forEach(element => {
-    //             exercise.tags.push(element.innerHTML);
-    //         });
-    //         planCreating.exercises.push(exercise);
-    //         sessionStorage.setItem("planCreating",JSON.stringify(planCreating));
-    //         history.push("/home/workout/plan/create");
-    //     }
-    // }
+    function addExercise(event){
+        event.preventDefault();
+        if(plan.title){
+            //accessing container which contains exercise we want to add to plan
+            // let item=event.target.parentElement.parentElement;
+            // let exTitle=item.querySelector(".exercise-title").innerHTML;
+            // let exAuthor=item.querySelector(".exercise-author").innerHTML;
+            axios.post("/api/modify/plan",{"title":plan.title,"author":plan.author,"exAuthor":props.username,"exTitle":props.title,"length":duration,"measure":selectedValue})
+            .then(response => {
+                if(response.data.exists){
+                    alert(`Exercise '${props.title}' is already a part of plan '${plan.title}'.`);
+                }
+                else{
+                    if(response.data.success){
+                        history.push("/home/workout/plan/open/"+plan.title+"/"+plan.author);
+                        sessionStorage.removeItem("plan");
+                    }
+                    else{
+                        alert("Problem adding exercise to plan. Try again later!");
+                    }
+                }
+            },error =>{
+                console.log(error);
+            });
+        }
+        else if(planCreating.title || planCreating.title===""){
+            console.log(planCreating);
+            let exercise={};
+            //accessing container which contains exercise we want to add to plan
+            let item=event.target.parentElement.parentElement.parentElement;
+            console.log(item);
+            exercise.title=item.querySelector(".exercise-title").innerHTML;
+            exercise.author=item.querySelector(".exercise-author").innerHTML;
+            exercise.cal=item.querySelector(".exercise-cal").innerHTML;
+            exercise.private=privateExercise;
+            exercise.lengthEx=duration;
+            exercise.measure=selectedValue;
+            exercise.description=item.querySelector(".exercise-description").innerHTML;
+            exercise.picture=props.picture;
+            let exTags=item.querySelectorAll(".tag-text");
+            exercise.tags=[];
+            exTags.forEach(element => {
+                exercise.tags.push(element.innerHTML);
+            });
+            axios.get("/api/exercise/description?title="+exercise.title+"&author="+exercise.author)
+            .then(response => {
+                if(response.data.content){
+                    exercise.content=response.data.content;
+                    planCreating.exercises.push(exercise);
+                    sessionStorage.setItem("planCreating",JSON.stringify(planCreating));
+                    history.push("/home/workout/plan/create");
+                }
+                else{
+                    alert("Trouble adding exercise to plan. Try again later!");
+                }
+            }, error => {
+                console.log(error);
+            });
+        }
+    }
 
-    // function openForm(){
-    //     setFormDisplay(true);
-    // }
+    function openForm(){
+        setFormDisplay(true);
+    }
 
-    // function cancelClicked(e){
-    //     e.preventDefault();
-    //     setFormDisplay(false);
-    // }
+    function cancelClicked(e){
+        e.preventDefault();
+        setFormDisplay(false);
+    }
    
     return(
         <div class="plan-container">
+            <div className="first-container">
+            <div className="image-container">
+            <img src={props.picture} className="list-picture"></img>
+            </div>
+            <div>
            <a href="javascript:void(0);" className="exercise-title" onClick={()=>{history.push(linkStr)}}>{props.title}</a>
            <p>by <span className="exercise-author">{props.username}</span></p>
-           <img src={props.picture} className="list-picture"></img>
+           <p>burns <span className="exercise-cal">{props.calories}</span> cal</p>
+           {privateExercise && <div className="private-container"><p>PRIVATE</p></div>}
             <p className="exercise-description">{props.description}</p>
-            <p><span className="exercise-cal">{props.calories}</span> cal</p> 
-            {privateExercise && <p>PRIVATE</p>}
-            <div className="tags-container">{tags}</div>
-            {/* {addDisplay && <button className="add-button" onClick={openForm}>Add</button>}
-            {formDisplay && <form>
-                <p>Adding to plan: {plan.title}</p>
+            {tags && <div className="tags-container">Tags: {tags}</div>}
+            </div>
+            </div>
+
+            <div className="additional-info">
+            {addToPlan && !formDisplay && <button className="add-button-to-plan" onClick={openForm}>Add to plan</button>}
+            {formDisplay && <form className="add-to-plan-form">
+                <p className="form-description">Adding to plan: <b>{plan.title}</b></p>
                 <label>Duration:
-                    <input type="text" name="lenght" id="lenght" value={duration} onChange={handleTextChange}/>
-                    <select value={selectedValue} onChange={handleSelectChange}>
+                    <input type="text" name="lenght" id="lenght" value={duration} onChange={handleTextChange} className="exercise-duration"/>
+                    <select value={selectedValue} onChange={handleSelectChange} className="exercise-measure">
                         <option value="times">times</option>
                         <option value="sec">sec</option>
                         <option value="min">min</option>
                     </select>
                  </label>
                  <div><span>{formMessage}</span></div>
-                 <input type="submit" value="Add" onClick={addExercise}/>
-                 <button onClick={cancelClicked}>Cancel</button> 
+                 <input type="submit" value="ADD" onClick={addExercise} className="add-exercise"/>
+                 <button onClick={cancelClicked} className="cancel-adding">QUIT</button> 
             </form>
-            }        */}
-
+            }    
+            <div className="add-to-calendar"> 
+            {addButton && <button className="add-button" onClick={addToCalendar}>Add to calendar</button>}   
             {calendarDisplay &&
-            <div className="plans-calendar-container">
-                <p>Pick a date:</p>
-                <button onClick={closeCalendar}>Close</button>
+            <div className="exercise-calendar-container">
+                <p className="calendar-description">Pick a date:</p>
+                <button onClick={closeCalendar} className="close-calendar"><i class="fas fa-times"></i></button>
                 <CostumCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected} classAdd="small"/> 
             </div>
             }  
-            {addButton && <button className="add-button" onClick={addToCalendar}>Add</button>}     
+            </div>  
+            </div>
+              
         </div>
        );
 

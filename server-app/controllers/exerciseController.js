@@ -400,4 +400,21 @@ function dataExistsDB(userId,exerciseId,dateId){
     });
 }
 
+exports.getExerciseDescription = function (req,res){
+    pool.query(`SELECT content FROM exercise WHERE 
+    title='${req.query.title}' AND "userID" = (SELECT "userID" FROM "userTable"
+    WHERE username='${req.query.author}') `, (error, result) =>{
+        if(error){
+            throw error;
+        }
+
+        if(result.rows.length===0){
+            res.json({"content":false});
+        }
+        else{
+            res.json({"content":result.rows[0].content});
+        }
+    });
+}
+
 exports.getTagId = getTagId;

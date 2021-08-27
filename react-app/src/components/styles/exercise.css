@@ -1,15 +1,53 @@
 .exercise-main-container{
-    background-color: cornsilk;
-    height:80vh;
-    width:1050px;
-    margin:20px auto;
-    border-radius:10px;
-    padding:15px;
+    background-color: #fff0f5;
+    height:100vh;
+
+}
+
+.first-exercise-container{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.first-exercise-container .basic-exercise-info{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .exercise-main-container .exercise-title{
-    margin-top:25px;
     text-decoration: underline;
+    width: 450px;
+}
+
+.exercise-main-container .second-exercise-container{
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 40px;
+    border-bottom: 2px solid rgb(57, 52, 86);
+    border-top: 2px solid rgb(57, 52, 86);
+    padding:15px 0px;
+    width:95%;
+    margin-top:10px;
+    margin-bottom: 0px;  
+}
+
+.exercise-info .private-container{
+    padding:0;
+    width: 100px;
+    padding-top:0px;
+}
+
+.exercise-info .private-text{
+    padding:0px;
+    margin:0px;
 }
 
 .exercise-main-container .exercise-author{
@@ -29,47 +67,95 @@
 }
 
 .exercise-info{
+    margin-left: 40px;
     display:flex;
-    flex-direction: row;
-    justify-content: space-around;
-    font-size:0.9em;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.exercise-info .exercise-cal{
+    font-weight: 600;
+}
+
+#description-container-exercise .exercise-description{
+    margin-left: 20px;
 }
 
 .tags-container-exercise{
     display:flex;
     flex-direction: row;
-    justify-content:space-between ;
-    width:500px;
-    padding:0;
-    margin:0;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 600px;
 }
 
 .tags-container-exercise .tag{
-    font-size: 0.9em;
-    width:95px;
-    background-color: rgb(0, 64, 255);
+    font-size: 0.8em;
+    width:100px;
+    background-color: #fdff00;
     text-align: center;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top:0px;
+    padding-bottom: 0px;
     border-radius:10px;
-    margin:0 8px;
-    display:flex;
-    align-items: center;
-    justify-content: center;
+    margin:0 10px 15px;
+}
+
+
+.exercise-content-container{
+    width:95%;
+    text-align: left;
+}
+
+.exercise-main-container .delete-button{
+    background-color: red;
+    font-weight: bold;
     color:white;
+    border:1px solid rgb(78, 7, 7);
+    width: 150px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
-.tags-container-exercise .tag-text{
-    padding:0;
-    margin:5px 0;
+.exercise-main-container .delete-button:hover{
+   transform: scale(1.1);
 }
 
-.exercise-cal{
-    background-color: yellow;
+.exercise-main-container .add-button{
+    background-color: #000080;
+    color:white;
+    border:none;
+    padding:7px;
+    width: 150px;
+}
+
+
+.exercise-main-container .add-button:hover{
+    transform: scale(1.1);
+}
+
+.exercise-main-container .button-container{
     display:flex;
-    align-items: center;
-    justify-content: center;
-    padding:0px;
-    padding-left:10px;
-    padding-right:10px;
-    border-radius:10px;
-
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 100px;
+    position:absolute;
+    top:90px;
+    right:70px;
 }
+
+.exercise-main-container .plan-calendar-container{
+    padding:10px;
+    width: 250px;
+    position: relative;
+    top:102px;
+}
+
+
+/* .button-container .add-to-plan-form{
+    position:relative;
+    top:30px;
+    right:-120px;
+} */

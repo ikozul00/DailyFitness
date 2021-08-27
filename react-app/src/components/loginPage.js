@@ -50,7 +50,6 @@ function LoginPage(props){
             .then(response => {
                 if(response.data.correct){
                     sessionStorage.setItem('username', username);
-                    // this.props.onPageChange("home");
                     history.push("/home");
                 }
                 else{

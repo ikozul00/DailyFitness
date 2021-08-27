@@ -24,9 +24,9 @@ function RegistrationPage(){
     const [validEmail,setValidEmail] = useState(false);
     const [validAge,setValidAge] = useState(false);
     const [formErrors,setFormErrors] = useState("");
-    const [formValid,setFormValid] = useState(false);
+    const [formValid,setFormValid] = useState(true);
     const [profileImg,setProfileImg] = useState("");
-    const [imagePreview,setImagePreview] = useState("");
+    const [imagePreview,setImagePreview] = useState(false);
 
     let history=useHistory();
 
@@ -124,6 +124,7 @@ function RegistrationPage(){
               message=message.slice(0,message.length-1);
               message=message+".";              
               setFormErrors(message);
+              setFormValid(false);
           }
           return valid;
 
@@ -171,6 +172,12 @@ function RegistrationPage(){
           }
       }
 
+      //removing upoladed image
+      function closeImage(){
+        setProfileImg("");
+        setImagePreview(false);
+      }
+
         return(
             <div className="registrationContainer">
                 <img src={logoImage} alt="logo" className="logoImage"></img>
@@ -195,6 +202,8 @@ function RegistrationPage(){
             <label className="form-labels" for="password-again">Repeat Password:</label>
             <br/>
                 <input type="password" value={repeatePassword} id="password-again" name="repeatPassword" placeholder="Repeat Password" onChange={handleChange}/>
+            <br/>
+            {!formValid && <p class="form-errors">{formErrors}</p>}
             <br/>
             <input type="sumit" value="Continue" className="loginButton" onClick={continueClicked}/>
             <div>
@@ -223,11 +232,21 @@ function RegistrationPage(){
                 <div className="error_message"><span className="small">{errorsAge}</span></div>
             <br/>
             <br/>
+            {!imagePreview && <label class="custom-file-upload">
                 <input type="file" onChange={fileUpload}/>
-                <br/>
-                <img src={imagePreview} className="image-upload-exercise"/>
+                Upload profile picture
+            </label>}
             <br/>
-            <p class="form-errors">{formErrors}</p>
+            {imagePreview && <div className="registration-picture-container">
+                <div>
+            <img src={imagePreview} className="registration-image"></img>
+            </div>
+            <div>
+            <button onClick={closeImage} className="close-button">Remove image</button>
+            </div>
+            </div>}
+            <br/>
+            {!formValid && <p class="form-errors">{formErrors}</p>}
             <div className="buttonHolder">
                 <button className="smallLoginButton" onClick={backClicked}>Back</button>
             <input type="submit" value="Submit" className="smallLoginButton submit_button"  onClick={submitClicked}/>

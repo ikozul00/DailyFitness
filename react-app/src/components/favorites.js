@@ -40,6 +40,12 @@ export const FavoriteExercises = function(props){
         }
     },[]);
 
+    useEffect(() => {
+        if(props.setChoosen!==undefined){
+            props.setChoosen(false,"Favorite Exercises");
+           }
+    });
+
     function quitDate(){
         sessionStorage.removeItem("date");
         setDate(false);
@@ -83,7 +89,6 @@ export const FavoritePlans = function(props){
         //retriving list of all plans from database that currently logged user added to favorites
         axios.post('/api/favorites/plans',{name:sessionStorage.getItem("username"),value:"exercise"})
         .then(response => {
-            console.log(response.data.plans);
             let res=CreatePlans(response.data.plans,history);
             setPlans(res);
         }, error => {
@@ -106,6 +111,12 @@ export const FavoritePlans = function(props){
           }
 
     },[]);
+
+    useEffect(() => {
+        if(props.setChoosen!==undefined){
+            props.setChoosen(false,"Favorite Plans");
+           }
+    });
 
     function quitDate(){
         sessionStorage.removeItem("date");

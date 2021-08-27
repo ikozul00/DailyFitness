@@ -1,11 +1,72 @@
-.personal-info{
-    background-color: #FFC0CB;
-}
-.personal-info .login-button-profile{
-    background-color: #FF1493;
-    border:2px solid 	#4B0082;
+
+.logout-button-profile{
+    background-color: #00ffff;
+    border:2px solid black;
     padding:5px;
-    position:relative;
-    left: 1400px;
-    margin-top:15px;
+    margin-top:20px;
+    font-weight: 700;
+    font-size:1.05em;
+}
+
+.logout-button-profile:hover{
+    transform: scale(1.1);
+}
+
+.profile-data{
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: #ffbcd9;
+}
+
+.profile-data .plan-page-image{
+    width: 250px;
+}
+
+.profile-data #image-container{
+    margin:20px;
+}
+
+.personal-info{
+    width: 1090px;
+    margin-left:50px;
+}
+
+.profile-navigation{
+    background-color: #f75394;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    border-top:2px solid #19647d;
+    border-bottom:2px solid #19647d;
+}
+
+.profile-nav-button{
+    width: 150px;
+    margin:7px;
+    padding:5px;
+    background-color: #87cefa;
+    border-radius: 5px;
+    border:2px solid #19647d;
+}
+
+.profile-nav-button:hover{
+    cursor: pointer;
+}
+
+.second-profile-container{
+    margin-left:50px;
+    margin-right: 50px;
+}
+
+.profile-nav-button.checked{
+    width: 150px;
+    margin:7px;
+    padding:5px;
+    background-color: #02385a;
+    color:white;
+    border-radius: 5px;
+    border:2px solid #19647d;
 }

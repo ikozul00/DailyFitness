@@ -13,7 +13,7 @@ export const Exercise= function () {
     const [err,setErr]=useState(false);
     const [content,setContent]=useState("");
     const [cal,setCal]=useState(0);
-    const [tags,setTags]=useState("");
+    const [tags,setTags]=useState(false);
     const [picture, setPicture] = useState("");
     const [date,setDate] = useState(false);
     const [privateEx,setPrivateEx] = useState(false);
@@ -47,11 +47,11 @@ export const Exercise= function () {
                 setContent(response.data.exercise.content);
                 setCal(response.data.exercise.calories);
                 setTagsText(response.data.exercise.tags);
-                setTags(createTags(response.data.exercise.tags));
+                setTags(response.data.exercise.tags[0]===null ? false : createTags(response.data.exercise.tags));
                 setPrivateEx(response.data.exercise.privateEx);
                 setShortDescription(response.data.exercise.description);
                 setExerciseId(response.data.exercise.exerciseId);
-                setPicture(response.data.exercise.img);
+                setPicture(response.data.exercise.img===null ? "/images/no-image-found-360x250.png" : response.data.exercise.img);
                 if(response.data.exercise.favorite){
                     setHeartIcon("fas");
                 }
@@ -148,7 +148,6 @@ export const Exercise= function () {
             });
         }
         else if(planCreating.title || planCreating.title===""){
-            console.log(planCreating);
             if(planCreating.exercises===""){
                 planCreating.exercises=[];
             }
@@ -171,6 +170,8 @@ export const Exercise= function () {
                 exercise.lengthEx=duration;
                 exercise.measure=selectedValue;
                 exercise.description=shortDescription;
+                exercise.content=content;
+                exercise.picture=picture;
                 exercise.tags=[];
                 exercise.tags.push(tagsText);
                 planCreating.exercises.push(exercise);
@@ -183,11 +184,13 @@ export const Exercise= function () {
 
     function openForm(){
         setFormDisplay(true);
+        setAddToPlan(false);
     }
 
     function cancelClicked(e){
         e.preventDefault();
         setFormDisplay(false);
+        setAddToPlan(true);
     }
 
     function deleteExercise(){
@@ -297,48 +300,62 @@ export const Exercise= function () {
                 {plan && <div class="date-message"><p>You are currently located in plan:  <b>{  plan.title}</b> </p>  <button className="cancel-date-button" onClick={quitPlan}><i class="fas fa-times"></i> Quit</button></div>}
                 {planCreating && <div class="date-message"><p>You are currently located in creating plan:  <b>{  planCreating.title}</b> </p>  <button className="cancel-date-button" onClick={quitPlanCreating}><i class="fas fa-times"></i> Quit</button></div>}
                 {date && <div class="date-message"><p>You are currently located in day:  <b>{  date}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
-                {displayDelete && <button onClick={deleteExercise}>Delete</button>}
                 {deleteMessage && <DeleteItem name={title} onDeleteYes={onDeleteYes} onDeleteNo={onDeleteNo} type="exercise"/>}
+                
+                <div className="first-exercise-container">
+                    <div className="basic-exercise-info">
+                    <h1 className="exercise-title">{title}</h1>
+                    <h3 className="exercise-author">by {author}</h3>
+                    <i class={`${heartIcon} fa-heart heart-icon`} onClick={heartIconClicked}></i>
+                    </div>
+                    <div className="second-exercise-container">
+                    <img className="plan-page-image" src={picture}></img>
+                    <div className="exercise-info">
+                    {privateEx && <div className="private-container"><p className="private-text">PRIVATE</p></div>}
+                    <p>burns <span className="exercise-cal">{cal}</span> cal</p>
+                    {tags && <div className="tags-container-exercise"><b>Tags: </b>{tags}</div>}
+                    <div id="description-container-exercise">
+                        <h4 style={{marginTop:"0px"}}>Short description:</h4>
+                        <p className="exercise-description"> {shortDescription}</p>
+                    </div>
+                    </div>
+                    </div>
+                    <div className="exercise-content-container">
+                        <h3 className="title">Content:</h3>
+                        <p className="exercise-content">{content}</p>
+                    </div>
+
+                </div>
+
+                <div className="button-container">
+                {displayDelete && <button onClick={deleteExercise} className="delete-button">DELETE</button>}
+                
                 {addToPlan && <button className="add-button" onClick={openForm}>Add to plan</button>}
-                {formDisplay && <form>
-                <p>Adding to plan: {plan.title} by {plan.author}</p>
+                {formDisplay && <form className="add-to-plan-form">
+                <p  className="form-description">Adding to plan: <b>{plan.title}</b></p>
                 <label>Duration:
-                    <input type="text" name="lenght" id="lenght" value={duration} onChange={handleTextChange}/>
-                    <select value={selectedValue} onChange={handleSelectChange}>
+                    <input type="text" name="lenght" id="lenght" value={duration} onChange={handleTextChange} className="exercise-duration"/>
+                    <select value={selectedValue} onChange={handleSelectChange} className="exercise-measure">
                         <option value="times">times</option>
                         <option value="sec">sec</option>
                         <option value="min">min</option>
                     </select>
                  </label>
                  <div><span>{formMessage}</span></div>
-                 <input type="submit" value="Add" onClick={addExercise}/>
-                 <button onClick={cancelClicked}>Cancel</button> 
+                 <input type="submit" value="ADD" onClick={addExercise} className="add-exercise"/>
+                 <button onClick={cancelClicked} className="cancel-adding">QUIT</button> 
             </form>
             }     
               {calendarButton && <button className="add-button" onClick={()=>{addToCalendar()}}>Add to calendar</button>}
                     {calendarDisplay &&
-                    <div className="plans-calendar-container">
-                        <p>Pick a date:</p>
-                        <button onClick={closeCalendar}>Close</button>
+                    <div className="plan-calendar-container">
+                        <button onClick={closeCalendar} className="close-calendar"><i class="fas fa-times"></i></button>
+                        <p className="calendar-text">Pick a date:</p>
                         <CostumCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected} classAdd="small"/> 
                     </div>
                     }
-                <div className="first-exercise-container">
-                    <h1 className="exercise-title">{title}</h1>
-                    <h3 className="exercise-author">by {author}</h3>
-                    <img className="plan-page-image" src={picture}></img>
-                    <i class={`${heartIcon} fa-heart heart-icon`} onClick={heartIconClicked}></i>
-                    {privateEx && <div>PRIVATE</div>}
-                </div>
-                <div className="exercise-info">
-                    <p>Burns:</p>
-                    <div className="exercise-cal">
-                        <p>{cal} cal</p>
                     </div>
-                <div className="tags-container-exercise">{tags}</div>
-                </div>
-                <p className="exercise-description"> {shortDescription}</p>
-                <p className="exercise-content">{content}</p>
+                
 
             </div>
         );

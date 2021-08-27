@@ -101,10 +101,12 @@ function DailyReport(props){
             let linkStr = "/home/workout/"+categorie+"/open/"+x[0]+"/"+x[1];
             return(
                 <div className={`listItem ${done} ${categorie}`}>
+                    <div className="x-button-container">
                     <button className="x-button" onClick={deleteItem}><i class="fas fa-times"></i></button>
+                    </div>
                     <a href="javascript:void(0);" onClick={()=>{props.history.push(linkStr)}} className="item-title">{x[0]}</a>
-                    <p style={{fontSize:"small"}} className="item-author">{x[1]}</p>
-                    <p className="item-calories">{x[2]} cal</p>
+                    <p style={{fontSize:"small"}}>by <span className="item-author">{x[1]}</span></p>
+                    <p style={{fontSize:"0.8em"}}>burns <span className="item-calories">{x[2]} </span>cal</p>
                     <button className={`check-button ${checked}`} onClick={clickedDoneButton}><i class="fas fa-check"></i></button>
                 </div>
             );
@@ -165,8 +167,8 @@ function DailyReport(props){
 
     //deleting item
     function deleteItem(event){
-        var item=event.target.parentElement;
-        if(item.classList.contains("x-button")){
+        var item=event.target.parentElement.parentElement;
+        if(item.classList.contains("x-button-container")){
             item=item.parentElement;
         }
         let title=item.querySelector(".item-title").innerHTML;
@@ -374,6 +376,7 @@ function DailyReport(props){
                 <div class="popup-content">
                     {saveChanges && <SaveChanges onSave={onClickSave} onDont={onClickClose}/>}
                     <h2 class="popup-main-title">{date}</h2>
+                    < div className="to-do-container">
                     <h3>TO DO:</h3>
                     <div className="popup-categorie">
                         <p className="popup-title">Exercises</p>
@@ -385,7 +388,7 @@ function DailyReport(props){
                             </div>
                         </div>
                     </div>
-                    <div className="popup-categorie">
+                    <div className="popup-categorie workout-plans">
                         <p className="popup-title">Workout plans</p>
                         <p className="popup-description">Make a list of workout plans you plan to do through the day.</p>
                         <div className="popup-items-container">
@@ -394,6 +397,7 @@ function DailyReport(props){
                                 <button className="plus-button" onClick={addItemPlans}><i class="fas fa-plus"></i></button>
                             </div>
                          </div>
+                    </div>
                     </div>
                     <div className="popup-categorie">
                     <div class="daily-information">
@@ -408,7 +412,7 @@ function DailyReport(props){
                                 <p style={{fontWeight:"bold"}}>TOTAL: {extraCalSpent + CalSpentPlan + CalSpentEx}</p>
                             </div>
                             <div>
-                            <label for="CalEaten">Calorie intake: </label> <input type="text" value={CalEaten} id="CalEaten" name="CalEaten" className="popup-input calorie-input" onChange={handleChange}/>
+                            <label for="CalEaten" className="cal-intake">Calories intake: </label> <input type="text" value={CalEaten} id="CalEaten" name="CalEaten" className="popup-input calorie-input" onChange={handleChange}/>
                             <div className="error_message"><span className="small">{errorExtraCalEaten}</span></div>
                             </div>
                             <p className="popup-description">* You can modify field Spent additionally to track physical activity outside of workouts this app offers. You can also modify filed Calorie intake to track calories eaten in a day.</p>
@@ -445,7 +449,7 @@ class SaveChanges  extends React.Component{
         return(
             <div className="popup-box save-changes-box">
                 <div className="save-changes">
-                    <p>Do you want to save changes you made in values Eaten additionally, Spent additionally, Weight, Motivation level and Notes?</p>
+                    <p>Do you want to save changes you made?</p>
                     <div className="save-button-container">
                     <button className="save-button" onClick={this.props.onSave}>Save</button>
                     <button className="no-save-button" onClick={()=>{this.props.onDont("saveChanges")}}>Don't save</button>

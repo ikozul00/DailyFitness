@@ -110,7 +110,7 @@ exports.togglePlanFavorite = async function togglePlanFavorite(req,res){
 //getting exercises which are part of plan identified by id from database
 function retriveExercises(id,plan){
     return new Promise((resolve,reject) =>{
-        pool.query(`SELECT title,content,calories,username,length,measure,exercise.picture FROM exercise
+        pool.query(`SELECT title,content,calories,username,length,measure,exercise.picture,description FROM exercise
         INNER JOIN plan_exercise ON plan_exercise."exerciseID"=exercise."exerciseId"
         INNER JOIN "userTable" ON "userTable"."userId"=exercise."userID"
         WHERE plan_exercise."planID"='${id}'`, (error,result) =>{
@@ -305,8 +305,8 @@ exports.NewPlan= async function NewPlan(req,res){
            }
            else{
                let error=false;
-               let exerciseInfo=[];
-               exercises=JSON.parse(req.body.exercises);
+            //    let exerciseInfo=[];
+               let exercises=JSON.parse(req.body.exercises);
                for(let i=0;i<exercises.length;i++){
                 let exerciseId= await getExerciseId(exercises[i].title,exercises[i].author);
                 if(!exerciseId){
@@ -379,6 +379,7 @@ function ConnectPlanExercise(planId,exerciseId,lenghtEx,measure){
         VALUES ('${planId}', '${exerciseId}', '${lenghtEx}', '${measure}')
         RETURNING * `,(error,result) => {
             if(error){
+                throw error;
                 reject(new Error("Error connecting plan and exercise by inserting new row in plan_exercise table."));
             }
             if(result.rows.length===0){

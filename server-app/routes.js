@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-const loginController=require('./controllers/loginController');
+
 const registrationController=require('./controllers/registrationController');
 const dayController=require('./controllers/dayController');
 const monthController=require('./controllers/monthReportController');
@@ -11,9 +11,11 @@ const planController=require('./controllers/planController');
 const pictureController=require('./controllers/pictureController');
 const userController = require('./controllers/userController');
 
-
-//login and registration routes
+const loginController=require('./controllers/loginController');
+//login and registration route
 router.post('/login', loginController.checkUser);
+
+//registration route
 router.post('/registration', registrationController.insertUser);
 
 //retriving information about single day
@@ -86,6 +88,8 @@ router.post("/modify/exerciseSave",exerciseController.toggleExerciseFavorite);
 router.post("/favorites/exercises", loadingListsController.loadFavoriteExercises);
 
 router.post("/favorites/plans", loadingListsController.loadFavoritePlans);
+
+router.get("/exercise/description", exerciseController.getExerciseDescription);
 
 
 module.exports = router;

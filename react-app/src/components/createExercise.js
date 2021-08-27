@@ -15,7 +15,7 @@ export const NewExercise=function CreateExercise()
     const [privateEx, setPrivateEx] = useState(false);
     const [tagsChosen,setTagsChosen] = useState([]);
     const [imageEx,setImageEx] = useState(false);
-    const [imagePreview,setImagePreview] = useState("");
+    const [imagePreview,setImagePreview] = useState(false);
 
     let history=useHistory();
 
@@ -175,34 +175,42 @@ export const NewExercise=function CreateExercise()
         setImagePreview(URL.createObjectURL(e.target.files[0]));
     }
 
+     //removing upoladed image
+     function closeImage(){
+        setImageEx(false);
+        setImagePreview(false);
+      }
+
     return(
         <div className="new-exercise-container">
             <form id="new-exercise-form">
-                <h4>Create New Exercise</h4>
+            <div className="create-new-title">
+                <h2>Create New Exercise</h2>
+            </div>
                 <div className="form-field">
-                <label for="title">Title: </label>
+                <label for="title"  className="form-text">Title: </label>
                 <input type="text" id="title" name="title" value={title} onChange={handleChange}/>
                 </div>
                 <div className="form-field">
-                <label for= "calories">Burns (cal):</label>
+                <label for= "calories"  className="form-text">Burns (cal):</label>
                 <input type="text" id="calories" name="calories" value={calories} onChange={handleChange}/>
                 <div><span>{calError}</span></div>
                 </div>
                 <div className="form-field">
-                <lable for="description">Short description: </lable>
-                <textarea name="description" id="description" value={description} onChange={handleChange}/>
+                <lable for="description"  className="form-text">Short description: </lable>
+                <textarea name="description" id="description" rows="6" value={description} onChange={handleChange}/>
                 </div>
                 <div className="form-field">
-                <lable for="content">Text: </lable>
-                <textarea name="content" id="content" value={content} onChange={handleChange}/>
+                <lable for="content"  className="form-text">Content: </lable>
+                <textarea name="content" rows="12" id="content" value={content} onChange={handleChange}/>
                 </div>
                 <div className="form-field checkbox">
-                <label for = "private">Private: </label>
+                <label for = "private"  className="form-text">Private: </label>
                 <input type="checkbox" name="private" id="private" checked={privateEx} onChange={handleChange}/>
                 </div>
-                <div>* if you put exercise on private only you will be able to see it and add it to your plans</div>
+                <div className="private-message">* if you put the exercise on private only you will be able to see it and add it to your plans</div>
                 <div>
-                    <p>Tags: </p>
+                    <p  className="form-text">Choose tags: </p>
                 <div className="workout-categorie">
                         <p>Difficulty:</p>
                         <div className="workout-buttons-container">
@@ -219,26 +227,37 @@ export const NewExercise=function CreateExercise()
                         <button className="workout-categorie-button" onClick={tagClicked}>Chest</button>
                         <button className="workout-categorie-button" onClick={tagClicked}>Core</button>
                         <button className="workout-categorie-button" onClick={tagClicked}>Abs</button>
-                        <button className="workout-categorie-button" onClick={tagClicked}>Booty</button>
+                        <button className="workout-categorie-button" onClick={tagClicked}>Legs</button>
                         </div>
                     </div>
-                    <div className="workout-categorie">
+                    <div className="workout-categorie last">
                         <p>Type:</p>
                         <div className="workout-buttons-container">
                         <button className="workout-categorie-button" onClick={tagClicked}>Warm up</button>
                         <button className="workout-categorie-button" onClick={tagClicked}>Cardio</button>
                         <button className="workout-categorie-button" onClick={tagClicked}>Stretching</button>
                         <button className="workout-categorie-button" onClick={tagClicked}>Strength</button>
+                        <button className="workout-categorie-button" onClick={tagClicked}>Whole body</button>
+                        <button className="workout-categorie-button" onClick={tagClicked}>Aerobic</button>
                         </div>
                     </div>
                 </div>
                 <div>
+                    <p className="form-text">Picture:</p>
+                {!imagePreview && <label class="custom-file-upload-new">
                 <input type="file" onChange={fileUploaded} name="image"/>
-                <img src={imagePreview} className="image-upload-exercise"/>
+                Upload picture
+                </label>}
+                {imagePreview && <div className="new-picture-container"><img src={imagePreview} className="image-upload-exercise"/>
+                <button onClick={closeImage} className="close-button">Remove image</button>
                 </div>
-                <div><span>{formMessage}</span></div>
-                <input type="submit" value="Save" onClick={handleSave}/>
-                <button onClick={cancelClicked}>Cancel</button>    
+                }
+                </div>
+                {(formMessage!=="") && <div className="form-error-message"><span>{formMessage}</span></div>}
+                <div className="button-container-new">
+                <input type="submit" value="Save" onClick={handleSave} className="save-button"/>
+                <button onClick={cancelClicked} className="cancel-button">Cancel</button>    
+                </div>  
             </form>
 
      

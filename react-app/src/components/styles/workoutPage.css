@@ -172,10 +172,18 @@
   }
 
   .plan-container{
-      border:1px solid #000033;
+      border:2px solid #000033;
       margin:10px;
       padding:3px;
       border-radius: 5px;
+      background-color: #fffaf0;
+      display:flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      padding:10px;
+      max-width: 1500px;
+      height: 40vh;
   }
 
   .workout-navigation .button-clicked{
@@ -242,22 +250,24 @@
 .plan-container .tags-container{
     display:flex;
     flex-direction: row;
-    justify-content: flex-end;
-    margin-right: 20px;
-    margin-bottom: 20px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    width: 600px;
 }
 
 .tags-container .tag{
     font-size: 0.8em;
     width:100px;
-    background-color: chartreuse;
+    background-color: #fdff00;
     text-align: center;
     padding-left: 3px;
     padding-right: 3px;
     padding-top:0px;
     padding-bottom: 0px;
     border-radius:10px;
-    margin:0 8px;
+    margin:0 10px 15px;
 }
 
 .tag-text{
@@ -276,6 +286,7 @@
     display:flex;
     justify-content: center;
     align-items: center;
+    z-index:1;
 }
 
 .cancel-date-button{
@@ -287,12 +298,229 @@
     border:none;
 }
 
-.add-button{
+.plan-container .add-button{
     padding: 10px;
-    background-color: coral;
+    background-color: #000080;
+    color:whitesmoke;
+    position:relative;
+    /* top:-50px; */
+}
+
+.plan-container .add-button:hover{
+    transform: scale(1.1);
 }
 
 
 .list-picture{
     width: 200px;
 }
+
+.plan-container .image-container{
+    margin-left:10px;
+    margin-right:20px;
+}
+
+
+.plan-container .plan-title{
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+
+.plan-container .plan-title:link{
+    color:#000033 ;
+}
+
+.plan-container .plan-title:visited{
+    color:#0a0a9f ;
+}
+
+.plan-container .plan-author{
+    font-weight: 600;
+}
+
+.plan-container .exercise-title{
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+
+.plan-container .exercise-title:link{
+    color:#000033 ;
+}
+
+.plan-container .exercise-title:visited{
+    color:#0a0a9f ;
+}
+
+.plan-container .exercise-author{
+    font-weight: 600;
+}
+
+.plan-container .exercise-cal{
+    font-weight: 600;
+}
+
+.plan-container .exercise-description{
+    font-size: 0.9em;
+    width: 600px;
+}
+
+
+.plan-container .plan-calories{
+    font-weight: 600;
+}
+
+.plan-container .plan-description{
+    font-size: 0.9em;
+    width: 600px;
+}
+
+.private-container{
+    background-color: #f78fa7;
+    text-align: center;
+    font-size: 0.9em;
+    width:100px;
+}
+
+.add-to-calendar{
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 200px;
+    margin-bottom: 50px;
+}
+
+.plan-container .first-container{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    width: 800px;
+}
+
+.plans-calendar-container{
+    position:relative;
+    right: 15px;
+    top:-20px;
+}
+
+.plans-calendar-container .calendar-description{
+    position:relative;
+    right: 100px;
+    top:100px;
+}
+
+
+.plans-calendar-container .close-calendar{
+    position:relative;
+    right:-220px;
+    bottom:-55px;
+    font-size:1.3em;
+    border:none;
+    background-color: #ebbebe;
+    border-radius: 50%;
+    color:rgb(83, 11, 11);
+}
+
+.plans-calendar-container .close-calendar:hover{
+    transform: scale(1.1);
+}
+
+.add-button-to-plan{
+    padding: 10px;
+    background-color: #000080;
+    color:whitesmoke;
+    /* position:relative;
+    top:-50px;
+    width: 200px; */
+    width:200px;
+}
+
+/* .plan-container .add-to-plan-form{
+    position:relative;
+    right: 100px;
+    width:200px;
+} */
+
+.add-to-plan-form .exercise-duration{
+    width: 50px;
+    margin:0 10px;
+}
+
+
+.exercise-measure{
+    background-color: pink;
+}
+
+.add-to-plan-form .form-description{
+    width:300px;
+}
+
+.add-to-plan-form .add-exercise{
+    padding:5px;
+    width:70px;
+    margin:15px;
+    background-color: rgb(50,205,50);
+    border:none;
+    color:white;
+}
+
+.add-to-plan-form .cancel-adding{
+    padding:5px;
+    width:70px;
+    margin: 15px;
+    background-color: red;
+    border:none;
+    color:white;
+}
+
+.add-to-plan-form .add-exercise:hover{
+    transform: scale(1.1);
+}
+
+
+.add-to-plan-form .cancel-adding:hover{
+    transform: scale(1.1);
+}
+
+.plan-container .additional-info{
+    width:100%;
+    height:100%;
+}
+
+.exercise-calendar-container{
+    position:relative;
+    right: -50px;
+    top:-100px;
+}
+
+.exercise-calendar-container .calendar-description{
+    position:relative;
+    right: 100px;
+    top:100px;
+}
+
+
+.exercise-calendar-container .close-calendar{
+    position:relative;
+    right:-220px;
+    bottom:-55px;
+    font-size:1.3em;
+    border:none;
+    background-color: #ebbebe;
+    border-radius: 50%;
+    color:rgb(83, 11, 11);
+}
+
+.exercise-calendar-container .close-calendar:hover{
+    transform: scale(1.1);
+}
+
+
+
+
+
+
+
+

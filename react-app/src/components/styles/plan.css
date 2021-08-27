@@ -1,6 +1,4 @@
-.plan-step-container{
-    border:3px solid blue;
-}
+
 
 .heart-icon{
     font-size:1.5em;
@@ -11,5 +9,273 @@
 }
 
 .plan-page-image{
-    width: 200px;
+    width: 250px;
+}
+
+
+.plan-main-container{
+    background-color: #fff0f5;
+   
+}
+
+.first-plan-container{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.first-plan-container .basic-plan-info{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.first-plan-container .plan-title{
+    text-decoration: underline;
+    width:550px;
+}
+
+
+.plan-main-container .second-plan-container{
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 40px;
+    border-bottom: 2px solid rgb(57, 52, 86);
+    border-top: 2px solid rgb(57, 52, 86);
+    padding:15px 0px;
+    width:95%;
+    margin-top:10px;
+    margin-bottom: 0px;
+   
+}
+
+.plan-main-container .plan-info{
+    margin-left: 40px;
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.plan-info .private-container{
+    padding:0;
+    width: 100px;
+    padding-top:0px;
+}
+
+.plan-info .private-text{
+    padding:0px;
+    margin:0px;
+}
+
+.plan-info .plan-cal{
+    font-weight: 600;
+}
+
+.second-plan-container .tags-container-plan{
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 600px;
+}
+
+.tags-container-plan .tag{
+    font-size: 0.8em;
+    width:100px;
+    background-color: #fdff00;
+    text-align: center;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top:0px;
+    padding-bottom: 0px;
+    border-radius:10px;
+    margin:0 10px 15px;
+}
+
+.plan-content-container{
+    width:95%;
+}
+
+.plan-content-container .title{
+    text-align: left;
+}
+
+#description-container-plan{
+    text-align: left;
+    width:1000px;
+    margin-top:0px;
+}
+
+#description-container-plan .plan-description{
+    margin-left: 20px;
+
+}
+
+.plan-step-container-main{
+    border:3px solid rgb(12, 12, 45);
+    border-radius: 5px;
+    margin: 15px auto;
+    background-color: #f5d6e0;
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.plan-step-container{
+    
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.exercise-content-container{
+    margin:0 auto;
+}
+
+.exercise-content-container .content-text{
+    margin-left:15px;
+}
+
+.plan-step-container .number-container{
+    width: 80px;
+    border: 3px solid rgb(12, 12, 45);
+    border-radius:50%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.plan-step-container .exercise-data{
+    margin-left: 20px;
+    width: 600px;
+    text-align:left;
+}
+
+.exercise-data .exercise-author{
+    margin-left: 15px;
+}
+
+.exercise-data .exercise-title{
+    text-decoration: underline;
+}
+
+
+.plan-step-container .general-info{
+   text-align: left;
+}
+
+.plan-step-container .description-text{
+    margin-left: 15px;
+ }
+
+ .plan-step-container .repetition{
+    margin-left: 20px;
+    font-weight: bold;
+    border:3px solid blue;
+    width:100px;
+ }
+
+ .plan-step-container .img-container{
+     width: 250px;
+ }
+
+ .plan-step-image{
+     width: 250px;
+ }
+
+ .plan-content-container .plus-container{
+    text-align: center;
+    width: 100%;
+    font-size:1.5em;
+    border: 3px solid rgb(12, 12, 45);
+    border-radius: 5px;
+    background-color: #f5d6e0;
+ }
+
+ .plan-content-container .plus-button-plan{
+     border-radius: 50%;
+     width: 100px;
+     height: 100px;
+     background-color: #f5d6e0;
+     font-size: 1.5em;
+     border: 3px solid #002147;
+     color:#002147;
+     
+ }
+
+ .plan-content-container .plus-button-plan:hover{
+    transform: scale(1.2);
+ }
+
+ .plan-main-container .delete-button{
+     background-color: red;
+     font-weight: bold;
+     color:white;
+     border:1px solid rgb(78, 7, 7);
+     width: 150px;
+     padding-top: 5px;
+     padding-bottom: 5px;
+ }
+
+ .plan-main-container .delete-button:hover{
+    transform: scale(1.1);
+}
+
+.plan-main-container .add-button-plan{
+    background-color: #000080;
+    color:white;
+    border:none;
+    padding:7px;
+    width: 150px;
+}
+
+
+.plan-main-container .add-button-plan:hover{
+    transform: scale(1.1);
+}
+
+
+.plan-main-container .button-container{
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 100px;
+    position:absolute;
+    top:90px;
+    right:70px;
+}
+
+.plan-main-container .plan-calendar-container{
+    padding:10px;
+    width: 250px;
+    position: relative;
+    top:102px;
+}
+
+.plan-calendar-container .close-calendar{
+    font-size:1.3em;
+    border:none;
+    background-color: #ebbebe;
+    border-radius: 50%;
+    color:rgb(83, 11, 11);
+    position:relative;
+    top:95px;
+    right:-215px;
+}
+
+.plan-calendar-container .close-calendar:hover{
+    transform: scale(1.1);
+}
+
+.plan-calendar-container .calendar-text{
+    position:relative;
+    top: 30px;
 }

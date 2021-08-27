@@ -148,7 +148,7 @@ export const WorkoutPage=function WorkoutPage(props){
                         <button className="workout-categorie-button" onClick={tagClicked}>Chest</button>
                         <button className="workout-categorie-button" onClick={tagClicked}>Core</button>
                         <button className="workout-categorie-button" onClick={tagClicked}>Abs</button>
-                        <button className="workout-categorie-button" onClick={tagClicked}>Booty</button>
+                        <button className="workout-categorie-button" onClick={tagClicked}>Legs</button>
                         </div>
                     </div>
                     <div className="workout-categorie last">
@@ -158,6 +158,8 @@ export const WorkoutPage=function WorkoutPage(props){
                         <button className="workout-categorie-button" onClick={tagClicked}>Cardio</button>
                         <button className="workout-categorie-button" onClick={tagClicked}>Stretching</button>
                         <button className="workout-categorie-button" onClick={tagClicked}>Strength</button>
+                        <button className="workout-categorie-button" onClick={tagClicked}>Whole body</button>
+                        <button className="workout-categorie-button" onClick={tagClicked}>Aerobic</button>
                         </div>
                     </div>
                     <button className="search-button" onClick={startSearchTags}><i class="fas fa-search search-icon"></i> Search</button>

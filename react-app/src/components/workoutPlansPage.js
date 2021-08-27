@@ -102,6 +102,7 @@ export const MyPlans=function (props){
           //checking if date on calendar is currently picked
           if(sessionStorage.getItem("date")){
             setDate(sessionStorage.getItem("date"));
+            
         }
 
         //retriving list of all plans from database whose author is logged user
@@ -116,16 +117,23 @@ export const MyPlans=function (props){
 
         
         //if some plan was previosy picked, reminding user
-        if(sessionStorage.getItem("plan")){
+        if(sessionStorage.getItem("plan") && !props.setChoosen){
             history.push("/home/workout/exercise/cancel");
           }
 
            //if there is plan in memory that is currently creating, remind user
-        if(sessionStorage.getItem("planCreating")){
+        if(sessionStorage.getItem("planCreating") && !props.setChoosen){
             history.push("/home/workout/plan/cancel");
           }
 
    },[]);
+
+   useEffect(() => {
+       if(props.setChoosen!==undefined){
+        props.setChoosen(false,"My Plans");
+       }
+    
+});
 
    function quitDate(){
     sessionStorage.removeItem("date");
@@ -211,6 +219,9 @@ export const AllPlans=function(props){
         </div>);
     }
     let result = plans.map((x) => {
+        if(x.picture===null){
+            x.picture="/images/no-image-found-360x250.png";
+        }
         return(
          <ShortPlan tags={x.tags} title={x.title} username={x.username} description={x.description} calories={x.calories} history={history} private={x.private} picture={x.picture}/>
         );
@@ -226,7 +237,7 @@ function ShortPlan(props){
     const[addButton,setAddButton] = useState(true);
     let history=useHistory();
 
-    let tags=createTags(props.tags);
+    let tags=props.tags.length===0 ? false : createTags(props.tags);
     let linkStr="/home/workout/plan/open/"+props.title+"/"+props.username;
 
     //function which sends request to server to add plan to certain date in calendar
@@ -270,8 +281,8 @@ function ShortPlan(props){
     function daySelected(value,event){
         let pickedDay=value.toDateString();
         //getting clicked planContainer
-        let item=event.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-        if(item.classList.contains("plans-calendar-container")){
+        let item=event.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+        if(item.classList.contains("add-to-calendar")){
             item=item.parentElement;
         }
         let title=item.querySelector(".plan-title").innerHTML;
@@ -286,23 +297,29 @@ function ShortPlan(props){
 
     return(
         <div class="plan-container">
+            <div className="first-container">
+            <div className="image-container">
+                <img src={props.picture} className="list-picture"></img>
+            </div>
+            <div>
            <a className="plan-title" href="javascript:void(0);" onClick={()=>{history.push(linkStr)}}>{props.title}</a>
-           <p>by <span className="plan-author">{props.username}</span></p>
-           <img src={props.picture} className="list-picture"></img>
-            <p>{props.description}</p>
-            <p>{props.calories} cal</p>  
-            {props.private && <p>PRIVATE</p>}
+           <p className="plan-author-container">by <span className="plan-author">{props.username}</span></p>
+           <p>burns <span className="plan-calories">{props.calories}</span> cal</p>
+           {props.private && <div className="private-container"><p>PRIVATE</p></div>}
+            <p className="plan-description">{props.description}</p>  
+            {tags && <div className="tags-container">Tags: {tags}</div>}
+            </div>
+            </div>
+            <div className="add-to-calendar">
+            {addButton && <button className="add-button" onClick={()=>{addToCalendar(props.title,props.username)}}>Add to calendar</button>}
             {calendarDisplay &&
             <div className="plans-calendar-container">
-                <p>Pick a date:</p>
-                <button onClick={closeCalendar}>Close</button>
+                <p className="calendar-description">Pick a date:</p>
+                <button onClick={closeCalendar} className="close-calendar"><i class="fas fa-times"></i></button>
                 <CostumCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected} classAdd="small"/> 
             </div>
             }
-            <div className="tags-container">{tags}</div>
-          {addButton && <button className="add-button" onClick={()=>{addToCalendar(props.title,props.username)}}>Add</button>}
-
-
+          </div>
         </div>
        );
 }

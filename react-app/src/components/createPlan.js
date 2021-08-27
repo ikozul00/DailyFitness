@@ -12,9 +12,9 @@ export const NewPlan = function NewPlan(){
     const [privatePlan,setPrivatePlan] = useState(false);
     const [calError,setCalError] = useState("");
     const [formMessage,setFormMessage] = useState("");
-    const [exercisesText,setExercisesText] = useState("");
+    const [exercisesText,setExercisesText] = useState([]);
     const [imagePlan,setImagePlan] = useState(false);
-    const [imagePreview,setImagePreview] = useState("");
+    const [imagePreview,setImagePreview] = useState(false);
 
     let history= useHistory();
 
@@ -22,7 +22,7 @@ export const NewPlan = function NewPlan(){
     useEffect(() => {
         let plan=JSON.parse(sessionStorage.getItem("planCreating"));
         if(plan){
-            console.log(plan);
+            console.log(plan.exercises);
             setTitle(plan.title);
             setDescription(plan.description);
             setCalories(plan.calories);
@@ -53,7 +53,7 @@ export const NewPlan = function NewPlan(){
 
     function setClickedTags(tags){
         for(let i=0;i<tags.length;i++){
-            let tag=tags[i].replace("_"," ");
+            let tag=tags[i].replace(" ","_");
             let item=document.querySelector("."+tag);
             if(!item.classList.contains("clicked")){
                 item.classList.add("clicked");
@@ -193,19 +193,37 @@ export const NewPlan = function NewPlan(){
             return (<div></div>);
         }
         else{
+            let br=0;
             let result= exercises.map((x) => {
-                let tags=createTags(x.tags);
+                if(x.picture===null){
+                    x.picture="/images/no-image-found-360x250.png";
+                }
+                br++;
                 return(
-                    <div class="plan-container">
-                        <p className="exerciseInPlan-title">{x.title}</p>
-                        <p>{x.author}</p>
-                        <p>{x.cal}</p>
-                        <p>{x.description}</p>
-                        <p>{x.content}</p>
-                        <div>{tags}</div>
-                        <p>{x.lengthEx}</p>
-                        <p>{x.measure}</p>
+                    <div className="plan-step-container-main-new">
+                    <div className="plan-step-container-new">
+                         <div className="number-container">
+                            <h2 style={{textDecoration:"none"}}>{br}.</h2>
+                        </div>
+                        <div className="img-container">
+                        <img className="plan-step-image" src={x.picture}></img>
+                        </div>
+                        <div className="exercise-data-new">
+                        <h2 className="exerciseInPlan-title">{x.title}</h2>
+                        <h3 className="exercise-author">by <span className="exerciseInPlan-author">{x.author}</span></h3>
+                        <p>burns <span className="cal"><b>{x.cal}</b></span> cal</p>
+                        <h4>Short description:</h4>
+                        <p className="description-text">{x.description}</p>   
+                        </div>
+                        <div className="repetition">
+                            <p>{x.lengthEx} {x.measure}</p>
+                        </div>
                         <button onClick={deleteExercise}>Cancel</button>
+                        </div>
+                        <div className="exercise-content-container">
+                    <h4>Content:</h4>
+                            <p className="content-text">{x.content}</p>
+                    </div>
                     </div>
                 );
             });
@@ -238,33 +256,41 @@ export const NewPlan = function NewPlan(){
         setImagePreview(URL.createObjectURL(e.target.files[0]));
     }
 
+      //removing upoladed image
+      function closeImage(){
+        setImagePlan(false);
+        setImagePreview(false);
+      }
+
 
 
 
     return(
         <div className="new-exercise-container">
             <form id="new-exercise-form">
-                <h4>Create New Plan</h4>
+                <div className="create-new-title">
+                <h2>Create New Plan</h2>
+                </div>
                 <div className="form-field">
-                <label for="title">Title: </label>
+                <label for="title" className="form-text">Title: </label>
                 <input type="text" id="title" name="title" value={title} onChange={handleChange}/>
                 </div>
                 <div className="form-field">
-                <label for= "calories">Burns (cal):</label>
+                <label for= "calories" className="form-text">Burns (cal):</label>
                 <input type="text" id="calories" name="calories" value={calories} onChange={handleChange}/>
                 <div><span>{calError}</span></div>
                 </div>
                 <div className="form-field">
-                <lable for="description">Short description: </lable>
-                <textarea name="description" id="description" value={description} onChange={handleChange}/>
+                <lable for="description"  >Short description: </lable>
+                <textarea name="description" rows="6" id="description" value={description} onChange={handleChange}/>
                 </div>
                 <div className="form-field checkbox">
-                <label for = "private">Private: </label>
+                <label for = "private" className="form-text">Private: </label>
                 <input type="checkbox" name="private" id="private" checked={privatePlan} onChange={handleChange}/>
                 </div>
-                <div>* if you put plan on private only you will be able to see it and add it to your calendar</div>
+                <div className="private-message">* if you put the plan on private only you will be able to see it and add it to your calendar</div>
                 <div>
-                    <p>Tags: </p>
+                    <p className="form-text">Choose tags: </p>
                 <div className="workout-categorie">
                         <p>Difficulty:</p>
                         <div className="workout-buttons-container">
@@ -281,26 +307,44 @@ export const NewPlan = function NewPlan(){
                         <button className="workout-categorie-button chect" onClick={tagClicked}>Chest</button>
                         <button className="workout-categorie-button core" onClick={tagClicked}>Core</button>
                         <button className="workout-categorie-button abs" onClick={tagClicked}>Abs</button>
-                        <button className="workout-categorie-button booty" onClick={tagClicked}>Booty</button>
+                        <button className="workout-categorie-button legs" onClick={tagClicked}>Legs</button>
                         </div>
                     </div>
-                    <div className="workout-categorie">
+                    <div className="workout-categorie last">
                         <p>Type:</p>
                         <div className="workout-buttons-container">
                         <button className="workout-categorie-button warm_up" onClick={tagClicked}>Warm up</button>
                         <button className="workout-categorie-button cardio" onClick={tagClicked}>Cardio</button>
                         <button className="workout-categorie-button stretching" onClick={tagClicked}>Stretching</button>
                         <button className="workout-categorie-button strength" onClick={tagClicked}>Strength</button>
+                        <button className="workout-categorie-button whole_body" onClick={tagClicked}>Whole body</button>
+                        <button className="workout-categorie-button aerobic" onClick={tagClicked}>Aerobic</button>
                         </div>
                     </div>
                 </div>
+                <div className="added-exercises">
+                    <div className="added-exercises-title">
+                    <p className="form-text">Exercises:</p>
+                    </div>
                 {createExercisesList(exercisesText)}
-                <button onClick={addExerciseClicked}>Add Exercise</button>
+                <button onClick={addExerciseClicked} className="add-exercise-button">Add Exercise</button>
+                </div>
+                <div>
+                    <p className="form-text">Picture:</p>
+                    {!imagePreview && <label class="custom-file-upload-new">
                 <input type="file" onChange={fileUploaded} name="image"/>
-                <img src={imagePreview} className="image-upload-exercise"/>
-                <div><span>{formMessage}</span></div>
-                <input type="submit" value="Save" onClick={handleSave}/>
-                <button onClick={cancelClicked}>Cancel</button>    
+                Upload picture
+                </label>}
+                {imagePreview && <div className="new-picture-container"><img src={imagePreview} className="image-upload-exercise"/>
+                <button onClick={closeImage} className="close-button">Remove image</button>
+                </div>
+                }
+                </div>
+                { (formMessage!=="") && <div className="form-error-message"><span>{formMessage}</span></div>}
+                <div className="button-container-new">
+                <input type="submit" value="Save" onClick={handleSave} className="save-button"/>
+                <button onClick={cancelClicked} className="cancel-button">Cancel</button>    
+                </div>
             </form>
         </div>
     );

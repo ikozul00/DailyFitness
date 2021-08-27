@@ -11,7 +11,7 @@ export const Plan=function (props) {
     const [err,setErr]=useState(false);
     const [description,setDescription]=useState("");
     const [cal,setCal]=useState(0);
-    const [tags,setTags]=useState("");
+    const [tags,setTags]=useState(false);
     const [exercise,setExercise]=useState("");
     const [pickedDate,setPickedDate] = useState(false);
     const[addButton,setAddButton] = useState(true);
@@ -37,11 +37,11 @@ export const Plan=function (props) {
                 setErr(false);
                 setDescription(response.data.plan.description);
                 setCal(response.data.plan.calories);
-                setTags(createTags(response.data.plan.tags));
+                setTags(response.data.plan.tags[0]===null ? false : createTags(response.data.plan.tags));
                 setExercise(createExercises(response.data.plan.exercise));
                 setPrivatePlan(response.data.plan.privatePlan);
                 setPlanId(response.data.plan.planId);
-                setImage(response.data.plan.img);
+                setImage(response.data.plan.img===null ? "/images/no-image-found-360x250.png" : response.data.plan.img);
                 if(response.data.plan.favorite){
                     setHeartIcon("fas");
                 }
@@ -132,15 +132,35 @@ export const Plan=function (props) {
         let result=items.map((x) => {
             if(x!==null){
                 br++;
+                if(x.picture===null){
+                    x.picture="/images/no-image-found-360x250.png";
+                }
                 return(
+                    <div className="plan-step-container-main">
                     <div className="plan-step-container">
-                        <p>{br}.</p>
-                        <p>{x.title}</p>
-                        <p>by {x.username}</p>
-                        <img className="plan-page-image" src={x.picture}></img>
-                        <p>{x.calories} cal</p>
-                        <p>{x.content}</p>
-                        <p>{x.length} {x.measure}</p>
+                        <div className="number-container">
+                        <h2>{br}.</h2>
+                        </div>
+                        <div className="img-container">
+                        <img className="plan-step-image" src={x.picture}></img>
+                        </div>
+                        <div className="exercise-data">
+                        <h2 className="exercise-title">{x.title}</h2>
+                        <h3 className="exercise-author">by {x.username}</h3>
+                        <div className="general-info">
+                            <p>burns <span className="cal"><b>{x.calories}</b></span> cal</p>
+                            <h4>Short description:</h4>
+                            <p className="description-text">{x.description}</p>   
+                        </div>
+                        </div>
+                        <div className="repetition">
+                            <p>{x.length} {x.measure}</p>
+                        </div>
+                    </div>
+                    <div className="exercise-content-container">
+                    <h4>Content:</h4>
+                            <p className="content-text">{x.content}</p>
+                    </div>
                     </div>
                 );
             }
@@ -218,40 +238,54 @@ export const Plan=function (props) {
     }
     else{
         return(
-            <div className="exercise-main-container">
+            <div className="plan-main-container">
                 {deleteMessage && <DeleteItem name={title} onDeleteYes={onDeleteYes} onDeleteNo={onDeleteNo} type="plan"/>}
                 {pickedDate && <div class="date-message"><p>You are currently located in day:  <b>{  pickedDate}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
-                {displayDelete && <button onClick={deletePlan}>Delete</button>}
-                <div className="first-exercise-container">
-                    <h1 className="exercise-title">{title}</h1>
-                    <h3 className="exercise-author">by {author}</h3>
-                    <img className="plan-page-image" src={image}></img>
+               
+                <div className="first-plan-container">
+                
+                    <div className="basic-plan-info">
+                    <h1 className="plan-title">{title}</h1>
+                    <h3 className="plan-author">by {author}</h3>
                     <i class={`${heartIcon} fa-heart heart-icon`} onClick={heartIconClicked}></i>
-                    {privatePlan && <div>PRIVATE</div>}
-                    {addButton && <button className="add-button" onClick={()=>{addToCalendar()}}>Add</button>}
-                    {calendarDisplay &&
-                    <div className="plans-calendar-container">
-                        <p>Pick a date:</p>
-                        <button onClick={closeCalendar}>Close</button>
-                        <CostumCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected} classAdd="small"/> 
                     </div>
-                    }
+                    <div className="second-plan-container">
+                    <img className="plan-page-image" src={image}></img>
+                    <div className="plan-info">
+                    {privatePlan && <div className="private-container"><p className="private-text">PRIVATE</p></div>}
+                    <p>burns <span className="plan-cal">{cal}</span> cal</p>
+                    {tags && <div className="tags-container-plan"><b>Tags:</b> {tags}</div>}
+                    <div id="description-container-plan">
+                <h4 style={{marginTop:"0px"}}>Short description:</h4>
+                <p className="plan-description">{description}</p>
                 </div>
-                <div className="exercise-info">
-                    <p>Burns:</p>
-                    <div className="exercise-cal">
-                        <p>{cal} cal</p>
                     </div>
-                <div className="tags-container-exercise">{tags}</div>
                 </div>
-                <p className="exercise-content">{description}</p>
-                <h4>Content:</h4>
+
+                <div className="plan-content-container">
+                
+             
+                <h3 className="title">Steps:</h3>
                 <div>{exercise}</div>
                 {displayAddExercise &&
                 <div className="plus-container">
-                    <button className="plus-button" onClick={addExercise}><i class="fas fa-plus"></i></button>
+                    <button className="plus-button-plan" onClick={addExercise}><i class="fas fa-plus"></i></button>
                 </div>
                 }
+                </div>
+
+                </div>
+                <div className="button-container">
+                {displayDelete && <button className="delete-button" onClick={deletePlan}>DELETE</button>}
+                {addButton && <button className="add-button-plan" onClick={()=>{addToCalendar()}}>Add to calendar</button>}
+                    {calendarDisplay &&
+                    <div className="plan-calendar-container">
+                        <button className="close-calendar" onClick={closeCalendar}><i class="fas fa-times"></i></button>
+                        <p className="calendar-text">Pick a date:</p>
+                        <CostumCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected} classAdd="small"/> 
+                    </div>
+                    }
+                    </div>
 
             </div>
         );
