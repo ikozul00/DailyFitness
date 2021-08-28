@@ -24,6 +24,7 @@ export const Plan=function (props) {
     const [heartIcon, setHeartIcon] = useState("far");
     const [planId,setPlanId] = useState("");
     const [image, setImage] = useState("");
+    const [displayDeleteEx, setDisplayDeleteEx] = useState(false);
 
     let history=useHistory();
 
@@ -63,6 +64,7 @@ export const Plan=function (props) {
 
         if(author===sessionStorage.getItem("username") && !sessionStorage.getItem("date")){
             setDisplayAddExercise(true);
+            setDisplayDeleteEx(true);
         }
 
         
@@ -195,9 +197,9 @@ export const Plan=function (props) {
                         <div className="repetition">
                             <p>{x.length} {x.measure}</p>
                         </div>
-                        <div>
+                        {displayDeleteEx && <div>
                             <button className="delete-exercise-button" onClick={deleteExercise}><i class="fas fa-times"></i></button>
-                        </div>
+                        </div>}
                     </div>
                     <div className="exercise-content-container">
                     <h4>Content:</h4>
