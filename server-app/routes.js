@@ -91,5 +91,7 @@ router.post("/favorites/plans", loadingListsController.loadFavoritePlans);
 
 router.get("/exercise/description", exerciseController.getExerciseDescription);
 
+router.delete("/delete/planExercise", planController.deleteExerciseFromPlan);
+
 
 module.exports = router;

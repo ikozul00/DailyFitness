@@ -517,4 +517,26 @@ function deletePlanFavoriteConnection(planId){
     });
 }
 
+exports.deleteExerciseFromPlan = async function deleteExerciseFromPlan(req, res){
+    let exerciseId = await getExerciseId(req.query.title,req.query.author);
+    if(!exerciseId){
+        res.json({"success":false});
+    }
+    else{
+        pool.query(`DELETE FROM plan_exercise
+        WHERE "exerciseID"='${exerciseId}' AND "planID" = '${req.query.plan}' 
+        RETURNING *`, (error, result) => {
+            if(error){
+                throw error;
+            }
+            if(result.rows.length===0){
+                res.json({"success":false});
+            }
+            else{
+                res.json({"success":true});
+            }
+        });
+    }
+}
+
 exports.getUserId=getUserId;

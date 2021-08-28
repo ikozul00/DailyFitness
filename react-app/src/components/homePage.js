@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './styles/homePage.css';
 import './styles/calendar.css'
 //import 'react-calendar/dist/Calendar.css';
-import CostumCalendar from './calendar';
+import CustomCalendar from './calendar';
 import axios from 'axios';
 import {useState} from 'react';
 import {useHistory} from 'react-router-dom';
@@ -148,7 +148,7 @@ function HomePage(props){
       if(username){
         return(
             <div id="calendarContainer"> 
-             <CostumCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected} classAdd=""/> 
+             <CustomCalendar startDate={startDate} monthChange={activeMonthChange} pickDay={daySelected} classAdd=""/> 
              <div className="monthly_report">
                 <h2 class="welcomeTitle">Welcome {name}</h2>
                  <h3>Monthly report for {returnMonth(startDate.getMonth())}</h3>

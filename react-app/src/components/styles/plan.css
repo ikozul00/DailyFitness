@@ -82,7 +82,7 @@
     flex-direction: row;
     justify-content: flex-start;
     flex-wrap: wrap;
-    width: 600px;
+    width: 500px;
 }
 
 .tags-container-plan .tag{
@@ -128,8 +128,7 @@
     align-items: flex-start;
 }
 
-.plan-step-container{
-    
+.plan-step-container{  
     display:flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -141,7 +140,7 @@
 }
 
 .exercise-content-container .content-text{
-    margin-left:15px;
+    margin-left:15px; 
 }
 
 .plan-step-container .number-container{
@@ -154,11 +153,25 @@
 
 .plan-step-container .exercise-data{
     margin-left: 20px;
-    width: 600px;
+    width: 500px;
     text-align:left;
 }
 
-.exercise-data .exercise-author{
+.plan-step-container .delete-exercise-button{
+    background-color: #f5d6e0;
+    border:none;
+    font-size:1.8em;
+    color: red;
+    position:relative;
+    left:100px;
+    top:-90px;
+}
+
+.plan-step-container .delete-exercise-button:hover{
+    transform: scale(1.2);
+}
+
+.exercise-data .exercise-author-container{
     margin-left: 15px;
 }
 
@@ -176,7 +189,6 @@
  }
 
  .plan-step-container .repetition{
-    margin-left: 20px;
     font-weight: bold;
     border:3px solid blue;
     width:100px;
@@ -250,7 +262,7 @@
     height: 100px;
     position:absolute;
     top:90px;
-    right:70px;
+    right:80px;
 }
 
 .plan-main-container .plan-calendar-container{

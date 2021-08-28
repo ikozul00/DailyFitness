@@ -12,7 +12,7 @@ export const Plan=function (props) {
     const [description,setDescription]=useState("");
     const [cal,setCal]=useState(0);
     const [tags,setTags]=useState(false);
-    const [exercise,setExercise]=useState("");
+    const [exercises,setExercises]=useState("");
     const [pickedDate,setPickedDate] = useState(false);
     const[addButton,setAddButton] = useState(true);
     const[calendarDisplay,setCalendarDisplay] = useState(false);
@@ -38,7 +38,7 @@ export const Plan=function (props) {
                 setDescription(response.data.plan.description);
                 setCal(response.data.plan.calories);
                 setTags(response.data.plan.tags[0]===null ? false : createTags(response.data.plan.tags));
-                setExercise(createExercises(response.data.plan.exercise));
+                setExercises(response.data.plan.exercise);
                 setPrivatePlan(response.data.plan.privatePlan);
                 setPlanId(response.data.plan.planId);
                 setImage(response.data.plan.img===null ? "/images/no-image-found-360x250.png" : response.data.plan.img);
@@ -127,8 +127,47 @@ export const Plan=function (props) {
         setAddButton(true);
     }
 
+    function deleteExercise(e){
+        let item=e.target;
+        let exTitle;
+        let exAuthor;
+        if(item.classList.contains("fa-times")){
+            item=item.parentElement.parentElement.parentElement;
+        }
+        else if(item.classList.contains("delete-exercise-button")){
+            item=item.parentElement.parentElement;
+        }
+        exTitle = item.querySelector(".exercise-title").innerHTML;
+        exAuthor=item.querySelector(".exercise-author").innerHTML;
+        axios.delete("/api/delete/planExercise/?title="+exTitle+"&author="+exAuthor+"&plan="+planId)
+        .then(response => {
+            if(!response.data.success){
+                alert(`Trouble deleting exercise!`);
+            }
+            else{
+                let index=0;
+                for(let i=0;i<exercises.length;i++){
+                    if(exercises[i].title===exTitle && exercises[i].username===exAuthor){
+                        index=i;
+                        break;
+                    }
+                }
+                exercises.splice(index,1);
+                let temp=[];
+                for(let i=0;i<exercises.length;i++){
+                    temp.push(exercises[i]);
+                }
+                setExercises(temp);
+            }
+        }, error => {
+            console.log(error);
+        });
+        
+    }
+
     function createExercises(items){
         let br=0;
+        if(items.length!==0){
         let result=items.map((x) => {
             if(x!==null){
                 br++;
@@ -146,7 +185,7 @@ export const Plan=function (props) {
                         </div>
                         <div className="exercise-data">
                         <h2 className="exercise-title">{x.title}</h2>
-                        <h3 className="exercise-author">by {x.username}</h3>
+                        <h3 className="exercise-author-container">by <span className="exercise-author">{x.username}</span></h3>
                         <div className="general-info">
                             <p>burns <span className="cal"><b>{x.calories}</b></span> cal</p>
                             <h4>Short description:</h4>
@@ -155,6 +194,9 @@ export const Plan=function (props) {
                         </div>
                         <div className="repetition">
                             <p>{x.length} {x.measure}</p>
+                        </div>
+                        <div>
+                            <button className="delete-exercise-button" onClick={deleteExercise}><i class="fas fa-times"></i></button>
                         </div>
                     </div>
                     <div className="exercise-content-container">
@@ -169,6 +211,7 @@ export const Plan=function (props) {
             }
         });
         return result;
+    }
     }
 
     function quitDate(){
@@ -266,7 +309,7 @@ export const Plan=function (props) {
                 
              
                 <h3 className="title">Steps:</h3>
-                <div>{exercise}</div>
+                <div>{createExercises(exercises)}</div>
                 {displayAddExercise &&
                 <div className="plus-container">
                     <button className="plus-button-plan" onClick={addExercise}><i class="fas fa-plus"></i></button>

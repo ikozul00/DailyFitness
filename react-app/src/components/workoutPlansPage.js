@@ -26,7 +26,7 @@ export const Plans=function (props){
         }
 
         //retriving list of all plans from database whose author is logged user
-        axios.post('/api/my',{name:sessionStorage.getItem("username"),size:2,value:"plan"})
+        axios.post('/api/my',{name:sessionStorage.getItem("username"),size:1,value:"plan"})
         .then(response => {
             //using createPlans function from workoutsPage script
             let res=CreatePlans(response.data.list,history);
@@ -36,7 +36,7 @@ export const Plans=function (props){
         });
 
         //retreving list of  all public plans from databse
-        axios.get('/api/all/?size='+2+'&value=plan')
+        axios.get('/api/all/?size='+1+'&value=plan')
         .then(response => {
             //using createPlans function from workoutsPage script
             let res=CreatePlans(response.data.list,history);
