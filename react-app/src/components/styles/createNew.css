@@ -227,4 +227,16 @@
     border:3px solid blue;
     width:100px;
     text-align:center;
+    margin-left: 15px;
  }
+
+ .plan-step-container-main-new .delete-exercise{
+     background-color: #f5d6e0;
+     color:red;
+     font-size:2.5em;
+     border:none;
+     position:relative;
+     right:-415px;
+ }
+
+

@@ -192,7 +192,7 @@ export const NewExercise=function CreateExercise()
                 <input type="text" id="title" name="title" value={title} onChange={handleChange}/>
                 </div>
                 <div className="form-field">
-                <label for= "calories"  className="form-text">Burns (cal):</label>
+                <label for= "calories"  className="form-text">Burns (calories):</label>
                 <input type="text" id="calories" name="calories" value={calories} onChange={handleChange}/>
                 <div><span>{calError}</span></div>
                 </div>

@@ -312,7 +312,7 @@ export const Exercise= function () {
                     <img className="plan-page-image" src={picture}></img>
                     <div className="exercise-info">
                     {privateEx && <div className="private-container"><p className="private-text">PRIVATE</p></div>}
-                    <p>burns <span className="exercise-cal">{cal}</span> cal</p>
+                    <p>burns <span className="exercise-cal">{cal}</span> calories</p>
                     {tags && <div className="tags-container-exercise"><b>Tags: </b>{tags}</div>}
                     <div id="description-container-exercise">
                         <h4 style={{marginTop:"0px"}}>Short description:</h4>

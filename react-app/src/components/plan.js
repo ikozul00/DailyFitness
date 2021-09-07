@@ -189,7 +189,7 @@ export const Plan=function (props) {
                         <h2 className="exercise-title">{x.title}</h2>
                         <h3 className="exercise-author-container">by <span className="exercise-author">{x.username}</span></h3>
                         <div className="general-info">
-                            <p>burns <span className="cal"><b>{x.calories}</b></span> cal</p>
+                            <p>burns <span className="cal"><b>{x.calories}</b></span> calories</p>
                             <h4>Short description:</h4>
                             <p className="description-text">{x.description}</p>   
                         </div>
@@ -298,7 +298,7 @@ export const Plan=function (props) {
                     <img className="plan-page-image" src={image}></img>
                     <div className="plan-info">
                     {privatePlan && <div className="private-container"><p className="private-text">PRIVATE</p></div>}
-                    <p>burns <span className="plan-cal">{cal}</span> cal</p>
+                    <p>burns <span className="plan-cal">{cal}</span> calories</p>
                     {tags && <div className="tags-container-plan"><b>Tags:</b> {tags}</div>}
                     <div id="description-container-plan">
                 <h4 style={{marginTop:"0px"}}>Short description:</h4>

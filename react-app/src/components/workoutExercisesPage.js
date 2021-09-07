@@ -77,7 +77,7 @@ function quitPlanCreating(){
     return(
         <div>
               {plan && <div class="date-message"><p>You are currently located in plan:  <b>{  plan.title}</b> </p>  <button className="cancel-date-button" onClick={quitPlan}><i class="fas fa-times"></i> Quit</button></div>}
-              {planCreating && <div class="date-message"><p>You are currently located in creating plan:  <b>{  planCreating.title}</b> </p>  <button className="cancel-date-button" onClick={quitPlanCreating}><i class="fas fa-times"></i> Quit</button></div>}
+              {planCreating && <div class="date-message"><p>You are currently adding exercises to plan:  <b>{  planCreating.title}</b> </p>  <button className="cancel-date-button" onClick={quitPlanCreating}><i class="fas fa-times"></i> Quit</button></div>}
            {date && <div class="date-message"><p>You are currently located in day:  <b>{  date}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
             <div className="plans-container">
             <a className="link-title" href="javascript:void(0);" onClick={()=>{history.push(path+'/MyExercises')}}><h2>My Exercises</h2></a>
@@ -151,7 +151,7 @@ function quitPlanCreating(){
     return(
         <div>
               {plan && <div class="date-message"><p>You are currently located in plan:  <b>{  plan.title}</b> </p>  <button className="cancel-date-button" onClick={quitPlan}><i class="fas fa-times"></i> Quit</button></div>}
-              {planCreating && <div class="date-message"><p>You are currently located in creating plan:  <b>{  planCreating.title}</b> </p>  <button className="cancel-date-button" onClick={quitPlanCreating}><i class="fas fa-times"></i> Quit</button></div>}
+              {planCreating && <div class="date-message"><p>You are currently adding exercises to plan:  <b>{  planCreating.title}</b> </p>  <button className="cancel-date-button" onClick={quitPlanCreating}><i class="fas fa-times"></i> Quit</button></div>}
             {date && <div class="date-message"><p>You are currently located in day:  <b>{  date}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
             <div className="plans-container load-all">
             <h2>Exercises</h2>
@@ -224,7 +224,7 @@ export const MyExercises = function(props){
         <div>
             {date && <div class="date-message"><p>You are currently located in day:  <b>{  date}</b> </p>  <button className="cancel-date-button" onClick={quitDate}><i class="fas fa-times"></i> Quit</button></div>}
             {plan && <div class="date-message"><p>You are currently located in plan:  <b>{  plan.title}</b> </p>  <button className="cancel-date-button" onClick={quitPlan}><i class="fas fa-times"></i> Quit</button></div>}
-            {planCreating && <div class="date-message"><p>You are currently located in creating plan:  <b>{  planCreating.title}</b> </p>  <button className="cancel-date-button" onClick={quitPlanCreating}><i class="fas fa-times"></i> Quit</button></div>}
+            {planCreating && <div class="date-message"><p>You are currently adding exercises to plan:  <b>{  planCreating.title}</b> </p>  <button className="cancel-date-button" onClick={quitPlanCreating}><i class="fas fa-times"></i> Quit</button></div>}
             <div className="plans-container load-all">
             <h2>My Exercises</h2>
                 <p>Create your own custom exercises which you can then orginize in plans. Add them to your workout plans and share them with other users.</p>
@@ -440,7 +440,7 @@ function ShortExercise(props){
             <div>
            <a href="javascript:void(0);" className="exercise-title" onClick={()=>{history.push(linkStr)}}>{props.title}</a>
            <p>by <span className="exercise-author">{props.username}</span></p>
-           <p>burns <span className="exercise-cal">{props.calories}</span> cal</p>
+           <p>burns <span className="exercise-cal">{props.calories}</span> calories</p>
            {privateExercise && <div className="private-container"><p>PRIVATE</p></div>}
             <p className="exercise-description">{props.description}</p>
             {tags && <div className="tags-container">Tags: {tags}</div>}

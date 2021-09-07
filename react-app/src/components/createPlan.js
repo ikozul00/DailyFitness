@@ -201,6 +201,7 @@ export const NewPlan = function NewPlan(){
                 br++;
                 return(
                     <div className="plan-step-container-main-new">
+                         <button onClick={deleteExercise} className="delete-exercise"><i class="fas fa-times"></i></button>
                     <div className="plan-step-container-new">
                          <div className="number-container">
                             <h2 style={{textDecoration:"none"}}>{br}.</h2>
@@ -218,7 +219,6 @@ export const NewPlan = function NewPlan(){
                         <div className="repetition">
                             <p>{x.lengthEx} {x.measure}</p>
                         </div>
-                        <button onClick={deleteExercise}>Cancel</button>
                         </div>
                         <div className="exercise-content-container">
                     <h4>Content:</h4>
@@ -234,6 +234,9 @@ export const NewPlan = function NewPlan(){
     function deleteExercise(e){
         e.preventDefault();
         let item=e.target.parentElement;
+        if(item.classList.contains("delete-exercise")){
+            item=item.parentElement;
+        }
         let title=item.querySelector(".exerciseInPlan-title").innerText;
         let exercisesModified = [];
         for(let i=0;i<exercisesText.length;i++){
@@ -276,7 +279,7 @@ export const NewPlan = function NewPlan(){
                 <input type="text" id="title" name="title" value={title} onChange={handleChange}/>
                 </div>
                 <div className="form-field">
-                <label for= "calories" className="form-text">Burns (cal):</label>
+                <label for= "calories" className="form-text">Burns (calories):</label>
                 <input type="text" id="calories" name="calories" value={calories} onChange={handleChange}/>
                 <div><span>{calError}</span></div>
                 </div>

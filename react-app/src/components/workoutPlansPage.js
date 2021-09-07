@@ -304,7 +304,7 @@ function ShortPlan(props){
             <div>
            <a className="plan-title" href="javascript:void(0);" onClick={()=>{history.push(linkStr)}}>{props.title}</a>
            <p className="plan-author-container">by <span className="plan-author">{props.username}</span></p>
-           <p>burns <span className="plan-calories">{props.calories}</span> cal</p>
+           <p>burns <span className="plan-calories">{props.calories}</span> calories</p>
            {props.private && <div className="private-container"><p>PRIVATE</p></div>}
             <p className="plan-description">{props.description}</p>  
             {tags && <div className="tags-container">Tags: {tags}</div>}

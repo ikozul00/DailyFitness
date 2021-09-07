@@ -106,7 +106,7 @@ function DailyReport(props){
                     </div>
                     <a href="javascript:void(0);" onClick={()=>{props.history.push(linkStr)}} className="item-title">{x[0]}</a>
                     <p style={{fontSize:"small"}}>by <span className="item-author">{x[1]}</span></p>
-                    <p style={{fontSize:"0.8em"}}>burns <span className="item-calories">{x[2]} </span>cal</p>
+                    <p style={{fontSize:"0.8em"}}>burns <span className="item-calories">{x[2]} </span>calories</p>
                     <button className={`check-button ${checked}`} onClick={clickedDoneButton}><i class="fas fa-check"></i></button>
                 </div>
             );
